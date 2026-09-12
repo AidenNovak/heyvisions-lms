@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import { queryKeys } from '@/lib/query/keys'
 import { getUriWithOrg } from '@services/config/config'
+import { getBrandName } from '@services/config/brand'
 import { fetchRAGChatSessions, RAGChatSession } from '@services/ai/ai'
 import { HeaderProfileBox } from '@components/Security/HeaderProfileBox'
 import MenuLinks from './OrgMenuLinks'
@@ -561,7 +562,7 @@ const LearnHouseLogo = ({ logoFilter }: { logoFilter: string }) => {
   return (
     <Image
       src="/lrn-text.svg"
-      alt="LearnHouse logo"
+      alt={`${getBrandName()} logo`}
       width={133}
       height={40}
       style={{ height: 'auto', filter: logoFilter }}
