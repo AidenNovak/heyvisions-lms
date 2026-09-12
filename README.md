@@ -1,3 +1,11 @@
+> **这一份是 HeyVisions 的 fork。** 上游是 [learnhouse/learnhouse](https://github.com/learnhouse/learnhouse)（AGPL-3.0）。
+> 本仓库在其之上做品牌、语言、主题与课程内容的深度改造，改动逐条记录在
+> [docs/heyvisions/CHANGELOG.md](docs/heyvisions/CHANGELOG.md)，维护流程见
+> [docs/heyvisions/CONTRIBUTING-FORK.md](docs/heyvisions/CONTRIBUTING-FORK.md)。
+> 下方为上游 README 原文。
+
+---
+
 <p align="center">
   <a href="https://learnhouse.app">
     <img src=".github/images/learnhouse-github.png" alt="LearnHouse" width="600" />
