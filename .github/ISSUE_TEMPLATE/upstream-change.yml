@@ -1,0 +1,51 @@
+name: 上游改动
+description: 记录一处相对 learnhouse/learnhouse 的改动，先提 issue 再提 PR
+title: "[改动] "
+labels: ["fork-change"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        本仓库是 [`learnhouse/learnhouse`](https://github.com/learnhouse/learnhouse) 的 fork。
+        每一处改动先在 issue 里写清楚**改什么、为什么、影响哪些文件**，再开 PR 关联本 issue，
+        这样改动链路可以逐条追溯，也方便日后向上游同步。
+  - type: textarea
+    id: goal
+    attributes:
+      label: 要改什么
+      description: 一句话说明这处改动达到的效果。
+      placeholder: 例：把平台品牌从 LearnHouse 换成 HeyVisions。
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: 为什么改
+      description: 业务或合规理由。若是为了贴合 HeyVisions 现网，请给出对应页面或文档。
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: 影响范围
+      description: 预期涉及的应用、目录或文件；有不确定的地方也写出来。
+      placeholder: |
+        - apps/web/app/layout.tsx
+        - apps/web/components/...
+    validations:
+      required: true
+  - type: textarea
+    id: upstream
+    attributes:
+      label: 与上游的关系
+      description: 这处改动是否可能回馈上游？会不会让后续 `git merge upstream/dev` 冲突？
+      placeholder: 例：纯本地品牌替换，不回馈上游；改动集中在 xxx 目录，冲突面可控。
+    validations:
+      required: true
+  - type: textarea
+    id: verify
+    attributes:
+      label: 怎么验收
+      description: 可执行的验收步骤或命令，越具体越好。
+    validations:
+      required: true
