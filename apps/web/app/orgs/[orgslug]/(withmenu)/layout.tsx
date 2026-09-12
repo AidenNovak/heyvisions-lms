@@ -15,6 +15,7 @@ import Link from 'next/link'
 import { PageViewTracker } from '@components/Analytics/PageViewTracker'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { usePlan } from '@components/Hooks/usePlan'
+import { isBrandWatermarkEnabled } from '@services/config/brand'
 import { getGoogleFontUrl, DEFAULT_FONT } from '@/lib/fonts'
 
 // Helper to convert hex to rgba
@@ -32,7 +33,9 @@ function OrgFooter() {
   const plan = usePlan()
   const watermarkConfig = org?.config?.config?.customization?.general?.watermark ?? org?.config?.config?.general?.watermark
   const isFree = plan === 'free'
-  const showWatermark = isFree || watermarkConfig !== false
+  // HeyVisions fork: 平台以自有品牌对外交付，默认不展示上游推广位。
+  // 需要反向标注上游时用 NEXT_PUBLIC_BRAND_WATERMARK=true 打开。
+  const showWatermark = isBrandWatermarkEnabled() && (isFree || watermarkConfig !== false)
 
   return (
     <footer className="w-full py-8 mt-12">
@@ -41,7 +44,7 @@ function OrgFooter() {
         {showWatermark && (
           <Link href="https://learnhouse.app" target="_blank" rel="noopener noreferrer">
             <Image
-              src="/lrn.svg"
+              src="/upstream/learnhouse-mark.svg"
               alt="LearnHouse"
               width={24}
               height={24}
