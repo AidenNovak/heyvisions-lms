@@ -215,7 +215,7 @@
     "organizations": "Organizations",
     "billing": "Billing",
     "create_organization": "Create organization",
-    "copyright": "© {{year}} LearnHouse, Inc.",
+    "copyright": "© {{year}} HeyVisions",
     "delete_organization_error": "Could not delete this organization. Please try again.",
     "org_actions": "Organization actions",
     "manage_upgrade": "Manage / Upgrade",
@@ -1475,7 +1475,7 @@
     "not_supported_title": "This activity is not supported",
     "not_supported_description": "This type of activity requires authentication and cannot be embedded.",
     "visit_activity": "Visit Activity Page",
-    "powered_by": "Powered by LearnHouse"
+    "powered_by": "Powered by HeyVisions"
   },
   "assignments": {
     "submit_assignment": "Submit Assignment",

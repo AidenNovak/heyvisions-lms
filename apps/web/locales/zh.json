@@ -215,7 +215,7 @@
     "organizations": "组织",
     "billing": "账单",
     "create_organization": "创建组织",
-    "copyright": "© {{year}} LearnHouse, Inc.",
+    "copyright": "© {{year}} HeyVisions",
     "delete_organization_error": "无法删除此组织。请重试。",
     "org_actions": "组织操作",
     "manage_upgrade": "管理 / 升级",
@@ -5143,7 +5143,7 @@
   "embed": {
     "not_supported_description": "此类活动需要认证，无法嵌入。",
     "not_supported_title": "不支持此活动",
-    "powered_by": "由 LearnHouse 提供支持",
+    "powered_by": "由 HeyVisions 提供支持",
     "visit_activity": "访问活动页面"
   },
   "migration": {
