@@ -6,6 +6,7 @@ export const CURATED_FONTS = [
   'Exo 2',
   'Figtree',
   'Fira Sans',
+  'Geist',
   'IBM Plex Sans',
   'Instrument Sans',
   'Inter',
@@ -40,7 +41,10 @@ export const CURATED_FONTS = [
   'Work Sans',
 ]
 
-export const DEFAULT_FONT = 'Wix Madefor Text'
+// 平台默认字体（`--font-default`，见 app/layout.tsx 的 next/font 声明）。
+// 这个常量同时是「未选择自定义字体」的哨兵值：组织配置里 font 为空或等于它时，
+// 走平台默认而不是去 Google Fonts 额外加载。
+export const DEFAULT_FONT = 'Geist'
 
 export function getGoogleFontUrl(fontFamily: string): string {
   const encoded = fontFamily.replace(/ /g, '+')

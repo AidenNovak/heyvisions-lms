@@ -14,6 +14,7 @@
 | 3 | 移除上游水印与推广位 | [#5](https://github.com/AidenNovak/heyvisions-lms/issues/5) | [#9](https://github.com/AidenNovak/heyvisions-lms/pull/9) | `Watermark.tsx`、`LegalFooters.tsx`、`home.tsx`、orgs layout |
 | 4 | 课程内容导入脚本入库 | [#7](https://github.com/AidenNovak/heyvisions-lms/issues/7) | [#10](https://github.com/AidenNovak/heyvisions-lms/pull/10) | 无（纯新增目录） |
 | 5 | 简体中文设为默认语言并核对 zh 文案 | [#6](https://github.com/AidenNovak/heyvisions-lms/issues/6) | [#13](https://github.com/AidenNovak/heyvisions-lms/pull/13) | `organization_config.py`、`locales/*.json`（22 个语言文件） |
+| 6 | 视觉令牌对齐 heyvisions.com | [#4](https://github.com/AidenNovak/heyvisions-lms/issues/4) | [#14](https://github.com/AidenNovak/heyvisions-lms/pull/14) | `app/layout.tsx`、`lib/fonts.ts`、`styles/globals.css` |
 
 ## 1. fork 维护流程与改动记录
 
@@ -75,14 +76,35 @@
   会与上游的翻译更新冲突，但冲突是机械的（保留本仓库版本即可）。
 - **未覆盖**：`courses.import.*`、`dashboard.*.watermark*` 等字符串里的 LearnHouse 指的是
   **真实存在的第三方**（导入上游导出包、上游水印），替换成变量是错的，属于另一个决定。
+- **追加**：复核时发现 `library.*` 整个命名空间在 zh 里没翻（66 个键的值与英文完全相同），
+  而资料库在主导航里。一并补齐，连同导航标签（Library / Playgrounds / Store）
+  与资料库分类页签 —— zh 的学习者路径已无未翻译的英文（品牌词与技术名词除外）。
+
+## 6. 视觉令牌对齐 heyvisions.com
+
+- **改什么**：字体换 Geist（中文回退 PingFang SC / 冬青黑 / 微软雅黑）；
+  焦点环换品牌暖橙；圆角基准 8px → 10px；卡片投影从 `shadow-md` 压到 1px 浅投影。
+- **为什么**：静态站已确立视觉规范，学习平台是同一产品的帐号与进度层，
+  两处观感割裂会像换了一个产品。
+- **影响范围**：`app/layout.tsx`、`lib/fonts.ts`、`styles/globals.css`，
+  以及新增的 `docs/heyvisions/design-tokens.md`（令牌对照与验收方式）。
+- **与上游的关系**：改动都落在令牌层——`.nice-shadow` 一条覆盖 700+ 处使用，
+  不逐个组件替换，上游改版时不易被覆盖。`--ring`、`--radius` 各一行，冲突面极小。
+- **顺带修掉的死代码**：中文字族原本写在 `var(--font-default, ...)` 的 fallback 位置，
+  而这个变量由 next/font 注入且一定有值，所以那些字族从未生效 ——
+  中文只能靠浏览器默认兜底，在 Windows/Linux 上会落到与静态站不同的字面。
+  必须写在 `var()` 之外。
+- **未覆盖**：`teal-*`（23 个文件）与 `indigo/violet/purple`（669 处）仍在。
+  这些多用于管理员后台与编辑器，学习者主路径（课程列表、课时阅读）不涉及；
+  全量替换工作量大且会大面积冲突，判断为不值得。
 
 ## 待办
 
 | Issue | 内容 |
 | --- | --- |
-| [#4](https://github.com/AidenNovak/heyvisions-lms/issues/4) | 主题白标：字体与主色对齐 heyvisions.com |
 | [#12](https://github.com/AidenNovak/heyvisions-lms/issues/12) | 事务性邮件文案白标（84 处 `LearnHouse`） |
 | — | 上游导入/水印相关文案的取舍（见第 5 条的「未覆盖」） |
+| — | 管理员后台的 340+ 个 zh 未翻译键（学习者路径已覆盖） |
 | — | CF 上 faka/kb/usdt/status/sapi 等死子域记录待清理（与 LMS 无关，工作区遗留项） |
 
 ## 上游同步
