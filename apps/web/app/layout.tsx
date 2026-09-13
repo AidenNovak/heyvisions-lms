@@ -48,14 +48,16 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        {/* Synchronous script — sets <html lang/dir> before body paints so an
-            RTL locale never flashes an LTR layout. Must run first. */}
-        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-        <script src="/dir-init.js" />
         {/* Synchronous script — blocks parsing to guarantee window.__RUNTIME_CONFIG__ exists before any JS runs.
-            Next.js <Script strategy="beforeInteractive"> is not truly blocking in all browsers (Safari). */}
+            Next.js <Script strategy="beforeInteractive"> is not truly blocking in all browsers (Safari).
+            Runs before dir-init.js: that script reads the platform default language from this config. */}
         {/* eslint-disable-next-line @next/next/no-sync-scripts */}
         <script src="/runtime-config.js" />
+        {/* Synchronous script — sets <html lang/dir> before body paints so an
+            RTL locale never flashes an LTR layout, and a zh-default platform
+            never flashes English chrome. */}
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script src="/dir-init.js" />
         {/* Prevent white flash on embed routes: set html+body bg before body is painted.
             Reads the optional ?bgcolor param (hex-validated) or defaults to dark. */}
         {/* eslint-disable-next-line @next/next/no-sync-scripts */}

@@ -113,7 +113,7 @@ start_web() {
   # 生产构建下客户端配置只认 runtime-config.js；这里在启动时生成，
   # 与本机部署的形状一致（改配置无需重新构建）。
   cat > "$web/public/runtime-config.js" <<EOF
-window.__RUNTIME_CONFIG__ = {"NEXT_PUBLIC_LEARNHOUSE_BACKEND_URL":"http://$BIND:$API_PORT","NEXT_PUBLIC_LEARNHOUSE_API_URL":"http://$BIND:$API_PORT/api/v1/","NEXT_PUBLIC_LEARNHOUSE_DOMAIN":"$BIND:$WEB_PORT","NEXT_PUBLIC_LEARNHOUSE_HTTPS":"false"};
+window.__RUNTIME_CONFIG__ = {"NEXT_PUBLIC_LEARNHOUSE_BACKEND_URL":"http://$BIND:$API_PORT","NEXT_PUBLIC_LEARNHOUSE_API_URL":"http://$BIND:$API_PORT/api/v1/","NEXT_PUBLIC_LEARNHOUSE_DOMAIN":"$BIND:$WEB_PORT","NEXT_PUBLIC_LEARNHOUSE_HTTPS":"false","NEXT_PUBLIC_DEFAULT_LANGUAGE":"${HV_DEFAULT_LANGUAGE:-zh}"};
 EOF
 
   # 生产同款入口：standalone server + server-wrapper.js（后者把 NEXT_PUBLIC_*
