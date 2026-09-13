@@ -22,10 +22,16 @@ export function AuthFooter({ className = '' }: { className?: string }) {
   const termsUrl = getTermsUrl()
   const privacyUrl = getPrivacyUrl()
   const hasLegalLinks = Boolean(termsUrl || privacyUrl)
+  // 没有配置条款/隐私地址时整句不渲染：句子的宾语就是那两个链接，
+  // 只留"继续即表示你同意 HeyVisions 的"是不成句的。
+  if (!hasLegalLinks) return null
   return (
     <div className={`pb-8 pt-6 text-center px-6 ${className}`}>
       <p className="text-[13px] text-black/30 font-medium">
-        {t('auth.terms_text', { defaultValue: `By continuing, you agree to ${brandName}'s` })}{' '}
+        {t('auth.terms_text', {
+          brand: brandName,
+          defaultValue: `By continuing, you agree to ${brandName}'s`,
+        })}{' '}
         {termsUrl ? (
           <>
             <Link
@@ -49,7 +55,7 @@ export function AuthFooter({ className = '' }: { className?: string }) {
             {t('auth.privacy_policy', { defaultValue: 'Privacy Policy' })}
           </Link>
         ) : null}
-        {hasLegalLinks ? '.' : null}
+        .
       </p>
     </div>
   )
@@ -76,7 +82,7 @@ export function CopyrightFooter({
     <footer className={`w-full py-6 px-6 ${className}`}>
       <div className="flex flex-col sm:flex-row items-center justify-center gap-x-5 gap-y-2 text-[13px] font-medium">
         <p className={base}>
-          {t('common.copyright', { defaultValue: `© {{year}} ${brandName}`, year })}
+          {t('common.copyright', { brand: brandName, defaultValue: `© {{year}} ${brandName}`, year })}
         </p>
         {termsUrl || privacyUrl ? (
           <nav className="flex items-center gap-x-5">

@@ -16,6 +16,7 @@ import {
 } from '@phosphor-icons/react'
 import WelcomeGlobe from './WelcomeGlobe'
 import { useTranslation } from 'react-i18next'
+import { getBrandName } from '@services/config/brand'
 import { useLHAnalytics, AnalyticsEvent } from '@services/analytics'
 
 const ease = [0.16, 1, 0.3, 1] as const
@@ -161,7 +162,7 @@ export default function WelcomeModal() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3, duration: 0.5, ease }}
                     >
-                      {t('onboarding.welcome.title')}
+                      {t('onboarding.welcome.title', { brand: getBrandName() })}
                     </motion.h1>
                     <motion.p
                       className="text-sm text-gray-400 mt-2"

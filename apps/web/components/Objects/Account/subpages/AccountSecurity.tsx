@@ -19,6 +19,7 @@ import {
   Smartphone,
 } from 'lucide-react'
 import { getErrorMessage } from '@services/utils/ts/errorMessage'
+import { getBrandName } from '@services/config/brand'
 import { Input } from "@components/ui/input"
 import { Button } from "@components/ui/button"
 import { Label } from "@components/ui/label"
@@ -226,7 +227,8 @@ function TwoFactorAuthSection() {
 
   const downloadBackupCodes = () => {
     const header = t('user.settings.security.mfa.codes_file_header', {
-      defaultValue: 'LearnHouse two-factor backup codes. Each code can be used once.',
+      brand: getBrandName(),
+      defaultValue: `${getBrandName()} two-factor backup codes. Each code can be used once.`,
     })
     const blob = new Blob([`${header}\n\n${backupCodes.join('\n')}\n`], {
       type: 'text/plain;charset=utf-8',
