@@ -215,7 +215,7 @@
     "organizations": "组织",
     "billing": "账单",
     "create_organization": "创建组织",
-    "copyright": "© {{year}} HeyVisions",
+    "copyright": "© {{year}} {{brand}}",
     "delete_organization_error": "无法删除此组织。请重试。",
     "org_actions": "组织操作",
     "manage_upgrade": "管理 / 升级",
@@ -228,7 +228,15 @@
     "leave_organization_title": "退出组织？",
     "leave_organization_desc": "你将失去对 {{org}} 的访问权限，并从成员列表中移除。若收到邀请，你之后可以重新加入。",
     "leave_organization_error": "无法退出此组织。请重试。",
-    "leaving": "正在退出…"
+    "leaving": "正在退出…",
+    "select": "选择…",
+    "continue": "继续",
+    "dismiss": "关闭",
+    "sign_out": "退出登录",
+    "move_up": "上移",
+    "move_down": "下移",
+    "less": "收起",
+    "more": "更多"
   },
   "banner": {
     "viewing_as_guest": "您正在以访客身份浏览 {{name}}。",
@@ -352,22 +360,44 @@
     "try_again_in": "{{minutes}}分钟后重试",
     "error_generic": "出现问题，请重试。",
     "sign_in": "登录",
-    "terms_text": "继续即表示你同意 LearnHouse 的",
+    "terms_text": "继续即表示你同意 {{brand}} 的",
     "terms_of_service": "服务条款",
     "and": "和",
     "privacy_policy": "隐私政策",
     "image_title_forgot": "重置你的密码。",
     "image_subtitle_forgot": "我们会帮你快速重新登录账户。",
-    "image_title_login": "欢迎回到 LearnHouse。",
+    "image_title_login": "欢迎回到 {{brand}}。",
     "image_subtitle_login": "从上次离开的地方继续 — 你的课程、学员和工具都在等你。",
     "image_title_reset": "马上就好。",
     "image_subtitle_reset": "设置一个强密码以保护你的账户安全。",
-    "image_title_signup": "用 LearnHouse 开始教学。",
+    "image_title_signup": "用 {{brand}} 开始教学。",
     "image_subtitle_signup": "创建你的账户，几分钟内发布你的第一门课程。",
     "image_title_verify": "验证你的邮箱。",
     "image_subtitle_verify": "一步即可保护账户安全并开始使用。",
     "turnstile_failed": "验证失败。请重试。",
-    "resend_verification": "没收到？重新发送邮件"
+    "resend_verification": "没收到？重新发送邮件",
+    "complete_profile": { "title": "完善你的资料" },
+    "no_sign_up_method_available": "该组织限制了成员的注册方式，因此无法在此创建账号。请联系管理员。",
+    "continue_to_dashboard": "进入学习面板",
+    "mfa_invalid_code": "验证码不正确。请确认设备已开启自动校时，再试下一个验证码。",
+    "mfa_title": "两步验证",
+    "mfa_subtitle_backup": "输入你保存的其中一个备用码。",
+    "mfa_subtitle": "输入身份验证器应用显示的 6 位验证码。",
+    "mfa_backup_code": "备用码",
+    "mfa_code": "验证码",
+    "mfa_verify": "验证",
+    "mfa_use_authenticator": "改用身份验证器应用",
+    "mfa_use_backup": "改用备用码",
+    "mfa_back_to_login": "返回登录",
+    "magic_title": "用登录链接进入",
+    "magic_sent_title": "请查收邮件",
+    "magic_sent_body": "如果 {{email}} 对应的账号存在，我们已向该邮箱发送了安全登录链接。链接很快过期，请尽快使用。",
+    "magic_back_to_login": "返回登录",
+    "magic_subtitle": "输入邮箱，我们会给你发一条可直接登录的链接，无需密码。",
+    "magic_send": "把登录链接发到我的邮箱",
+    "magic_use_password": "改用密码登录",
+    "choose_sign_in_method": "选择登录方式。",
+    "no_sign_in_method_available": "该组织限制了成员的登录方式，当前没有可用的方式。请联系管理员。"
   },
   "verify_email": {
     "title": "邮箱验证",
@@ -385,7 +415,9 @@
     "password_min_length": "密码必须至少包含 8 个字符",
     "username_min_length": "用户名必须至少包含 4 个字符",
     "title_required": "标题必填",
-    "content_required": "内容必填"
+    "content_required": "内容必填",
+    "invalid_number": "必须是数字",
+    "invalid_option": "请从可用选项中选择一项"
   },
   "courses": {
     "my_courses": "我的课程",
@@ -675,7 +707,8 @@
     "no_image_in_clipboard": "剪贴板中未找到图片",
     "clipboard_read_error": "无法读取剪贴板",
     "sign_in_to_see_courses": "登录以查看你的课程",
-    "sign_in_to_see_courses_description": "登录后才能查看此学院中的课程。"
+    "sign_in_to_see_courses_description": "登录后才能查看此学院中的课程。",
+    "keep_going_description_no_certificate": "进展不错！完成剩余单元即可学完这门课。"
   },
   "communities": {
     "title": "社区",
@@ -795,7 +828,11 @@
       "title_min_length": "标题至少需要5个字符",
       "title_max_length": "标题不能超过200个字符",
       "content_not_allowed": "您的讨论包含不允许的内容。",
-      "failed_to_create": "创建讨论失败，请重试。"
+      "failed_to_create": "创建讨论失败，请重试。",
+      "rich_content_hint": "粘贴 YouTube 链接即可嵌入视频，或使用工具栏设置文字格式。",
+      "embed_video_title": "嵌入 YouTube 视频",
+      "embed_video_prompt": "粘贴 YouTube 视频链接",
+      "embed_video_invalid": "只能嵌入 YouTube 视频链接。"
     },
     "edit_discussion": {
       "title": "编辑讨论",
@@ -995,7 +1032,13 @@
     "save_answers": "保存答案",
     "markdown": "Markdown",
     "custom": "自定义",
-    "scorm": "SCORM"
+    "scorm": "SCORM",
+    "grid_columns_2": "2 列",
+    "grid_columns_3": "3 列",
+    "grid_columns_4": "4 列",
+    "add_card": "添加卡片",
+    "ungroup_cards": "取消卡片分组",
+    "group_into_grid": "按网格分组"
   },
   "assignments": {
     "submit_assignment": "提交作业",
@@ -1026,7 +1069,18 @@
     },
     "quiz": {
       "correct_answer": "正确",
-      "incorrect_answer": "错误"
+      "incorrect_answer": "错误",
+      "select_one": "选择一项答案",
+      "select_all_that_apply": "选择所有适用项",
+      "response_type_single": "单项答案",
+      "response_type_multiple": "多项答案",
+      "no_correct_option_warning": "未设置正确选项——评分时该题跳过",
+      "question_fallback_label": "题目",
+      "grading_mode_label": "评分方式",
+      "grading_all_or_nothing": "全对得分",
+      "grading_partial_credit": "部分得分",
+      "grading_all_or_nothing_hint": "只有所选答案与答案键完全一致时，该题才得分。",
+      "grading_partial_credit_hint": "「选择所有适用项」的题目按比例得分；每选错一项会抵消一项选对。"
     },
     "attempt_label": "尝试",
     "attempt_count": "第 {{current}} 次尝试",
@@ -1048,7 +1102,18 @@
     "no_task_submission_to_grade": "该学员尚未提交此任务的文件。",
     "past_due": "已过截止日期",
     "past_due_description": "此作业截止日期为 {{date}}。答案无法再保存或提交评分。",
-    "past_due_title": "已过截止日期"
+    "past_due_title": "已过截止日期",
+    "ungraded_badge": "不计分",
+    "hand_in": "提交作业",
+    "hand_in_title": "提交你的作业",
+    "hand_in_confirm": "你的作业将提交给老师，不计分。",
+    "handed_in": "已提交",
+    "solution_title": "参考答案",
+    "solution_download": "下载参考答案",
+    "solution_locked_title": "参考答案未解锁",
+    "solution_locked_on_submission": "提交作业后参考答案立即解锁。",
+    "solution_locked_after_grading": "作业评分后参考答案才会解锁。",
+    "retry_assignment_confirm_ungraded": "当前提交将被重置，以便你重新作答；参考答案会重新锁定，直到你提交下一次作答。"
   },
   "certificate": {
     "certificate": "证书",
@@ -1239,7 +1304,8 @@
           "industry": "行业",
           "expertise": "专业知识",
           "community": "社区"
-        }
+        },
+        "signin_again": "请重新登录"
       },
       "password": {
         "title": "更改密码",
@@ -1250,7 +1316,8 @@
         "updating": "更新中...",
         "password_updated": "密码更新成功",
         "relogin_message": "请使用您的新密码重新登录",
-        "logout_warning": "更改密码后您将被登出"
+        "logout_warning": "更改密码后您将被登出",
+        "update_failed": "无法更新密码。请重新登录。"
       },
       "profile_builder": {
         "title": "个人资料构建器",
@@ -1390,7 +1457,8 @@
         "current_session_title": "当前会话",
         "current_session_subtitle": "你当前登录所使用的设备。",
         "this_device": "此设备",
-        "sign_out": "退出登录"
+        "sign_out": "退出登录",
+        "mfa": { "rate_limited": "尝试次数过多。请稍等片刻再试。", "status_error": "无法加载你的两步验证设置。", "copy_failed": "复制失败。请手动选择文本后复制。", "codes_file_header": "{{brand}} 两步验证备用码。每个备用码只能使用一次。", "already_enabled": "该账号已启用两步验证。", "setup_failed": "无法开始两步验证设置。请重试。", "enabled_toast": "两步验证已启用。", "invalid_code": "验证码无效。请重试。", "regenerate_failed": "无法重新生成备用码。请重试。", "disabled_toast": "两步验证已关闭。", "disable_failed": "无法关闭两步验证。请重试。", "retry_in": "{{seconds}} 秒后可以重试。", "code_label": "验证码", "code_hint": "输入身份验证器应用当前显示的 6 位验证码。", "title": "两步验证", "subtitle": "登录时要求输入身份验证器应用生成的一次性验证码。", "retry": "重试", "codes_once_title": "这些备用码只会显示这一次。", "codes_once_body": "现在就保存到安全的地方。万一你无法使用身份验证器应用，每个备用码可以登录一次。离开此页面后无法再查看，只能重新生成。", "copied": "已复制", "copy_all": "全部复制", "download": "下载 .txt", "codes_ack": "我已把这些备用码保存到安全的地方。", "done": "完成", "step_password_title": "确认你的密码", "step_password_body": "为了账号安全，请输入当前密码后继续。", "continue": "继续", "step_scan_title": "用身份验证器应用扫描", "step_scan_body": "打开身份验证器应用（1Password、Google Authenticator、Authy 等），扫描下方二维码。", "qr_alt": "两步验证设置二维码", "qr_failed": "二维码绘制失败。请改用设置密钥。", "secret_label": "或手动输入这个设置密钥", "copy_secret": "复制设置密钥", "secret_hint": "适用于无法扫码的桌面身份验证器应用。", "step_verify_title": "确认应用显示的验证码", "back": "返回", "wait_seconds": "请等待 {{seconds}} 秒", "verify_and_enable": "验证并启用", "enabled": "已启用", "enabled_since": "自 {{date}} 起", "enabled_hint": "登录时需要输入身份验证器应用生成的验证码。", "regenerate": "重新生成备用码", "disable": "关闭", "codes_remaining": "剩余 {{remaining}} 个备用码", "codes_low": "请生成一组新备用码，以免被锁在外面。", "regenerate_body": "生成新备用码后，你现有的全部备用码会立即失效。", "regenerate_confirm": "生成新备用码", "disable_warning": "关闭后登录不再需要第二步验证，你的备用码也会被删除。", "disable_confirm": "关闭两步验证", "not_enabled": "未启用", "not_enabled_hint": "登录时额外要求身份验证器应用生成的一次性验证码，以保护你的账号。", "enable": "启用" }
       }
     },
     "sign_out": "退出登录",
@@ -4843,7 +4911,7 @@
       }
     },
     "welcome": {
-      "title": "欢迎来到 LearnHouse",
+      "title": "欢迎来到 {{brand}}",
       "subtitle": "创建课程、邀请学员，与世界分享知识。",
       "get_started": "开始",
       "features_title": "您需要的一切",
@@ -5143,7 +5211,7 @@
   "embed": {
     "not_supported_description": "此类活动需要认证，无法嵌入。",
     "not_supported_title": "不支持此活动",
-    "powered_by": "由 HeyVisions 提供支持",
+    "powered_by": "由 {{brand}} 提供支持",
     "visit_activity": "访问活动页面"
   },
   "migration": {
@@ -5392,7 +5460,18 @@
       "drag_to_reorder": "拖动以重新排序",
       "sort_error": "无法更新排序",
       "reorder_error": "无法保存新排序"
-    }
+    },
+    "preview": "预览",
+    "no_access": "你没有访问该文件的权限。",
+    "choose_from_library": "从资料库选择",
+    "upload_to_library": "上传",
+    "upload_to_library_hint": "上传的文件会加入你的资料库，方便在其他地方复用。",
+    "no_resource_selected": "尚未选择资料库条目。",
+    "private_media_warning": "私有——没有权限的学习者看不到。",
+    "replace_resource": "替换",
+    "remove_resource": "移除",
+    "show_as_card": "以卡片显示",
+    "show_inline": "内嵌显示"
   },
   "media": {
     "media": "Media",
@@ -5738,5 +5817,8 @@
     "subtitle": "你各组织的方案与账单",
     "opening": "正在打开…",
     "manage_billing": "管理账单"
+  },
+  "mfa": {
+    "policy": { "banner_message_overdue": "{{org}} 要求启用两步验证，且截止时间已过。请在下方启用后恢复访问。", "banner_message_today": "{{org}} 要求启用两步验证，你需要在今天完成设置。", "banner_message_one_day": "{{org}} 要求启用两步验证，你还有 1 天时间完成设置。", "banner_message": "{{org}} 要求启用两步验证，你还有 {{days}} 天时间完成设置。", "set_up_now": "立即设置", "blocked_title": "需要启用两步验证", "blocked_description": "{{org}} 设定的两步验证启用截止时间已过。要继续使用 {{org}}，请为账号添加第二重验证——只需一分钟。", "blocked_scope_note": "这只影响 {{org}}，不影响你在其他组织的访问。", "set_up_2fa": "设置两步验证", "signed_in_as": "已登录：{{email}}", "sign_in_to_org": "登录该组织" }
   }
 }

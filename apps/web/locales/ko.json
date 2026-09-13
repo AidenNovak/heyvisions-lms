@@ -215,7 +215,7 @@
     "organizations": "조직",
     "billing": "결제",
     "create_organization": "조직 만들기",
-    "copyright": "© {{year}} LearnHouse, Inc.",
+    "copyright": "© {{year}} {{brand}}",
     "delete_organization_error": "이 조직을 삭제할 수 없습니다. 다시 시도해 주세요.",
     "org_actions": "조직 작업",
     "manage_upgrade": "관리 / 업그레이드",
@@ -5143,7 +5143,7 @@
   "embed": {
     "not_supported_description": "이 유형의 활동은 인증이 필요하며 임베드할 수 없습니다.",
     "not_supported_title": "이 활동은 지원되지 않습니다",
-    "powered_by": "Powered by LearnHouse",
+    "powered_by": "Powered by {{brand}}",
     "visit_activity": "활동 페이지 방문"
   },
   "migration": {

@@ -215,7 +215,7 @@
     "organizations": "Organizzazioni",
     "billing": "Fatturazione",
     "create_organization": "Crea organizzazione",
-    "copyright": "© {{year}} LearnHouse, Inc.",
+    "copyright": "© {{year}} {{brand}}",
     "delete_organization_error": "Impossibile eliminare questa organizzazione. Riprova.",
     "org_actions": "Azioni dell’organizzazione",
     "manage_upgrade": "Gestisci / Aggiorna",
@@ -358,11 +358,11 @@
     "privacy_policy": "l’Informativa sulla privacy",
     "image_title_forgot": "Reimposta la password.",
     "image_subtitle_forgot": "Ti aiutiamo a rientrare nel tuo account in un attimo.",
-    "image_title_login": "Bentornato su LearnHouse.",
+    "image_title_login": "Bentornato su {{brand}}.",
     "image_subtitle_login": "Riprendi da dove avevi lasciato — i tuoi corsi, gli studenti e gli strumenti ti aspettano.",
     "image_title_reset": "Ci sei quasi.",
     "image_subtitle_reset": "Crea una password robusta per mantenere sicuro il tuo account.",
-    "image_title_signup": "Inizia a insegnare con LearnHouse.",
+    "image_title_signup": "Inizia a insegnare con {{brand}}.",
     "image_subtitle_signup": "Crea il tuo account e lancia il tuo primo corso in pochi minuti.",
     "image_title_verify": "Verifica la tua email.",
     "image_subtitle_verify": "Un rapido passaggio per proteggere il tuo account e iniziare.",
@@ -5087,7 +5087,7 @@
       }
     },
     "welcome": {
-      "title": "Benvenuto su LearnHouse",
+      "title": "Benvenuto su {{brand}}",
       "subtitle": "Crea corsi, invita studenti e condividi la conoscenza con il mondo.",
       "get_started": "Inizia",
       "features_title": "Tutto ciò di cui hai bisogno",
@@ -5131,7 +5131,7 @@
   "embed": {
     "not_supported_description": "Questo tipo di attività richiede l'autenticazione e non può essere incorporato.",
     "not_supported_title": "Questa attività non è supportata",
-    "powered_by": "Powered by LearnHouse",
+    "powered_by": "Powered by {{brand}}",
     "visit_activity": "Visita la pagina dell'attività"
   },
   "migration": {

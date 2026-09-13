@@ -10,6 +10,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { validateInviteCode } from '@services/organizations/invites'
 import { joinOrg } from '@services/organizations/orgs'
 import { getUriWithOrg } from '@services/config/config'
+import { getBrandName } from '@services/config/brand'
 import { getErrorMessage } from '@services/utils/ts/errorMessage'
 import { useTranslation } from 'react-i18next'
 import AuthLayout from '@components/Auth/AuthLayout'
@@ -64,7 +65,10 @@ function SignUpClient(props: SignUpClientProps) {
     <AuthLayout
       org={props.org}
       welcomeText={t('auth.invited_to_join')}
-      title={t('auth.image_title_signup', { defaultValue: 'Start teaching with LearnHouse.' })}
+      title={t('auth.image_title_signup', {
+        brand: getBrandName(),
+        defaultValue: `Start teaching with ${getBrandName()}.`,
+      })}
       subtitle={t('auth.image_subtitle_signup', {
         defaultValue: 'Create your account and launch your first course in minutes.',
       })}

@@ -215,7 +215,7 @@
     "organizations": "Organisasi",
     "billing": "Tagihan",
     "create_organization": "Buat organisasi",
-    "copyright": "© {{year}} LearnHouse, Inc.",
+    "copyright": "© {{year}} {{brand}}",
     "delete_organization_error": "Tidak dapat menghapus organisasi ini. Silakan coba lagi.",
     "org_actions": "Tindakan organisasi",
     "manage_upgrade": "Kelola / Tingkatkan",
@@ -381,11 +381,11 @@
     "privacy_policy": "Kebijakan Privasi",
     "image_title_forgot": "Atur ulang kata sandi Anda.",
     "image_subtitle_forgot": "Kami akan membantu Anda kembali ke akun Anda dalam sekejap.",
-    "image_title_login": "Selamat datang kembali di LearnHouse.",
+    "image_title_login": "Selamat datang kembali di {{brand}}.",
     "image_subtitle_login": "Lanjutkan dari tempat Anda berhenti — kursus, siswa, dan alat Anda sudah menanti.",
     "image_title_reset": "Hampir selesai.",
     "image_subtitle_reset": "Buat kata sandi yang kuat untuk menjaga keamanan akun Anda.",
-    "image_title_signup": "Mulai mengajar dengan LearnHouse.",
+    "image_title_signup": "Mulai mengajar dengan {{brand}}.",
     "image_subtitle_signup": "Buat akun Anda dan luncurkan kursus pertama Anda dalam hitungan menit.",
     "image_title_verify": "Verifikasi email Anda.",
     "image_subtitle_verify": "Satu langkah cepat untuk mengamankan akun Anda dan memulai.",
@@ -5109,7 +5109,7 @@
       }
     },
     "welcome": {
-      "title": "Selamat datang di LearnHouse",
+      "title": "Selamat datang di {{brand}}",
       "subtitle": "Buat kursus, undang pembelajar, dan bagikan pengetahuan dengan dunia.",
       "get_started": "Mulai",
       "features_title": "Semua yang Anda butuhkan",
@@ -5153,7 +5153,7 @@
   "embed": {
     "not_supported_description": "Tipe aktivitas ini memerlukan autentikasi dan tidak dapat disematkan.",
     "not_supported_title": "Aktivitas ini tidak didukung",
-    "powered_by": "Didukung oleh LearnHouse",
+    "powered_by": "Didukung oleh {{brand}}",
     "visit_activity": "Kunjungi Halaman Aktivitas"
   },
   "migration": {

@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -143,12 +144,12 @@ def ensure_chapter(api: str, headers: dict, course_id: int, org_id: int, stage: 
     return ch
 
 
-def existing_activity_names(api: str, headers: dict, chapter_id: int) -> set[str]:
-    """某章节下已有的活动名，用于跳过重复导入。"""
+def existing_activities(api: str, headers: dict, chapter_id: int) -> dict[str, dict]:
+    """某章节下已有活动，按名字索引，用于跳过重复导入 / 校正 URL。"""
     r = requests.get(f"{api}/activities/chapter/{chapter_id}", headers=headers, timeout=30)
     if not r.ok:
-        return set()
-    return {(a.get("name") or "") for a in (r.json() or [])}
+        return {}
+    return {(a.get("name") or ""): a for a in (r.json() or [])}
 
 
 def ensure_activity(
@@ -158,19 +159,41 @@ def ensure_activity(
     chapter_id: int,
     unit: dict,
     units_base: str,
-    existing: set[str],
+    existing: dict[str, dict],
 ) -> None:
+    """新建活动；已存在则在该活动的 markdown_url 与当前不一致时校正。
+
+    校正这一步是可重复执行的关键：导入基址（主机、端口、路径前缀）会随着
+    部署形态变化，若只按名字跳过，旧 URL 会一直留在库里，页面显示
+    "Failed to fetch markdown (404)"，重跑脚本也修不好。
+    """
     name = f"{unit['number']} {unit['title']}"
+    markdown_url = f"{units_base}/{unit['unitKey']}.md"
+
     if name in existing:
-        print(f"    复用活动：{name}")
+        activity = existing[name]
+        current = (activity.get("content") or {}).get("markdown_url")
+        if current == markdown_url:
+            print(f"    复用活动：{name}")
+            return
+        r = requests.put(
+            f"{api}/activities/{activity['activity_uuid']}",
+            headers=headers,
+            json={"content": {"markdown_url": markdown_url}},
+            timeout=30,
+        )
+        r.raise_for_status()
+        print(f"    校正活动 URL：{name}")
+        print(f"      {current} → {markdown_url}")
         return
+
     payload = {
         "name": name,
         "chapter_id": chapter_id,
         "course_id": course_id,
         "activity_type": "TYPE_DYNAMIC",
         "activity_sub_type": "SUBTYPE_DYNAMIC_MARKDOWN",
-        "content": {"markdown_url": f"{units_base}/{unit['unitKey']}.md"},
+        "content": {"markdown_url": markdown_url},
         "published": True,
         "lock_type": "public" if unit.get("accessLevel") == "public" else "authenticated",
     }
@@ -185,7 +208,8 @@ def main() -> int:
     ap.add_argument("--api", default="http://localhost:1349/api/v1", help="LearnHouse API 基址")
     ap.add_argument("--units-base", default="http://127.0.0.1:8022/units", help="Markdown 单元的 URL 前缀")
     ap.add_argument("--secrets", default=None, help="凭据文件（默认取 fork 内 apps/api/.demo-secrets）")
-    ap.add_argument("--admin-email", default="admin@school.dev")
+    # 管理员邮箱与自动安装时用的一致；用环境变量覆盖，避免在这里再写一份。
+    ap.add_argument("--admin-email", default=os.environ.get("LEARNHOUSE_INITIAL_ADMIN_EMAIL", "admin@school.dev"))
     ap.add_argument("--org-slug", default="default")
     args = ap.parse_args()
 
@@ -212,7 +236,7 @@ def main() -> int:
 
     for stage in stages:
         ch = ensure_chapter(args.api, headers, course_id, org_id, stage)
-        existing = existing_activity_names(args.api, headers, ch["id"])
+        existing = existing_activities(args.api, headers, ch["id"])
         for unit in stage["units"]:
             if unit.get("publication") != "published":
                 print(f"    跳过草稿：{unit['unitKey']}")

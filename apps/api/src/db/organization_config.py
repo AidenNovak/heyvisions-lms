@@ -224,7 +224,11 @@ class GeneralCustomization(BaseModel):
     square_logo_image: str = ""
     watermark: bool = True
     font: str = ""
-    default_language: str = "en"
+    # HeyVisions fork：课程面向中文学习者，新组织的界面语言默认简体中文。
+    # 这是组织级默认值，只在组织还没有存过该字段时生效；已存在的组织保持
+    # 各自存下的值，管理员可在后台改。用户如果自己切过语言，仍以用户选择为准
+    # （见 components/Contexts/OrgLanguageSync.tsx）。
+    default_language: str = "zh"
     # Display name on transactional email from this org. The From ADDRESS is
     # never configurable (it stays the platform's verified sending domain, so
     # DKIM keeps aligning) — only the name a recipient sees. Empty means "use

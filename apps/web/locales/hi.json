@@ -215,7 +215,7 @@
     "organizations": "संगठन",
     "billing": "बिलिंग",
     "create_organization": "संगठन बनाएँ",
-    "copyright": "© {{year}} LearnHouse, Inc.",
+    "copyright": "© {{year}} {{brand}}",
     "delete_organization_error": "यह संगठन नहीं हटाया जा सका। कृपया पुनः प्रयास करें।",
     "org_actions": "संगठन की क्रियाएँ",
     "manage_upgrade": "प्रबंधित करें / अपग्रेड करें",
@@ -375,17 +375,17 @@
     "verifying_email": "आपका ईमेल पता सत्यापित किया जा रहा है...",
     "error_generic": "कुछ गलत हो गया। कृपया पुनः प्रयास करें।",
     "sign_in": "साइन इन करें",
-    "terms_text": "जारी रखते हुए, आप LearnHouse की",
+    "terms_text": "जारी रखते हुए, आप {{brand}} की",
     "terms_of_service": "सेवा की शर्तें",
     "and": "और",
     "privacy_policy": "गोपनीयता नीति",
     "image_title_forgot": "अपना पासवर्ड रीसेट करें।",
     "image_subtitle_forgot": "हम आपको कुछ ही समय में आपके खाते में वापस लाने में मदद करेंगे।",
-    "image_title_login": "LearnHouse में फिर से स्वागत है।",
+    "image_title_login": "{{brand}} में फिर से स्वागत है।",
     "image_subtitle_login": "जहाँ छोड़ा था वहीं से जारी रखें — आपके कोर्स, छात्र और टूल आपका इंतज़ार कर रहे हैं।",
     "image_title_reset": "बस थोड़ा और।",
     "image_subtitle_reset": "अपने खाते को सुरक्षित रखने के लिए एक मज़बूत पासवर्ड बनाएँ।",
-    "image_title_signup": "LearnHouse के साथ सिखाना शुरू करें।",
+    "image_title_signup": "{{brand}} के साथ सिखाना शुरू करें।",
     "image_subtitle_signup": "अपना खाता बनाएँ और कुछ ही मिनटों में अपना पहला कोर्स लॉन्च करें।",
     "image_title_verify": "अपना ईमेल सत्यापित करें।",
     "image_subtitle_verify": "अपने खाते को सुरक्षित करने और शुरू करने के लिए एक त्वरित कदम।",
@@ -5109,7 +5109,7 @@
       }
     },
     "welcome": {
-      "title": "LearnHouse में आपका स्वागत है",
+      "title": "{{brand}} में आपका स्वागत है",
       "subtitle": "कोर्स बनाएं, शिक्षार्थियों को आमंत्रित करें और दुनिया के साथ ज्ञान साझा करें।",
       "get_started": "शुरू करें",
       "features_title": "आपको जो चाहिए वो सब",
@@ -5153,7 +5153,7 @@
   "embed": {
     "not_supported_description": "इस प्रकार की गतिविधि के लिए प्रमाणीकरण आवश्यक है और इसे एम्बेड नहीं किया जा सकता।",
     "not_supported_title": "यह गतिविधि समर्थित नहीं है",
-    "powered_by": "Powered by LearnHouse",
+    "powered_by": "Powered by {{brand}}",
     "visit_activity": "गतिविधि पेज पर जाएं"
   },
   "migration": {

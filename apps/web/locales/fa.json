@@ -216,7 +216,7 @@
     "organizations": "سازمان‌ها",
     "billing": "صورت‌حساب",
     "create_organization": "ایجاد سازمان",
-    "copyright": "© {{year}} LearnHouse, Inc.",
+    "copyright": "© {{year}} {{brand}}",
     "delete_organization_error": "حذف این سازمان ممکن نشد. لطفاً دوباره تلاش کنید.",
     "org_actions": "اقدامات سازمان",
     "manage_upgrade": "مدیریت / ارتقا",
@@ -353,17 +353,17 @@
     "invite_required_desc": "برای پیوستن به {{org}} کد دعوت الزامی است",
     "invite_code": "کد دعوت",
     "validate_invite": "تأیید دعوت",
-    "terms_text": "با ادامه دادن، شما با موارد زیر در LearnHouse موافقت می‌کنید:",
+    "terms_text": "با ادامه دادن، شما با موارد زیر در {{brand}} موافقت می‌کنید:",
     "terms_of_service": "شرایط استفاده از خدمات",
     "and": "و",
     "privacy_policy": "سیاست حفظ حریم خصوصی",
     "image_title_forgot": "گذرواژه خود را بازنشانی کنید.",
     "image_subtitle_forgot": "در کمترین زمان به شما کمک می‌کنیم به حساب خود بازگردید.",
-    "image_title_login": "به LearnHouse خوش آمدید.",
+    "image_title_login": "به {{brand}} خوش آمدید.",
     "image_subtitle_login": "از همان‌جا که رها کردید ادامه دهید — دوره‌ها، دانشجویان و ابزارهایتان منتظرند.",
     "image_title_reset": "تقریباً تمام شد.",
     "image_subtitle_reset": "برای حفظ امنیت حساب خود یک گذرواژه قوی بسازید.",
-    "image_title_signup": "تدریس را با LearnHouse آغاز کنید.",
+    "image_title_signup": "تدریس را با {{brand}} آغاز کنید.",
     "image_subtitle_signup": "حساب خود را بسازید و اولین دوره‌تان را در چند دقیقه راه‌اندازی کنید.",
     "image_title_verify": "ایمیل خود را تأیید کنید.",
     "image_subtitle_verify": "یک گام سریع برای ایمن‌سازی حساب و شروع کار.",
@@ -1274,7 +1274,7 @@
     "not_supported_title": "این فعالیت پشتیبانی نمی‌شود",
     "not_supported_description": "این نوع فعالیت نیاز به احراز هویت دارد و قابل جاسازی نیست.",
     "visit_activity": "بازدید از صفحه فعالیت",
-    "powered_by": "پشتیبانی شده توسط LearnHouse"
+    "powered_by": "پشتیبانی شده توسط {{brand}}"
   },
   "assignments": {
     "submit_assignment": "ارسال تکلیف",
@@ -5164,7 +5164,7 @@
       }
     },
     "welcome": {
-      "title": "به LearnHouse خوش آمدید",
+      "title": "به {{brand}} خوش آمدید",
       "subtitle": "دوره ایجاد کنید، زبان‌آموزان را دعوت کنید و دانش را با جهان به اشتراک بگذارید.",
       "get_started": "شروع کنید",
       "features_title": "همه چیزهایی که نیاز دارید",

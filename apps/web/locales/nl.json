@@ -215,7 +215,7 @@
     "organizations": "Organisaties",
     "billing": "Facturering",
     "create_organization": "Organisatie aanmaken",
-    "copyright": "© {{year}} LearnHouse, Inc.",
+    "copyright": "© {{year}} {{brand}}",
     "delete_organization_error": "Kan deze organisatie niet verwijderen. Probeer het opnieuw.",
     "org_actions": "Organisatieacties",
     "manage_upgrade": "Beheren / Upgraden",
@@ -352,17 +352,17 @@
     "sso_error": "SSO-authenticatie mislukt. Probeer het opnieuw.",
     "error_generic": "Er is iets misgegaan. Probeer het opnieuw.",
     "sign_in": "Inloggen",
-    "terms_text": "Door door te gaan, ga je akkoord met LearnHouse's",
+    "terms_text": "Door door te gaan, ga je akkoord met {{brand}}'s",
     "terms_of_service": "Servicevoorwaarden",
     "and": "en",
     "privacy_policy": "Privacybeleid",
     "image_title_forgot": "Stel je wachtwoord opnieuw in.",
     "image_subtitle_forgot": "We helpen je in een mum van tijd weer in je account.",
-    "image_title_login": "Welkom terug bij LearnHouse.",
+    "image_title_login": "Welkom terug bij {{brand}}.",
     "image_subtitle_login": "Ga verder waar je gebleven was — je cursussen, studenten en tools staan klaar.",
     "image_title_reset": "Bijna klaar.",
     "image_subtitle_reset": "Maak een sterk wachtwoord om je account veilig te houden.",
-    "image_title_signup": "Begin met lesgeven met LearnHouse.",
+    "image_title_signup": "Begin met lesgeven met {{brand}}.",
     "image_subtitle_signup": "Maak je account aan en lanceer je eerste cursus in enkele minuten.",
     "image_title_verify": "Verifieer je e-mailadres.",
     "image_subtitle_verify": "Eén snelle stap om je account te beveiligen en aan de slag te gaan.",
@@ -4833,7 +4833,7 @@
       }
     },
     "welcome": {
-      "title": "Welkom bij LearnHouse",
+      "title": "Welkom bij {{brand}}",
       "subtitle": "Maak cursussen, nodig leerlingen uit en deel kennis met de wereld.",
       "get_started": "Aan de slag",
       "features_title": "Alles wat je nodig hebt",
@@ -5133,7 +5133,7 @@
   "embed": {
     "not_supported_description": "Dit type activiteit vereist authenticatie en kan niet worden ingebed.",
     "not_supported_title": "Deze activiteit wordt niet ondersteund",
-    "powered_by": "Mogelijk gemaakt door LearnHouse",
+    "powered_by": "Mogelijk gemaakt door {{brand}}",
     "visit_activity": "Activiteitpagina bezoeken"
   },
   "migration": {
