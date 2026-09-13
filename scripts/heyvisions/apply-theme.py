@@ -78,27 +78,30 @@ export const DEFAULT_FONT = 'Geist'""",
     # 中文字族必须写在 var() 之外：--font-default 由 next/font 注入且一定有值，
     # 写在 var() 的 fallback 位置的字族是死代码。
     ("styles/globals.css", OLD_FONT_STACK, FONT_STACK, 2),
-    # 焦点环用品牌暖橙（静态站 --ring: #c2410c）
+    # 焦点环用品牌深林绿（静态站 --ring: #144338）。
+    # 第四个元素起是「可接受的旧写法」：本仓库曾短暂用过暖橙版，脚本要能从它收敛。
     (
         "styles/globals.css",
         "    --border: 0 0% 89.8%;\n    --input: 0 0% 89.8%;\n    --ring: 0 0% 3.9%;",
         """    --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
-    /* 焦点环用品牌暖橙，与静态站同一枚令牌（静态站 --ring: #c2410c）。
+    /* 焦点环用品牌深林绿，与静态站同一枚令牌（静态站 --ring: #144338）。
        品牌色只出现在焦点态：按钮与输入框的可见外观仍是中性黑白，
        与静态站「单一强调色、其余锌灰」的规则一致。 */
-    --ring: 17.5 88.3% 40.4%;""",
+    --ring: 166.0 54.0% 17.1%;""",
         1,
+        '    --ring: 17.5 88.3% 40.4%;',
     ),
     (
         "styles/globals.css",
         "    --border: 0 0% 14.9%;\n    --input: 0 0% 14.9%;\n    --ring: 0 0% 83.1%;",
         """    --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
-    /* 暗色焦点环：静态站 --ring: #d86f3d（比亮色的 #c2410c 亮一档，
-       因为暗底上纯 #c2410c 与背景的对比度不足）。 */
-    --ring: 19.4 66.5% 54.3%;""",
+    /* 暗色焦点环要亮一档：深绿 #144338 在近黑底上只有 1.78:1，
+       换成同色系的浅绿 #6f9d8a（6.47:1）。 */
+    --ring: 155.2 19.0% 52.5%;""",
         1,
+        '    --ring: 19.4 66.5% 54.3%;',
     ),
     # 圆角基准：rounded-lg 用的就是它，界面里最常用的一档
     (
@@ -147,18 +150,26 @@ def main() -> int:
     failures: list[str] = []
     applied = 0
 
-    for rel, old, new, expected in EDITS:
+    for edit in EDITS:
+        rel, old, new, expected = edit[0], edit[1], edit[2], edit[3]
+        # 允许一条改动列出多个「可接受的旧写法」：上游原版，以及本仓库历史上
+        # 应用过的版本。这样脚本能从任一状态收敛到目标，而不是只在全新检出上可用。
+        priors = [old] + list(edit[4:]) if len(edit) > 4 else [old]
+
         if rel not in by_file:
             by_file[rel] = io.open(WEB / rel, encoding="utf-8").read()
         text = by_file[rel]
-        if new in text and old not in text:
+
+        if new in text and not any(p in text for p in priors):
             print(f"  已是目标状态，跳过：{rel} :: {old.splitlines()[0][:50]}")
             continue
-        n = text.count(old)
-        if n != expected:
-            failures.append(f"{rel}: 期望命中 {expected} 处，实际 {n} —— {old.splitlines()[0][:60]!r}")
+
+        hit = next((p for p in priors if text.count(p) == expected), None)
+        if hit is None:
+            counts = [text.count(p) for p in priors]
+            failures.append(f"{rel}: 期望命中 {expected} 处，实际 {counts} —— {old.splitlines()[0][:60]!r}")
             continue
-        by_file[rel] = text.replace(old, new)
+        by_file[rel] = text.replace(hit, new)
         applied += 1
 
     if failures:
