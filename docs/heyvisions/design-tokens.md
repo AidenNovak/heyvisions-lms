@@ -16,14 +16,16 @@
 | --- | --- | --- | --- |
 | 西文字体 | `Geist`（自托管 woff2） | `Geist`（`next/font/google`） | `app/layout.tsx` |
 | 中文回退 | `PingFang SC` → `Hiragino Sans GB` → `Microsoft YaHei` | 同 | `styles/globals.css` 的 `font-family` |
-| 焦点环（浅色） | `--ring: #c2410c` | `--ring: 17.5 88.3% 40.4%` | `styles/globals.css` `:root` |
-| 焦点环（深色） | `--ring: #d86f3d` | `--ring: 19.4 66.5% 54.3%` | `styles/globals.css` `.dark` |
+| 焦点环（浅色） | `--ring: #144338`（深林绿，对纸色 10.11:1） | `--ring: 166.0 54.0% 17.1%` | `styles/globals.css` `:root` |
+| 焦点环（深色） | 深色方向仍是预览态，未与品牌稿对齐 | `--ring: 155.2 19.0% 52.5%`（同色系浅绿 `#6f9d8a`） | `styles/globals.css` `.dark` |
 | 卡片投影 | `--shadow-card: 0 1px 2px rgba(0,0,0,.04)` | `.nice-shadow` = 同值 | `styles/globals.css` utilities |
 | 卡片圆角 | `--r-sm: 10px`（最常用） | `--radius: 0.625rem`（=10px，`rounded-lg` 用的是它） | `styles/globals.css` `:root` |
 | 背景 / 正文 / 次级 | `#ffffff` / `#1c1c1c` / `#71717a` | `0 0% 100%` / `0 0% 3.9%` / `0 0% 45.1%` | 上游原值，未改 |
 | 深色背景 / 正文 | `#0f0f13` / `#f5f5f6` | 上游原值（`10,10,10` / `250,250,250`） | 未改 |
 
 HSL 值由十六进制换算而来（`hsl(var(--ring))` 的写法要求空格分隔、不带单位）。
+焦点环令牌在 `40294c21` 由暖橙换成品牌深林绿（浅色 `#c2410c` → `#144338`，
+深色 `#d86f3d` → `#6f9d8a`），本表随之同步。
 
 ## 深色模式：平台没有真正的深色模式
 
@@ -33,7 +35,8 @@ HSL 值由十六进制换算而来（`hsl(var(--ring))` 的写法要求空格分
 - 平台上没有主题切换开关，`.dark` 只在 embed 路由等少数场景被设置
 - 深色模式下卡片仍是白底，是上游的既有状态
 
-所以 `.dark` 下的 `--ring` 也换成了静态站的 `#d86f3d`（保持一致，且 embed 场景会用），
+所以 `.dark` 下的 `--ring` 用了同色系的浅绿 `#6f9d8a`（深绿 `#144338` 在 `.dark` 的
+近黑底 `#0a0a0a` 上只有 1.78:1，必须亮一档），
 但**不声称深色模式与静态站观感一致** —— 那是要另开工的事，成本在逐个组件替换
 `bg-white`，与本 issue 的「对齐令牌」不是同一件事。
 
@@ -41,9 +44,9 @@ HSL 值由十六进制换算而来（`hsl(var(--ring))` 的写法要求空格分
 
 **1. 品牌色只用于焦点环**
 
-静态站的规则是「单一强调色，其余锌灰」，暖橙出现在链接、`--ring` 与少量标记上，
+静态站的规则是「单一强调色，其余锌灰」，品牌绿出现在链接、`--ring` 与少量标记上，
 按钮本身是黑/白中性色。LMS 的上游默认是同样的中性按钮（`bg-black`、
-`bg-gray-900`），所以只把 `--ring` 换成品牌橙即可对齐观感，不必逐个组件换色。
+`bg-gray-900`），所以只把 `--ring` 换成品牌深林绿即可对齐观感，不必逐个组件换色。
 这也把改动面压到 2 行——上游改版时不易被覆盖。
 
 **2. 层次靠边线，不靠投影**
@@ -83,7 +86,7 @@ curl -s http://127.0.0.1:3011/ | grep -o "Wix Madefor"   # → 空
 
 # 计算样式（在浏览器控制台）
 getComputedStyle(document.body).fontFamily
-getComputedStyle(document.documentElement).getPropertyValue('--ring')   // → 17.5 88.3% 40.4%
+getComputedStyle(document.documentElement).getPropertyValue('--ring')   // → 166.0 54.0% 17.1%
 getComputedStyle(document.querySelector('.nice-shadow')).boxShadow
   // → 末段为 0px 1px 2px 0px rgba(0,0,0,0.04)
 ```
@@ -92,8 +95,8 @@ getComputedStyle(document.querySelector('.nice-shadow')).boxShadow
 
 | 组合 | 比值 | 要求 |
 | --- | --- | --- |
-| `#c2410c` 焦点环 / 白底 | 5.18:1 | UI 组件 ≥3:1 |
-| `#d86f3d` 焦点环 / `#0f0f13` | 5.70:1 | ≥3:1 |
+| `#144338` 焦点环 / 白底 | 11.11:1 | UI 组件 ≥3:1 |
+| `#6f9d8a` 焦点环 / `#0a0a0a`（`.dark` 的 `--background`） | 6.47:1 | ≥3:1 |
 | `#1c1c1c` 正文 / 白底 | 17.04:1 | 正文 ≥4.5:1 |
 | `#71717a` 次级 / 白底 | 4.83:1 | ≥4.5:1 |
 | `#a9a9af` 次级 / 深色底 | 8.18:1 | ≥4.5:1 |
