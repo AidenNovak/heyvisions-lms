@@ -8,10 +8,15 @@
 # 端口只绑 127.0.0.1：API 与 Web 都在同一台机器上，通过 loopback 连接。
 # 绑成 0.0.0.0 时 Docker 会绕开 ufw 直接发布端口，数据库凭据是开发用的固定值，
 # 等于把库放到公网上（构建机同时是生产机）。
+#
+# restart: unless-stopped —— 这台机器同时跑生产，主机重启后容器必须自己回来。
+# 默认的 no 会让「systemd 单元已自启、数据库没起来」变成一次静默故障。
+# unless-stopped 而不是 always：手动 `docker compose stop` 后不要被自动拉起。
 services:
   postgres:
     image: pgvector/pgvector:pg16
     container_name: hv-lms-postgres
+    restart: unless-stopped
     environment:
       POSTGRES_USER: learnhouse
       POSTGRES_PASSWORD: learnhouse
@@ -29,6 +34,7 @@ services:
   redis:
     image: redis:7-alpine
     container_name: hv-lms-redis
+    restart: unless-stopped
     ports:
       - "127.0.0.1:16379:6379"
 

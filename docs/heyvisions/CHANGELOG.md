@@ -20,6 +20,7 @@
 | 9 | 品牌残留清扫（续）：API 侧与构建产物 | [#15](https://github.com/AidenNovak/heyvisions-lms/issues/15) | [#16](https://github.com/AidenNovak/heyvisions-lms/pull/16) | 见下方第 9 条 |
 | 10 | 生产上线：单主机名 HTTPS 部署与联调修出的四处缺陷 | [#17](https://github.com/AidenNovak/heyvisions-lms/issues/17) | [#18](https://github.com/AidenNovak/heyvisions-lms/pull/18) | 见下方第 10 条 |
 | 11 | 单元正文的模板缺口：同步时生成平台专用副本 | [#19](https://github.com/AidenNovak/heyvisions-lms/issues/19) | [#20](https://github.com/AidenNovak/heyvisions-lms/pull/20) | 见下方第 11 条 |
+| 12 | 数据服务加 restart 策略 | [#21](https://github.com/AidenNovak/heyvisions-lms/issues/21) | [#22](https://github.com/AidenNovak/heyvisions-lms/pull/22) | 无（本仓库独有文件） |
 
 ## 1. fork 维护流程与改动记录
 
@@ -279,6 +280,16 @@ Let's Encrypt），并在真实链路（浏览器 → Cloudflare → nginx → N
 - **影响范围**：新增 `scripts/heyvisions/build-lms-units.py`；`scripts/heyvisions/sync-content.sh`
   增加生成步骤；`docs/heyvisions/PRODUCTION.md` 记录原因与用法。不触及上游文件。
 - **与上游的关系**：纯本仓库新增，冲突面为零。
+
+## 12. 数据服务加 restart 策略
+
+- **改什么**：`scripts/heyvisions/docker-compose.yml` 的两个 service 加
+  `restart: unless-stopped`，并把「端口只绑回环」的原因写进文件头。
+- **为什么**：此前是默认的 `restart: no`。这台机器同时跑生产，主机重启后 systemd 单元
+  会自启（`enabled=enabled`），但数据库容器不会回来 —— API 起来后连不上库，
+  表现成「服务在跑、页面全 500」的静默故障。用 `unless-stopped` 而不是 `always`：
+  手动 `docker compose stop` 之后不应被自动拉起。
+- **影响范围**：仅该 compose 文件。本仓库独有（上游走 `npx learnhouse dev`），冲突面为零。
 
 ## 待办
 
