@@ -1,0 +1,36 @@
+[Unit]
+Description=Yet to Dawn LMS — Web (Next.js standalone)
+Documentation=file:///srv/heyvisions-lms/docs/heyvisions/PRODUCTION.md
+After=network-online.target hv-lms-api.service
+Wants=network-online.target hv-lms-api.service
+
+[Service]
+Type=simple
+WorkingDirectory=/srv/heyvisions-lms/apps/web/.next/standalone
+Environment=PORT=3011
+# 必须绑 0.0.0.0，不能绑 127.0.0.1：Next 处理绝对 URL 的 rewrite 时会把请求
+# 当真实 HTTP 请求转发给自己，目标主机取自 HOSTNAME。绑成回环地址时该自转发
+# 连不上（本地 localhost 先解析到 ::1，而进程只监听 IPv4），每个组织页 500，
+# 且路径会被反复叠加（/orgs/default/orgs/default/...）。绑 0.0.0.0 时走通。
+# 端口不对公网开放由 ufw 默认拒绝兜底（另见 install 脚本里的 deny 规则）。
+Environment=HOSTNAME=0.0.0.0
+Environment=NODE_ENV=production
+Environment=PATH=/opt/hv-node/bin:/usr/local/bin:/usr/bin:/bin
+# 客户端配置的唯一来源是 public/runtime-config.js（由 server-install-prod.sh 生成），
+# 服务端另有同目录的 runtime-config.json。两者都由安装脚本写，进程不需要写权限。
+ExecStart=/opt/hv-node/bin/node server.js
+Restart=always
+RestartSec=3
+TimeoutStopSec=20
+StandardOutput=append:/srv/heyvisions-run/logs/web.log
+StandardError=append:/srv/heyvisions-run/logs/web.log
+
+# Next 在生产服务模式下要写 .next/cache（图片优化 / ISR 缓存），
+# 所以只收 /usr、/boot、/etc，不放 ProtectSystem=strict。
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

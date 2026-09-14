@@ -17,6 +17,46 @@ import { addContactWithLoops, sendLoopsEvent, LOOPS_SIGNED_USERS_GROUP } from '@
 //   - org-subdomain signup → POST /users/{org_id}    (create + join that org)
 //   - invite signup        → POST /users/{org_id}/invite/{code}
 // The apex account is NOT linked to the instance default org.
+//
+// **Yet to Dawn fork**: in SINGLE tenancy there is no org subdomain to sign up
+// on, so "org-less apex" is not a meaningful state — the deployment serves one
+// org and the account belongs in it. That case resolves the default org below.
+
+/**
+ * The numeric id of the instance's default org, in SINGLE tenancy only.
+ *
+ * Reads `instance/info` for both the tenancy mode and the default slug. The
+ * tenancy is read from the backend rather than the `LH_tenancy` cookie because
+ * a first-time visitor has no cookies yet — and this decision has to be right on
+ * the very first request, since that is exactly when a signup happens.
+ *
+ * Returns null in multi tenancy (the apex is deliberately account-only there)
+ * and on any failure; the caller then falls back to the platform's org-less
+ * account rather than failing the signup.
+ */
+async function getDefaultOrgId(): Promise<string | number | null> {
+  try {
+    const base = getServerAPIUrl()
+    const infoRes = await fetch(`${base}instance/info`, {
+      signal: AbortSignal.timeout(5000),
+      cache: 'no-store',
+    })
+    if (!infoRes.ok) return null
+    const info = await infoRes.json()
+    const isMulti = info?.tenancy === 'multi' || info?.multi_org_enabled === true
+    if (isMulti || !info?.default_org_slug) return null
+
+    const orgRes = await fetch(`${base}orgs/slug/${encodeURIComponent(info.default_org_slug)}`, {
+      signal: AbortSignal.timeout(5000),
+      cache: 'no-store',
+    })
+    if (!orgRes.ok) return null
+    const org = await orgRes.json()
+    return org?.id ?? null
+  } catch {
+    return null
+  }
+}
 
 interface SignupBody {
   org_id?: string | number
@@ -91,6 +131,37 @@ export async function POST(request: NextRequest) {
 
   const base = getServerAPIUrl()
 
+  // **Yet to Dawn fork**: single-tenancy self-hosted deployments serve exactly
+  // one org, and the account must land in it. Without this, a first-time visitor
+  // on /signup has no `LH_org` cookie yet (the middleware sets it on the
+  // response — Server Components see it only on the NEXT request), so the form
+  // posts no org and the apex branch below creates a standalone account that
+  // belongs to no organization. Such a user can sign in and read public courses
+  // but every progress-saving surface is hidden ("browsing as guest"), which
+  // reads as a broken product rather than a missing org.
+  //
+  // Resolved here rather than in the page so the UI stays org-less on the apex.
+  // Multi tenancy is untouched: there the apex is deliberately account-only.
+  let resolvedOrgId = org_id
+  if (!resolvedOrgId && !inviteCode) {
+    resolvedOrgId = (await getDefaultOrgId()) ?? undefined
+  }
+
+  let url: string
+  if (inviteCode) {
+    if (!org_id) {
+      return NextResponse.json({ detail: 'Invite signups require an organization.' }, { status: 400 })
+    }
+    url = `${base}users/${org_id}/invite/${encodeURIComponent(inviteCode)}`
+  } else if (resolvedOrgId) {
+    // Create the account and join that org.
+    url = `${base}users/${resolvedOrgId}`
+  } else {
+    // Org-less apex: create a standalone account (POST /users/), unattached to
+    // any org — exactly like the platform. The user creates their org next.
+    url = `${base}users/`
+  }
+
   // The backend UserCreate body — account fields only; the org (if any) is in
   // the URL path, never the body.
   //
@@ -107,21 +178,6 @@ export async function POST(request: NextRequest) {
     last_name,
     bio,
     ...(custom_fields ? { custom_fields } : {}),
-  }
-
-  let url: string
-  if (inviteCode) {
-    if (!org_id) {
-      return NextResponse.json({ detail: 'Invite signups require an organization.' }, { status: 400 })
-    }
-    url = `${base}users/${org_id}/invite/${encodeURIComponent(inviteCode)}`
-  } else if (org_id) {
-    // Org subdomain: create the account and join that org.
-    url = `${base}users/${org_id}`
-  } else {
-    // Org-less apex: create a standalone account (POST /users/), unattached to
-    // any org — exactly like the platform. The user creates their org next.
-    url = `${base}users/`
   }
 
   let backendRes: Response

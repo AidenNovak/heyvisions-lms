@@ -1,6 +1,22 @@
 import { cookies } from 'next/headers'
+import { getConfig } from '@services/config/config'
 
-const BACKEND_URL = (process.env.NEXT_PUBLIC_LEARNHOUSE_BACKEND_URL || 'http://localhost:1338').replace(/\/+$/, '')
+/**
+ * Base URL for server-side calls to the API.
+ *
+ * **Yet to Dawn fork**: resolved per call instead of at module load, and from
+ * runtime config instead of `process.env.NEXT_PUBLIC_LEARNHOUSE_BACKEND_URL`.
+ * Next inlines `NEXT_PUBLIC_*` into the built bundle, so the old constant was
+ * frozen at build time: a deployment that moved the API (or a rebuild that ran
+ * without the env set, falling back to the upstream default port) would have
+ * `getServerSession()` return null forever and silently bounce signed-in users
+ * to /login on every page that reads it. `LEARNHOUSE_SERVER_BACKEND_URL` is
+ * written into the standalone `runtime-config.json` only — never shipped to the
+ * browser — and the loopback default keeps a same-host install's own
+ * server-side calls off the public network.
+ */
+const backendUrl = (): string =>
+  getConfig('LEARNHOUSE_SERVER_BACKEND_URL', 'http://127.0.0.1:1349').replace(/\/+$/, '')
 
 // Cookie names (must match the API routes)
 const ACCESS_TOKEN_COOKIE = 'LH_access'
@@ -49,7 +65,7 @@ export async function getServerSession(): Promise<Session | null> {
 
     if (accessToken?.value) {
       // Verify the token is valid by fetching session from backend
-      const sessionResponse = await fetch(`${BACKEND_URL}/api/v1/users/session`, {
+      const sessionResponse = await fetch(`${backendUrl()}/api/v1/users/session`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${accessToken.value}`,
