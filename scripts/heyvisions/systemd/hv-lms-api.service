@@ -1,0 +1,31 @@
+[Unit]
+Description=Yet to Dawn LMS — API (FastAPI / uvicorn)
+Documentation=file:///srv/heyvisions-lms/docs/heyvisions/PRODUCTION.md
+After=network-online.target docker.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=simple
+WorkingDirectory=/srv/heyvisions-lms/apps/api
+# 全部运行时配置（域名、数据服务地址、JWT 密钥）都在这里，不入 Git。
+# 密钥轮换后 `systemctl restart hv-lms-api` 即可生效。
+EnvironmentFile=/srv/heyvisions-secrets/lms-prod.env
+ExecStart=/srv/heyvisions-lms/apps/api/.venv/bin/uvicorn app:app --host 127.0.0.1 --port 1349 --log-level info
+Restart=always
+RestartSec=3
+TimeoutStopSec=20
+StandardOutput=append:/srv/heyvisions-run/logs/api.log
+StandardError=append:/srv/heyvisions-run/logs/api.log
+
+# 只需要读代码、写上传目录（apps/api/content）。
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+# 注意不能设 ProtectHome=true：venv 里的 python 是 uv 装在 /root/.local/share/uv 下的，
+# 隐藏 /root 会让 ExecStart 直接 203/EXEC（解释器找不到）。
+# read-only 既能挡住误写，又保留解释器可执行。
+ProtectHome=read-only
+
+[Install]
+WantedBy=multi-user.target

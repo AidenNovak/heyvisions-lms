@@ -547,6 +547,24 @@ export default async function proxy(req: NextRequest) {
   // -------------------------------------------------------------------------
   // 11. Tenant-scoped rewrite — the catch-all that puts us under /orgs/{slug}
   // -------------------------------------------------------------------------
+  //
+  // **Yet to Dawn fork**: a path that is ALREADY under /orgs/{slug} is passed
+  // through. The catch-all below prefixes unconditionally, so a URL carrying the
+  // internal prefix — a bookmark, a link from an email or an external doc — was
+  // rewritten to /orgs/default/orgs/default/... and 404'd. Internal navigation
+  // builds slug-less paths (getUriWithOrg returns relative paths in single
+  // tenancy), so this only ever affected hand-entered/external URLs.
+  if (/^\/orgs\/[^/]+(?:\/|$)/.test(pathname)) {
+    const resolved = await resolveTenant(req, instance)
+    const response = NextResponse.rewrite(
+      new URL(`${pathname}${search}`, req.url),
+      { request: { headers: tenantRequestHeaders(req, resolved, instance) } },
+    )
+    setOrgCookies(response, resolved, instance)
+    setInstanceCookies(response, instance)
+    return response
+  }
+
   const resolved = await resolveTenant(req, instance)
   const requestHeaders = tenantRequestHeaders(req, resolved, instance)
   // `${search}` is load-bearing: a rewrite destination built from an absolute

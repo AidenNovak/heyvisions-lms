@@ -1,0 +1,130 @@
+# Yet to Dawn LMS —— 宿主 nginx vhost（模板，由 server-install-prod.sh 安装）
+#
+# 一台主机、一个主机名、按路径分流，所以浏览器侧全部同源：
+#
+#   https://<host>/            → Next.js Web       127.0.0.1:3011
+#   https://<host>/api/v1/     → FastAPI           127.0.0.1:1349
+#   https://<host>/units/      → 单元 Markdown     127.0.0.1:8022
+#
+# 同源是刻意的：登录 cookie 是 host-only + Secure，跨源（哪怕只是端口不同）
+# 都会让 SameSite=Lax 的会话 cookie 不再发送，登录与进度保存会静默失败。
+#
+# 443 由 nginx stream 的 SNI 分流进来（宿主 nginx.conf 里 www.samsung.com → Xray，
+# default → 127.0.0.1:9443），所以这里监听 9443 而不是 443。
+#
+# 占位符由安装脚本替换：__HOSTNAME__ / __CERT_FULLCHAIN__ / __CERT_KEY__
+
+# sites-enabled/* 是在 http 上下文里 include 的，所以 map / limit_req_zone 可以写在这里。
+map $http_upgrade $hv_lms_connection_upgrade {
+    default upgrade;
+    ''      close;
+}
+
+# 10r/m 按 IP：正常用户注册一次；脚本批量建号会被挡在 nginx 层。
+limit_req_zone $binary_remote_addr zone=hv_signup:10m rate=10r/m;
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name __HOSTNAME__;
+
+    location ^~ /.well-known/acme-challenge/ {
+        root /var/www/letsencrypt;
+        default_type text/plain;
+    }
+    location / { return 308 https://$host$request_uri; }
+}
+
+server {
+    # nginx 1.24（Ubuntu 24.04）：http2 只能写在 listen 上，没有 1.25+ 的
+    # 独立 `http2 on;` 指令。
+    listen 127.0.0.1:9443 ssl http2;
+    server_name __HOSTNAME__;
+
+    ssl_certificate     __CERT_FULLCHAIN__;
+    ssl_certificate_key __CERT_KEY__;
+
+    # 课程录播 / 素材上传：Next 默认上限 1MB，太小。
+    client_max_body_size 50m;
+
+    location ^~ /.well-known/acme-challenge/ {
+        root /var/www/letsencrypt;
+        default_type text/plain;
+    }
+
+    # API 必须先于 /api/ 匹配：^~ 前缀一旦命中就不再往下走更宽的前缀。
+    location ^~ /api/v1/ {
+        proxy_pass http://127.0.0.1:1349;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        # 应用据此判定「请求是 HTTPS」，进而给会话 cookie 加 Secure。
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Forwarded-Host $host;
+        # AI 流式响应与长任务：默认 60s 会被截断。
+        proxy_buffering off;
+        proxy_request_buffering off;
+        proxy_read_timeout 600s;
+        proxy_send_timeout 600s;
+    }
+
+    # 注册限速：自托管的注册默认开放、不强制邮箱验证，不限速会被脚本批量建号。
+    # 注意这是**可选**的第二道闸；组织设成 inviteOnly 时该路径本来就不通。
+    limit_req_status 429;
+    location = /api/signup {
+        limit_req zone=hv_signup burst=5 nodelay;
+        proxy_pass http://127.0.0.1:3011;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Scheme https;
+        proxy_read_timeout 60s;
+    }
+
+    # 上传/上传后的媒体文件：URL 形如 <backend>/content/...，
+    # 由 API 的本地内容路由处理（带访问校验）。缺这条规则时，头像、
+    # 封面、附件一律 404。
+    location ^~ /content/ {
+        proxy_pass http://127.0.0.1:1349;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        client_max_body_size 50m;
+        proxy_read_timeout 300s;
+    }
+
+    location ^~ /units/ {
+        proxy_pass http://127.0.0.1:8022;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_read_timeout 60s;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:3011;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host $host;
+        # 刻意**不传** X-Forwarded-Proto：Next 的 middleware 把绝对 URL 的 rewrite
+        # 当真实 HTTP 请求转发给自己，目标 scheme 取自 `x-forwarded-proto`
+        # （见 next/dist/server/lib/router-utils/resolve-routes.js 的 initUrl），
+        # 传 https 会变成对明文端口做 TLS 握手，每个组织页 500（EPROTO）。
+        # 需要原始 scheme 的地方改看下面这个头：Next 不认它，所以不会触发自转发，
+        # 而会话 cookie 的 Secure 属性（services/auth/cookies.ts）靠它判定。
+        proxy_set_header X-Forwarded-Scheme https;
+        # 协作白板 / 编辑器走 websocket。
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $hv_lms_connection_upgrade;
+        proxy_read_timeout 600s;
+        proxy_send_timeout 600s;
+    }
+}

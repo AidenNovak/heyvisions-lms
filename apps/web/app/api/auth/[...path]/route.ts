@@ -8,10 +8,16 @@ import {
   REFRESH_TOKEN_MAX_AGE,
   getDomainFromRequest,
   getCookieOptions,
+  isHttpsRequest,
 } from '@services/auth/cookies'
 import { isLocalhost } from '@services/utils/ts/hostUtils'
 
-const BACKEND_URL = (getConfig('NEXT_PUBLIC_LEARNHOUSE_BACKEND_URL') || 'http://localhost:1338').replace(/\/+$/, '')
+// **Yet to Dawn fork**: resolved per call, not at module load. Next inlines
+// `NEXT_PUBLIC_*` into the built bundle, so a module-level constant freezes the
+// API address at build time — a deployment that moved the API kept calling the
+// old one. Same reasoning as `lib/auth/server.ts`.
+const backendUrl = (): string =>
+  (getConfig('NEXT_PUBLIC_LEARNHOUSE_BACKEND_URL') || 'http://localhost:1338').replace(/\/+$/, '')
 
 // Paths that return tokens in response body (relative to /api/v1/auth/)
 // `verify-email` auto-signs-in the user on successful email verification, so
@@ -81,7 +87,9 @@ function isTerminalAuthFailure(status: number): boolean {
 }
 
 function appendClearAuthCookies(response: NextResponse, request: NextRequest) {
-  const securePart = request.nextUrl.protocol === 'https:' ? '; Secure' : ''
+  // 用与设置时同一个判据（见 cookies.ts 的说明）：这台部署不向 Web 传
+  // X-Forwarded-Proto，只看 nextUrl.protocol 会漏掉 Secure。
+  const securePart = isHttpsRequest(request) ? '; Secure' : ''
   const host = request.headers.get('host') || ''
   const { topDomain } = getDomainFromRequest(request)
   const domainScoped =
@@ -138,7 +146,8 @@ async function proxyRequest(
   const search = request.nextUrl.search
 
   // Map to backend URL: /api/auth/login -> /api/v1/auth/login
-  const backendUrl = `${BACKEND_URL}/api/v1/auth/${pathSegments}${search}`
+  // Map to backend URL: /api/auth/login -> /api/v1/auth/login
+  const backendUrl2 = `${backendUrl()}/api/v1/auth/${pathSegments}${search}`
 
   // Build headers
   const headers: HeadersInit = {}
@@ -229,7 +238,7 @@ async function proxyRequest(
       // Backend logout is DELETE /auth/logout — using POST returned 405 and
       // silently skipped server-side session revocation, so revoked tokens
       // stayed valid until natural expiry. Match the contract and surface drift.
-      const logoutRes = await fetch(`${BACKEND_URL}/api/v1/auth/logout`, {
+      const logoutRes = await fetch(`${backendUrl()}/api/v1/auth/logout`, {
         method: 'DELETE',
         headers: logoutHeaders,
         signal: AbortSignal.timeout(3000),
@@ -278,7 +287,7 @@ async function proxyRequest(
   }
 
   // Make the request to backend
-  const backendResponse = await fetch(backendUrl, {
+  const backendResponse = await fetch(backendUrl2, {
     method,
     headers,
     body,

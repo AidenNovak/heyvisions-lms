@@ -1,0 +1,24 @@
+[Unit]
+Description=Yet to Dawn LMS — 课程单元 Markdown 静态服务
+Documentation=file:///srv/heyvisions-lms/docs/heyvisions/PRODUCTION.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/srv/heyvisions-lms
+# 单元正文的事实源在 website 仓库；本服务只把它按 .md 暴露给活动页。
+# 生产形态约等于对象存储托管 .md，这里是同机等价物。
+ExecStart=/usr/bin/python3 /srv/heyvisions-lms/scripts/heyvisions/serve-units.py --root /srv/heyvisions-content --host 127.0.0.1 --port 8022
+Restart=always
+RestartSec=3
+StandardOutput=append:/srv/heyvisions-run/logs/units.log
+StandardError=append:/srv/heyvisions-run/logs/units.log
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

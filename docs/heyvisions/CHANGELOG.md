@@ -18,6 +18,7 @@
 | 7 | 品牌改名：HeyVisions → Yet to Dawn | [#15](https://github.com/AidenNovak/heyvisions-lms/issues/15) | [#16](https://github.com/AidenNovak/heyvisions-lms/pull/16) | `services/config/brand.ts`、`lrn-text.svg`、`locales/zh.json`、`public/hv/`（删除） |
 | 8 | 品牌残留清扫：图片、界面文案、域名与邮件 | [#15](https://github.com/AidenNovak/heyvisions-lms/issues/15) | [#16](https://github.com/AidenNovak/heyvisions-lms/pull/16) | 见下方第 8 条 |
 | 9 | 品牌残留清扫（续）：API 侧与构建产物 | [#15](https://github.com/AidenNovak/heyvisions-lms/issues/15) | [#16](https://github.com/AidenNovak/heyvisions-lms/pull/16) | 见下方第 9 条 |
+| 10 | 生产上线：单主机名 HTTPS 部署与联调修出的四处缺陷 | [#17](https://github.com/AidenNovak/heyvisions-lms/issues/17) | — | 见下方第 10 条 |
 
 ## 1. fork 维护流程与改动记录
 
@@ -216,14 +217,63 @@
     用于 TXT 校验的 `_learnhouse-verification` / `learnhouse-verify=` 是**内部协议常量**，
     改它会让管理员已添加的解析记录失效，不应动。
 
+## 10. 生产上线：单主机名 HTTPS 部署与联调修出的四处缺陷
+
+平台此前只在开发栈里跑过（`server-up.sh` + SSH 隧道，绑定回环、配置写死
+`127.0.0.1`）。这一条把它做成对外服务（`learn.yettodawn.com`，systemd + nginx +
+Let's Encrypt），并在真实链路（浏览器 → Cloudflare → nginx → Next/API）上暴露并修掉
+四个只在生产形态下才会犯的问题。
+
+- **改什么**：
+  1. **注册账号不进组织**。单租户部署只有一个组织，但 `/signup` 首访时还没有
+     `LH_org` cookie（middleware 把它写在**响应**上，服务端组件要下一次请求才看得到），
+     于是表单不带 org，`/api/signup` 走「无组织」分支建出一个不属于任何组织的账号 ——
+     能登录、能看公开课，但所有进度入口都按「访客」隐藏。现在单租户下由
+     `/api/signup` 服务端解析默认组织（读 `instance/info` 的租户模式与默认 slug，
+     而不是读 cookie：首访没有 cookie，而首访正是注册发生的时候），多租户行为不变。
+  2. **服务端 API 地址写死在构建期**。`lib/auth/server.ts` 用模块级常量
+     `process.env.NEXT_PUBLIC_LEARNHOUSE_BACKEND_URL`，而 Next 会把 `NEXT_PUBLIC_*`
+     内联进产物：换域名或换 API 端口后它仍是旧值，`getServerSession()` 恒为 null，
+     已登录用户在读它的页面上被静默弹回 `/login`。改为每次调用从运行时配置取
+     （`LEARNHOUSE_SERVER_BACKEND_URL`，只写进服务端的 `runtime-config.json`，
+     不进浏览器），回环默认值让同机部署的服务端调用不必绕公网。
+  3. **`/orgs/{slug}/…` 形式的 URL 一律 404**。catch-all rewrite 无条件加前缀，
+     手输/收藏/外部文档里的 `/orgs/default/dash` 会被改写成
+     `/orgs/default/orgs/default/dash`。已带内部前缀的路径改为透传。
+  4. **会话 cookie 缺 `Secure`**。`getCookieOptions()` 读
+     `request.nextUrl.protocol`，而它来自 `X-Forwarded-Proto` —— 这个头在本部署里
+     **刻意不传给 Web**（见下），于是 Next 认为请求是 http，30 天的刷新令牌不带
+     `Secure`。改为额外认 `X-Forwarded-Scheme`（Next 不读它，因此不会触发下面那个
+     自转发问题），由 nginx 标记。
+- **为什么**：前两条直接决定「注册了能不能用」与「登录会不会被随机弹掉」，
+  是产品可用性问题而不是配置口味；后两条一个是 404、一个是安全属性缺失。
+- **部署形态的坑（写进 `docs/heyvisions/PRODUCTION.md`）**：
+  Web 必须绑 `0.0.0.0`（绑回环时 Next 处理绝对 URL rewrite 的自转发连不上，
+  每个组织页 500 且路径被反复叠加）；API 单元不能设 `ProtectHome=true`
+  （venv 解释器在 `/root/.local/share/uv/` 下，会 `203/EXEC`）；
+  nginx 对 Web 不传 `X-Forwarded-Proto`（Next 用它拼自转发的绝对 URL，
+  传 https 会对明文端口做 TLS 握手）；必须有 `/content/` 规则，否则头像、
+  封面、附件全部 404。
+- **影响范围**：`apps/web/app/api/signup/route.ts`、`apps/web/lib/auth/server.ts`、
+  `apps/web/proxy.ts`、`apps/web/services/auth/cookies.ts`；
+  新增 `docs/heyvisions/PRODUCTION.md`、`scripts/heyvisions/server-install-prod.sh`、
+  `scripts/heyvisions/sync-content.sh`、`scripts/heyvisions/systemd/*.service`、
+  `scripts/heyvisions/nginx/yettodawn-lms.conf.template`；
+  `scripts/heyvisions/{docker-compose.yml,server-rebuild-web.sh}` 调整。
+- **与上游的关系**：四处都是上游文件的小改，各自带注释说明「为什么这样改」，
+  集中在「部署形态适配」这一层，不重构结构。同步上游时按注释逐条核对。
+  数据服务的端口绑定与部署脚本是本仓库独有，冲突面为零。
+
 ## 待办
 
 | Issue | 内容 |
 | --- | --- |
+| — | 发信未配置：魔法链接、邮箱验证、找回密码都发不出信（密码登录正常）。要开需 Resend/SMTP 凭据 |
 | — | 上游导入/水印相关文案的取舍（见第 5、8 条的「未覆盖」与「不改」） |
 | — | 管理员后台的 340+ 个 zh 未翻译键（学习者路径已覆盖） |
 | — | `custom_domains.py` 的保留域名表只挡 `*.learnhouse.io`，未含本站域名；CNAME 目标的默认值也仍是上游域名（详见下） |
 | — | 部署若需回复邮件与商务联系，需设 `LEARNHOUSE_CONTACT_EMAIL` 与 `NEXT_PUBLIC_BRAND_CONTACT_URL` |
+| — | 静态站与学习平台是两套独立账号（不同后端、不同 cookie）；把站点入口接到平台前需先定域名的去留 |
 | — | CF 上 faka/kb/usdt/status/sapi 等死子域记录待清理（与 LMS 无关，工作区遗留项） |
 
 ## 上游同步

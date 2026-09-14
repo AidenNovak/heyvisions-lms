@@ -49,8 +49,29 @@ export function getCookieDomain(request: NextRequest): string | undefined {
   return undefined
 }
 
+/**
+ * Is this request served over HTTPS?
+ *
+ * **Yet to Dawn fork**: `request.nextUrl.protocol` alone is not enough here.
+ * Next derives it from `X-Forwarded-Proto`, and this deployment deliberately
+ * does NOT send that header to the Web process: Next uses it to build the
+ * absolute URL for its internal rewrites, so `https` made it attempt a TLS
+ * handshake against the plaintext upstream port and every org page 500'd (see
+ * the vhost's `location /` and docs/heyvisions/PRODUCTION.md). nginx therefore
+ * signals the original scheme with a dedicated header that Next ignores, and we
+ * honor it so session cookies keep the `Secure` attribute they must have in
+ * production. Shared with the auth proxy route so setting and clearing cookies
+ * use the same judgement.
+ */
+export function isHttpsRequest(request: NextRequest): boolean {
+  return (
+    request.nextUrl.protocol === 'https:' ||
+    request.headers.get('x-forwarded-scheme') === 'https'
+  )
+}
+
 export function getCookieOptions(request: NextRequest) {
-  const isSecure = request.nextUrl.protocol === 'https:'
+  const isSecure = isHttpsRequest(request)
   const domain = getCookieDomain(request)
   return {
     httpOnly: true,

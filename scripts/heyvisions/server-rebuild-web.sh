@@ -68,6 +68,17 @@ test -f .next/BUILD_ID && echo "  ✓ BUILD_ID: $(cat .next/BUILD_ID)"
 
 echo "══ 完成，重启服务"
 cd "$ROOT"
-scripts/heyvisions/server-up.sh stop 2>&1 | tail -4
-sleep 2
-scripts/heyvisions/server-up.sh 2>&1 | tail -6
+# 这台机器上有两套启动方式，重启要跟着当前生效的那套走：
+#   - 装了生产 systemd 单元 → 重启单元，并重写运行时配置（换域名只改配置不重建）
+#   - 否则 → 开发栈（pid 文件 + 前台进程，只经 SSH 隧道访问）
+# 混着重启会让两套进程抢同一批端口，表现成「服务莫名 502」。
+if systemctl list-unit-files 2>/dev/null | grep -q '^hv-lms-web\.service'; then
+  echo "（检测到生产 systemd 单元，走生产重启）"
+  scripts/heyvisions/server-up.sh stop 2>&1 | tail -2 || true
+  bash scripts/heyvisions/server-install-prod.sh 2>&1 | tail -14
+else
+  echo "（未安装生产单元，走开发栈）"
+  scripts/heyvisions/server-up.sh stop 2>&1 | tail -4
+  sleep 2
+  scripts/heyvisions/server-up.sh 2>&1 | tail -6
+fi
