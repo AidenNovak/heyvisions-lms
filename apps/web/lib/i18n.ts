@@ -5,6 +5,7 @@ import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import en from '../locales/en.json';
 import { loadDateLocale } from './format';
+import { getDefaultLanguage } from '@services/config/brand';
 
 const LOCALE_LOADERS: Record<string, () => Promise<{ default: any }>> = {
   fr: () => import('../locales/fr.json'),
@@ -48,11 +49,37 @@ async function loadLocale(lng: string) {
   }
 }
 
+/** 用户显式选过语言的标记，由 LanguageSwitcher 写入。 */
+const USER_PICKED_KEY = 'i18nextLng_userPicked'
+
+/**
+ * 首帧用什么语言。
+ *
+ * 上游直接用浏览器语言（探测顺序里 navigator 在 cookie 之后）。平台面向
+ * 中文学习者、课程正文也是中文，用浏览器语言意味着英文浏览器的学习者
+ * 先看到英文界面，等组织配置取回后再翻成中文 —— 实测这段约 4 秒，
+ * 期间内容是可见的。
+ *
+ * 所以没被用户显式选过时，直接用平台默认语言，首帧就是对的。
+ * 用户显式选过（LanguageSwitcher 写了标记）则返回 undefined，
+ * 交给探测走 localStorage，尊重用户选择。
+ */
+function initialLanguage(): string | undefined {
+  if (typeof window === 'undefined') return undefined
+  try {
+    if (localStorage.getItem(USER_PICKED_KEY)) return undefined
+  } catch {
+    // localStorage 不可用（隐私模式等）：按平台默认走，不影响渲染
+  }
+  return getDefaultLanguage()
+}
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources,
+    lng: initialLanguage(),
     fallbackLng: 'en',
     ns: ['common'],
     defaultNS: 'common',

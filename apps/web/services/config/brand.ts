@@ -33,3 +33,13 @@ export const getBrandSiteUrl = (): string => getConfig('NEXT_PUBLIC_BRAND_SITE_U
  */
 export const isBrandWatermarkEnabled = (): boolean =>
   getConfig('NEXT_PUBLIC_BRAND_WATERMARK', 'false') === 'true'
+
+/**
+ * 未指定语言时的平台默认语言。
+ *
+ * 与组织配置里的 `default_language` 不同：那个只有等组织配置取回后才生效
+ * （首屏之后），这个是**首帧**就用的值。两者默认都是 zh。
+ * 组织配置若与之不同，会在其取回后覆盖。
+ */
+export const getDefaultLanguage = (): string =>
+  getConfig('NEXT_PUBLIC_DEFAULT_LANGUAGE', 'zh')
