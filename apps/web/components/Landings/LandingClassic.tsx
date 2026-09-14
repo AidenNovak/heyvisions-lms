@@ -12,6 +12,7 @@ import { getUriWithOrg } from '@services/config/config'
 import { useTranslation } from 'react-i18next'
 import { BookCopy, LogIn } from 'lucide-react'
 import { useLHSession } from '@components/Contexts/LHSessionContext'
+import { catalogGridClass } from '@/lib/catalog-grid'
 
 interface LandingClassicProps {
   courses: any[]
@@ -46,7 +47,9 @@ function LandingClassic({ courses, orgslug, org_id }: LandingClassicProps) {
               </Link>
             </AuthenticatedClientElement>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {/* 同 /courses：列数随数量收窄，只有少数课程时不摆满 4 列。
+              规则见 lib/catalog-grid.ts。 */}
+          <div className={catalogGridClass(displayedCourses.length)}>
             {displayedCourses.map((course: any) => (
               <div key={course.course_uuid} className="flex">
                 <CourseThumbnail course={course} orgslug={orgslug} />
