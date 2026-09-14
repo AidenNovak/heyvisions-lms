@@ -22,6 +22,9 @@
 | 11 | 单元正文的模板缺口：同步时生成平台专用副本 | [#19](https://github.com/AidenNovak/heyvisions-lms/issues/19) | [#20](https://github.com/AidenNovak/heyvisions-lms/pull/20) | 见下方第 11 条 |
 | 12 | 数据服务加 restart 策略 | [#21](https://github.com/AidenNovak/heyvisions-lms/issues/21) | [#22](https://github.com/AidenNovak/heyvisions-lms/pull/22) | 无（本仓库独有文件） |
 | 13 | 收敛上游强调色 + 正文阅读宽度 + 提示不再压字 | [#23](https://github.com/AidenNovak/heyvisions-lms/issues/23) | [#24](https://github.com/AidenNovak/heyvisions-lms/pull/24) | 见下方第 13 条 |
+| 14 | 课程目录的列数随数量收窄 | [#25](https://github.com/AidenNovak/heyvisions-lms/issues/25) | [#27](https://github.com/AidenNovak/heyvisions-lms/pull/27) | 见下方第 14 条 |
+| 15 | 登录/注册页只摆出真的能用的登录方式 | [#26](https://github.com/AidenNovak/heyvisions-lms/issues/26) | [#28](https://github.com/AidenNovak/heyvisions-lms/pull/28) | 见下方第 15 条 |
+| 16 | 课程正文两条左边界 + 正文列与站点同宽 608px | [#29](https://github.com/AidenNovak/heyvisions-lms/issues/29) | [#30](https://github.com/AidenNovak/heyvisions-lms/pull/30) | 见下方第 16 条 |
 
 ## 1. fork 维护流程与改动记录
 
@@ -330,11 +333,71 @@ Let's Encrypt），并在真实链路（浏览器 → Cloudflare → nginx → N
   一个新增的可选 prop，各自带注释说明原因。新增的 `.markdown-body` 规则在本仓库的
   `globals.css`，与上游无关。
 
+## 14. 课程目录的列数随数量收窄
+
+- **改了什么**：课程网格的列数随课程数量收窄 —— 1 门课收成一列（上限 560px），
+  2 / 3 门按数量给列，4 门及以上保持原行为。规则抽在新增的
+  `apps/web/lib/catalog-grid.ts`，两处调用点各改一行 className。
+- **为什么**：列数原本写死成 4 列，与数量无关。站上只有 1 门课时，1440px 视口下
+  实测是「4 列 × 328px，卡片只占 1 列」，网格内空出 76% —— 页面看起来像内容
+  没加载出来，而不是像「这里就只有一门课」。规则对齐静态站
+  `example/src/courses.css` 的 `.catalog-grid.count-1{minmax(0,560px)}`。
+- **为什么不用 auto-fit**：`repeat(auto-fit, minmax(...))` 会把**唯一**一张卡片
+  在 `1fr` 下拉到整行 1361px，把「左侧留白」换成「卡片过宽」，不是想要的收敛。
+- **影响范围**：`apps/web/lib/catalog-grid.ts`（新增）、
+  `app/orgs/[orgslug]/(withmenu)/courses/courses.tsx`、`components/Landings/LandingClassic.tsx`。
+  仓库内另有 9 处同款 4 列网格（library、dash、账户页等）本次不动，避免改动面过大。
+- **与上游的关系**：网格类是上游文件里的一行 className，冲突面窄；规则用新文件承载。
+  这是跟随站点的品牌决策，不回馈上游。
+- **验收**：`bun test tests/catalog-grid.test.mjs`（6 项）；生产实测 1440px 下
+  1 门课时网格解析为 1 列、卡片宽 560px（修复前 4 列 328px、右侧空 1033px）。
+
+## 15. 登录/注册页只摆出真的能用的登录方式
+
+- **改了什么**：渲染条件从「组织策略允许」改为「组织策略允许 **且** 本部署配齐凭据」。
+  未配 `LEARNHOUSE_GOOGLE_CLIENT_ID` 时不摆「使用 Google 登录」；未配
+  `RESEND_API_KEY` 时不摆「把登录链接发到我的邮箱」与「忘记密码？」。
+  另修 `/forgot` 的漏译（成功提示里混着后端英文原句）。
+- **为什么**：组织策略把 password / magic_login / google / sso 全开着，但环境里
+  两个凭据都没有。实测后果：「Google 登录」点下去是 **500**；两个邮件入口则
+  界面提示「已发送」而**实际无信可发** —— 静默失败，用户会以为自己输错了邮箱。
+  页面本身不删，配好凭据入口自动恢复。
+- **实现要点**：新增 `services/auth/authCapabilities.ts`，与既有 `authMethods.ts`
+  分工明确（前者=本机做不做得到，后者=组织允不允许）。能力必须在**服务端**页面
+  组件里算好再用 props 下传 —— `process.env` 在 `'use client'` 里读不到。
+- **影响范围**：`services/auth/authCapabilities.ts`（新增）、
+  `app/auth/login/{page,login}.tsx`、`app/auth/signup/{page,OpenSignup,signup}.tsx`、
+  `app/auth/forgot/forgot.tsx`、`locales/{en,zh}.json`。
+- **与上游的关系**：改的是渲染条件与一句文案，能力探测放在新文件里，不与上游的
+  组织策略逻辑纠缠。本站部署形态决定的产品决策，不回馈上游。
+- **验收**：`bun test tests/auth-capabilities.test.mjs`（6 项，断言「缺凭据⇒不可用」）；
+  生产实测未配凭据时三个入口均不出现、密码登录仍可用（关键回归项）；
+  另起一个带 `RESEND_API_KEY` 的实例对比，确认邮件入口会恢复。
+
+## 16. 课程正文两条左边界 + 正文列与站点同宽
+
+- **改了什么**：`.markdown-body` 的阅读宽度与居中从「逐子元素设 margin」改为
+  「容器限宽居中」，并把列宽从 40rem 校正为 **38rem（608px）**。
+- **为什么**：#24 的写法特异性 (0,1,0)，被上游 `.markdown-body h1 { margin: .67em 0 }`
+  这类元素级规则 (0,1,1) 盖掉，标题的左右 margin 被重置成 0 —— 结果是标题贴左、
+  段落居中，实测 1440px 下标题 x=84、段落 x=393，一屏之内两条左边界。
+  另外 #24 注释把静态站正文列记成「558px / 15.5px」，实测站点是
+  **608px / 16px**，改成 38rem 后平台与站点完全同宽。
+- **为什么带 !important**：正文排版基线来自 `github-markdown-css`（组件直接 import
+  的第三方表），它是**无层**样式，而本文件在 `@layer utilities` 里 —— 无层优先级
+  高于所有层，不带 `!important` 时 `margin-inline` 会被盖掉（实测列宽受限但仍左贴）。
+  靠源顺序取胜不成立：Next.js 的 CSS 分块顺序不由该文件决定。上游在同名选择器下
+  也用 `!important`（`.markdown-body > :first-child { margin-top: 0 !important }`）。
+- **影响范围**：`apps/web/styles/globals.css`（本仓库自己加的规则，不碰上游文件）。
+- **与上游的关系**：修法是**减少**与上游的特异性竞争（改到容器上），长期更利于同步。
+- **验收**：无头 Chromium 断言 `.markdown-body` 直接子元素里标题与段落左边界相同；
+  修复后 1440px 下两者同为 x=409、列宽 608px，390px 下同为 x=52、无横向滚动。
+
 ## 待办
 
 | Issue | 内容 |
 | --- | --- |
-| — | 发信未配置：魔法链接、邮箱验证、找回密码都发不出信（密码登录正常）。要开需 Resend/SMTP 凭据 |
+| — | 发信未配置：魔法链接、邮箱验证、找回密码都发不出信（密码登录正常）。要开需 Resend/SMTP 凭据。**第 15 条已让这些入口在未配置时不再显示**，配好凭据即自动恢复 |
 | — | 上游导入/水印相关文案的取舍（见第 5、8 条的「未覆盖」与「不改」） |
 | — | 管理员后台的 340+ 个 zh 未翻译键（学习者路径已覆盖） |
 | — | `custom_domains.py` 的保留域名表只挡 `*.learnhouse.io`，未含本站域名；CNAME 目标的默认值也仍是上游域名（详见下） |
