@@ -25,6 +25,8 @@
 | 14 | 课程目录的列数随数量收窄 | [#25](https://github.com/AidenNovak/heyvisions-lms/issues/25) | [#27](https://github.com/AidenNovak/heyvisions-lms/pull/27) | 见下方第 14 条 |
 | 15 | 登录/注册页只摆出真的能用的登录方式 | [#26](https://github.com/AidenNovak/heyvisions-lms/issues/26) | [#28](https://github.com/AidenNovak/heyvisions-lms/pull/28) | 见下方第 15 条 |
 | 16 | 课程正文两条左边界 + 正文列与站点同宽 608px | [#29](https://github.com/AidenNovak/heyvisions-lms/issues/29) | [#30](https://github.com/AidenNovak/heyvisions-lms/pull/30) | 见下方第 16 条 |
+| 17 | 部署端源码一致性检查；OAuth 建号失败的成因 | [#32](https://github.com/AidenNovak/heyvisions-lms/issues/32) | [#33](https://github.com/AidenNovak/heyvisions-lms/pull/33) | 无（纯新增脚本与文档） |
+| 18 | Web 服务注入服务端密钥（Google 登录） | [#34](https://github.com/AidenNovak/heyvisions-lms/issues/34) | [#35](https://github.com/AidenNovak/heyvisions-lms/pull/35) | `hv-lms-web.service`（本仓库模板） |
 
 ## 1. fork 维护流程与改动记录
 
@@ -393,11 +395,50 @@ Let's Encrypt），并在真实链路（浏览器 → Cloudflare → nginx → N
 - **验收**：无头 Chromium 断言 `.markdown-body` 直接子元素里标题与段落左边界相同；
   修复后 1440px 下两者同为 x=409、列宽 608px，390px 下同为 x=52、无横向滚动。
 
+## 17. 部署端源码一致性检查；OAuth 建号失败的成因
+
+- **改了什么**：新增只读脚本 `check-deploy-drift.sh` 比对部署端与仓库；
+  `PRODUCTION.md` 补「部署端源码与仓库的一致性」一节。
+- **为什么**：配 Google 登录时踩到真实线上故障 —— Google 登录后界面只显示
+  “Authentication Failed”，日志里是
+  `ImportError: cannot import name 'powered_by_url'`。服务器上的
+  `services/email/branding.py` 比同目录 `emails.py` **旧一天**。
+  根因不是代码错，而是部署方式：`server-rebuild-web.sh` 只重建 Web，
+  **API 的 Python 源码是安装时拷一份**，之后没人保证它与仓库一致。
+- **为什么难自查**：错误只在服务端日志；只在 **OAuth 建号**分支触发
+  （密码注册不走那段，所以常用自测路径发现不了）；用户其实已入库
+  （`signup_method=google`），看起来像「登录成功但没有会话」。
+- **影响范围**：`scripts/heyvisions/check-deploy-drift.sh`（新增）、
+  `docs/heyvisions/PRODUCTION.md`。不动上游文件。
+- **验收**：修复前该脚本列出 38 个旧文件；同步后
+  `diff -rq apps/api/src <server>:/srv/heyvisions-lms/apps/api/src` **差异 0 条**。
+  另记：同步 Python 源码后**必须清 `__pycache__`** —— Python 只按源文件 mtime
+  判断是否重编，rsync 可能保留旧 mtime，会导致「改了像没改」。
+
+## 18. Web 服务注入服务端密钥（Google 登录）
+
+- **改了什么**：`hv-lms-web.service` 加 `EnvironmentFile=-/srv/heyvisions-secrets/lms-web.env`；
+  安装脚本在该文件缺失时建一个 600 空骨架（已存在则原样保留）；
+  新增两个凭据录入脚本（交互式 / 从 JSON 读），都不打印密钥。
+- **为什么**：Web 单元原本只注入 `PORT/HOSTNAME/NODE_ENV/PATH`，**没有密钥来源**，
+  而 `/api/auth/google/authorize` 直接读 `LEARNHOUSE_GOOGLE_CLIENT_ID`
+  —— 缺了必然返回 500，这就是「Google 登录」按钮点不通的原因。
+- **两个取舍**：不复用 `lms-prod.env`（含数据库连接串与 JWT 密钥，Web 不需要）；
+  client id 写两处（Web 拼授权地址与换 token、API 校验 token 的 `aud`），
+  client secret 只给 Web。
+- **影响范围**：`scripts/heyvisions/systemd/hv-lms-web.service`、
+  `server-install-prod.sh`、两个新增脚本、`PRODUCTION.md`。
+- **验收**：进程环境含这两个变量（只数键名）；登录页出现 Google 入口；
+  `POST /api/auth/google/authorize` → **200**（修复前 500）；
+  走完授权流落到 `/home` 且 `LH_session` 建立；用 Google 账号能进组织、
+  看课程、打开单元正文（2008 字、含模板）。
+
 ## 待办
 
 | Issue | 内容 |
 | --- | --- |
 | — | 发信未配置：魔法链接、邮箱验证、找回密码都发不出信（密码登录正常）。要开需 Resend/SMTP 凭据。**第 15 条已让这些入口在未配置时不再显示**，配好凭据即自动恢复 |
+| — | Google OAuth 发布状态仍是**测试**（仅测试用户可登录；实测项目所有者可登录）。发布需先在 Branding 页填「应用首页 / 隐私权政策 / 服务条款」，而这两个页面上游与本站都还没有，需先定文案 |
 | — | 上游导入/水印相关文案的取舍（见第 5、8 条的「未覆盖」与「不改」） |
 | — | 管理员后台的 340+ 个 zh 未翻译键（学习者路径已覆盖） |
 | — | `custom_domains.py` 的保留域名表只挡 `*.learnhouse.io`，未含本站域名；CNAME 目标的默认值也仍是上游域名（详见下） |
