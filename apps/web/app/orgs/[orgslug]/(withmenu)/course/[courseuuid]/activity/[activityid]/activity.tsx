@@ -953,7 +953,10 @@ function ActivityClient(props: ActivityClientProps) {
                                     {contributorStatus === 'ACTIVE' && activity.activity_type == 'TYPE_DYNAMIC' && (
                                       <Link
                                         href={getUriWithOrg(orgslug, '') + `/course/${courseuuid}/activity/${activityid}/edit`}
-                                        className="bg-emerald-600 rounded-full px-5 drop-shadow-md flex items-center space-x-2 p-2.5 text-white hover:cursor-pointer transition delay-150 duration-300 ease-in-out"
+                                        // Yet to Dawn fork：原来是亮绿实心，与「咨询 AI」的紫色一样
+                                        // 是上游自带的强调色。本站规则是「单一强调色 + 中性控件」，
+                                        // 所以与 AI 按钮统一成中性黑（绿/红留给通过/失败等语义色）。
+                                        className="bg-black rounded-full px-5 drop-shadow-md flex items-center space-x-2 p-2.5 text-white hover:cursor-pointer hover:bg-neutral-800 transition delay-150 duration-300 ease-in-out"
                                       >
                                         <Edit2 size={17} />
                                         <span className="text-xs font-bold">{t('courses.contribute')}</span>
@@ -1298,6 +1301,7 @@ export function MarkStatus(props: {
                 iconColor="text-teal-600"
                 iconSize={24}
                 width="w-64"
+                placement="inline-start"
               />
             )}
           </div>
@@ -1351,6 +1355,7 @@ export function MarkStatus(props: {
                 iconColor="text-gray-600"
                 iconSize={24}
                 width="w-64"
+                placement="inline-start"
               />
             )}
           </div>

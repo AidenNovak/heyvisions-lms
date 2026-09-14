@@ -226,6 +226,24 @@
     @apply shadow-[0_2px_8px_rgba(0,0,0,0.05)] outline outline-1 outline-neutral-200/30;
   }
 
+  /* 课程正文的阅读宽度（Yet to Dawn fork）。
+     上游让 .markdown-body 铺满容器：在 1440px 屏幕上单行超过 70 个汉字，
+     远超中文舒适区间。静态站的课时正文是 558px / 15.5px ≈ 36 字/行，这里取
+     40rem（640px，16px 字号下约 40 字/行）—— 与站点同一区间，不因平台版心更宽
+     就把行拉长。用户是两个面之间来回走的，正文节奏不该在这条界限上变化。
+     只限正文（.markdown-body），不动卡片与外层容器 —— 卡片仍占满宽度，
+     留白由正文两侧承担，观感不变。 */
+  .markdown-body > * {
+    max-width: 40rem;
+    margin-inline: auto;
+  }
+
+  /* 表格与代码块可以更宽：它们按列/按行对齐，压窄会破坏可读性。 */
+  .markdown-body > table,
+  .markdown-body > pre {
+    max-width: 100%;
+  }
+
   /* Hide scrollbar while maintaining scroll functionality */
   .scrollbar-hide {
     -ms-overflow-style: none;  /* Internet Explorer 10+ */

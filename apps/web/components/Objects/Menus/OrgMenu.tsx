@@ -464,13 +464,15 @@ const CopilotMenuButton = ({
           <TooltipTrigger asChild>
             <DropdownMenuTrigger asChild>
               <button
-                className="relative p-2 rounded-lg transition-colors hover:bg-violet-500/10"
+                className="relative p-2 rounded-lg transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800"
                 aria-label="Copilot"
               >
-                <ChatCircle size={20} weight="fill" className="text-violet-500" />
+                {/* Yet to Dawn fork：原来是紫色实心图标 —— 单色导航里唯一的彩色点，
+                    看起来像没换肤。改成与相邻图标一致的中性色。 */}
+                <ChatCircle size={20} weight="fill" className="text-neutral-600 dark:text-neutral-300" />
                 {/* Active indicator dot */}
                 {isBubbleMode && bubbleOpen && (
-                  <span className="absolute top-1.5 end-1.5 w-2 h-2 rounded-full bg-violet-500 ring-2 ring-white dark:ring-neutral-900" />
+                  <span className="absolute top-1.5 end-1.5 w-2 h-2 rounded-full bg-neutral-900 dark:bg-neutral-100 ring-2 ring-white dark:ring-neutral-900" />
                 )}
               </button>
             </DropdownMenuTrigger>
@@ -483,7 +485,7 @@ const CopilotMenuButton = ({
 
       <DropdownMenuContent align="end" className="w-64">
         <DropdownMenuLabel className="flex items-center gap-2">
-          <ChatCircle size={16} weight="fill" className="text-violet-500" />
+          <ChatCircle size={16} weight="fill" className="text-neutral-500" />
           <span>Copilot</span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -523,13 +525,13 @@ const CopilotMenuButton = ({
             onSelect={() => onOpenBubble()}
             className="flex items-center gap-2 font-medium cursor-pointer"
           >
-            <ChatCircle size={14} weight="fill" className="text-violet-500" />
+            <ChatCircle size={14} weight="fill" className="text-neutral-500" />
             <span>{recentSessions.length > 0 ? 'New conversation' : 'Start a conversation'}</span>
           </DropdownMenuItem>
         ) : (
           <DropdownMenuItem asChild>
             <Link href={getUriWithOrg(orgslug, '/copilot')} className="flex items-center gap-2 font-medium">
-              <ChatCircle size={14} weight="fill" className="text-violet-500" />
+              <ChatCircle size={14} weight="fill" className="text-neutral-500" />
               <span>{recentSessions.length > 0 ? 'View all conversations' : 'Start a conversation'}</span>
             </Link>
           </DropdownMenuItem>
@@ -547,7 +549,7 @@ const CopilotMenuButton = ({
           </span>
           <span
             className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors flex-shrink-0 ${
-              isBubbleMode ? 'bg-violet-500' : 'bg-neutral-200 dark:bg-neutral-600'
+              isBubbleMode ? 'bg-neutral-900 dark:bg-neutral-100' : 'bg-neutral-200 dark:bg-neutral-600'
             }`}
           >
             <span
