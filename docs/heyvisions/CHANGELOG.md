@@ -21,6 +21,7 @@
 | 10 | 生产上线：单主机名 HTTPS 部署与联调修出的四处缺陷 | [#17](https://github.com/AidenNovak/heyvisions-lms/issues/17) | [#18](https://github.com/AidenNovak/heyvisions-lms/pull/18) | 见下方第 10 条 |
 | 11 | 单元正文的模板缺口：同步时生成平台专用副本 | [#19](https://github.com/AidenNovak/heyvisions-lms/issues/19) | [#20](https://github.com/AidenNovak/heyvisions-lms/pull/20) | 见下方第 11 条 |
 | 12 | 数据服务加 restart 策略 | [#21](https://github.com/AidenNovak/heyvisions-lms/issues/21) | [#22](https://github.com/AidenNovak/heyvisions-lms/pull/22) | 无（本仓库独有文件） |
+| 13 | 收敛上游强调色 + 正文阅读宽度 + 提示不再压字 | [#23](https://github.com/AidenNovak/heyvisions-lms/issues/23) | [#24](https://github.com/AidenNovak/heyvisions-lms/pull/24) | 见下方第 13 条 |
 
 ## 1. fork 维护流程与改动记录
 
@@ -290,6 +291,44 @@ Let's Encrypt），并在真实链路（浏览器 → Cloudflare → nginx → N
   表现成「服务在跑、页面全 500」的静默故障。用 `unless-stopped` 而不是 `always`：
   手动 `docker compose stop` 之后不应被自动拉起。
 - **影响范围**：仅该 compose 文件。本仓库独有（上游走 `npx learnhouse dev`），冲突面为零。
+
+## 13. 收敛上游强调色 + 正文阅读宽度 + 提示不再压字
+
+- **改什么**：
+  1. **强调色收敛**。第 6 条只把 `--ring` 换成了品牌深林绿，**逐像素硬编码的强调色
+     没跟着走**：单元页同一屏里出现四种互不相关的颜色 ——「咨询 AI」的紫蓝
+     `conic-gradient`、右下角 Copilot 气泡的全紫（`bg-violet-600`）、顶部导航唯一的
+     彩色实心图标（`text-violet-500`）、「贡献」的亮绿（`bg-emerald-600`），
+     角色徽章另有紫/蓝/绿三档。按 `design-tokens.md` 的规则统一成
+     「单一强调色 + 中性控件」，绿色/红色只留给「通过/失败」等语义状态
+     （`bg-teal-*` / `bg-emerald-*` 的状态条与成绩单**保留不动**）。
+  2. **品牌残留**。Copilot 空态的图形是**上游 LearnHouse 的字标**（紫渐变
+     `#c4b5fd→#7c3aed`）—— 白标平台上出现第三方的图形标识，属于第 8/9 条同类问题的
+     漏网。换成 `public/brand/yet-to-dawn-mark.svg`。
+  3. **正文阅读宽度**。`.markdown-body` 铺满容器，1440px 屏幕上单行超过 70 个汉字。
+     静态站的课时正文是 558px / 15.5px ≈ 36 字/行，平台取 40rem（≈40 字/行），
+     与站点同一区间 —— 用户在两个面之间来回走，正文节奏不该在这条界限上变化。
+     表格与代码块不压窄（按列/按行对齐，压窄反而难读）。
+  4. **提示不再压住正文**。`MiniInfoTooltip` 固定 `-top-20`，而它的锚点在
+     **固定底栏**里 —— 于是提示浮在底栏上方 5rem，正好压住正文最后一行
+     （实测遮住「当作完成任务」几个字）。新增 `placement="inline-start"` 侧放模式，
+     底栏的两处调用改用它；`top` 仍是默认值，其他调用点行为不变。
+- **为什么**：这四条都属于「同一产品的两个面看起来像两个产品」——
+  配色是观感上的，阅读宽度与遮挡是实际影响读不读得下去的。
+- **影响范围**：`components/Copilot/CopilotBubble.tsx`、`components/Objects/Menus/OrgMenu.tsx`、
+  `components/Objects/Activities/AI/AIActivityAsk.tsx`、`components/Security/HeaderProfileBox.tsx`、
+  `components/Objects/MiniInfoTooltip.tsx`、
+  `app/orgs/[orgslug]/(withmenu)/course/[courseuuid]/activity/[activityid]/activity.tsx`、
+  `styles/globals.css`。
+- **顺带修掉的脚本 bug**：`server-rebuild-web.sh` 用
+  `systemctl list-unit-files | grep -q hv-lms-web` 判断是否装了生产单元。脚本开了
+  `pipefail`，而 `grep -q` 一命中就退出，左侧进程吃到 SIGPIPE 让整条管道返回非零 ——
+  结果是「明明装了单元却走开发栈」，把开发栈拉起来和 systemd 抢端口。
+  第一次改成 `printf ... | grep -q` 仍犯同样的错（管道没去掉）；最终用 `case` 做纯字符串
+  匹配，没有管道也没有子进程。
+- **与上游的关系**：都是上游文件的小改，改动集中在 class 字符串、一处内联样式与
+  一个新增的可选 prop，各自带注释说明原因。新增的 `.markdown-body` 规则在本仓库的
+  `globals.css`，与上游无关。
 
 ## 待办
 

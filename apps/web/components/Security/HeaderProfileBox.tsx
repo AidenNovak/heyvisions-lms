@@ -93,28 +93,32 @@ export const HeaderProfileBox = ({ primaryColor = '' }: { primaryColor?: string 
       'role_global_admin': {
         name: t('roles.role_admin'),
         icon: <Crown size={12} weight="fill" />,
-        bgColor: 'bg-purple-600',
+        // Yet to Dawn fork：角色徽章原本是紫/蓝/绿三种互不相关的色相，
+        // 而本站的规则是「单一强调色（品牌深林绿）+ 其余锌灰」。这里按
+        // 「最高角色用品牌色、其余用中性色」重排，既保留了可辨识的层级，
+        // 也不再往页面里引入第三种色相。四档与白字的对比度均 ≥4.5:1。
+        bgColor: 'bg-[#144338]',
         textColor: 'text-white',
         description: t('roles.role_admin_desc')
       },
       'role_global_maintainer': {
         name: t('roles.role_maintainer'),
         icon: <Shield size={12} weight="fill" />,
-        bgColor: 'bg-blue-600',
+        bgColor: 'bg-neutral-700',
         textColor: 'text-white',
         description: t('roles.role_maintainer_desc')
       },
       'role_global_instructor': {
         name: t('roles.role_instructor'),
         icon: <Users size={12} weight="fill" />,
-        bgColor: 'bg-green-600',
+        bgColor: 'bg-neutral-600',
         textColor: 'text-white',
         description: t('roles.role_instructor_desc')
       },
       'role_global_user': {
         name: t('roles.role_user'),
         icon: <User size={12} weight="fill" />,
-        bgColor: 'bg-gray-500',
+        bgColor: 'bg-neutral-500',
         textColor: 'text-white',
         description: t('roles.role_user_desc')
       }

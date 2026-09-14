@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useOrg } from '@components/Contexts/OrgContext'
 import { useLHSession } from '@components/Contexts/LHSessionContext'
@@ -321,7 +322,7 @@ function BubbleInner({ orgslug, open, onOpenChange, sessionToLoad }: CopilotBubb
               <button
                 aria-label="New chat"
                 onClick={handleNewChat}
-                className="p-1.5 rounded-lg text-neutral-400 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-500/10 transition-all"
+                className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all"
                 title="New chat"
               >
                 <Plus size={14} />
@@ -341,7 +342,7 @@ function BubbleInner({ orgslug, open, onOpenChange, sessionToLoad }: CopilotBubb
             <div className="flex-1 overflow-y-auto px-2 py-2">
               <button
                 onClick={handleNewChat}
-                className="flex items-center gap-2 w-full px-3 py-2 mb-2 text-xs font-semibold rounded-xl bg-violet-600 hover:bg-violet-700 text-white transition-colors"
+                className="flex items-center gap-2 w-full px-3 py-2 mb-2 text-xs font-semibold rounded-xl bg-black hover:bg-neutral-800 text-white transition-colors"
               >
                 <Plus size={13} weight="bold" />
                 New Chat
@@ -376,24 +377,24 @@ function BubbleInner({ orgslug, open, onOpenChange, sessionToLoad }: CopilotBubb
               <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-3 py-3 space-y-3">
                 {isLoadingSession && (
                   <div className="flex flex-col items-center justify-center h-full">
-                    <SpinnerGap size={18} className="animate-spin text-violet-400 mb-2" />
+                    <SpinnerGap size={18} className="animate-spin text-neutral-400 mb-2" />
                     <span className="text-xs text-neutral-400">Loading...</span>
                   </div>
                 )}
 
                 {messages.length === 0 && !isLoadingSession && (
                   <div className="flex flex-col items-center justify-center h-full text-center gap-3 pb-4">
-                    <div className="flex items-center justify-center p-2 rounded-xl border border-violet-200 dark:border-violet-500/30">
-                      <svg width="28" height="16" viewBox="0 37 304 152" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                          <linearGradient id="bubble-lrn-grad" x1="152" y1="30" x2="152" y2="200" gradientUnits="userSpaceOnUse">
-                            <stop stopColor="#c4b5fd" />
-                            <stop offset="1" stopColor="#7c3aed" />
-                          </linearGradient>
-                        </defs>
-                        <path d="M152 37C152 56.9609 148.068 76.7264 140.43 95.1679C132.791 113.609 121.595 130.366 107.48 144.48C93.3657 158.595 76.6094 169.791 58.1679 177.43C39.7264 185.068 19.9609 189 0 189L3.19349e-06 115.941C10.3667 115.941 20.632 113.9 30.2096 109.932C39.7872 105.965 48.4896 100.15 55.82 92.82C63.1504 85.4896 68.9652 76.7872 72.9324 67.2096C76.8996 57.632 78.9414 47.3667 78.9414 37H152Z" fill="url(#bubble-lrn-grad)" />
-                        <path d="M304 189C284.039 189 264.274 185.068 245.832 177.43C227.391 169.791 210.634 158.595 196.52 144.48C182.405 130.366 171.209 113.609 163.57 95.1679C155.932 76.7264 152 56.9609 152 37L225.059 37C225.059 47.3667 227.1 57.632 231.068 67.2096C235.035 76.7872 240.85 85.4896 248.18 92.82C255.51 100.15 264.213 105.965 273.79 109.932C283.368 113.9 293.633 115.941 304 115.941V189Z" fill="url(#bubble-lrn-grad)" />
-                      </svg>
+                    <div className="flex items-center justify-center p-2 rounded-xl border border-neutral-200 dark:border-neutral-700">
+                      {/* Yet to Dawn fork：这里原本是上游 LearnHouse 的字标（紫色渐变），
+                          是品牌残留 —— 白标平台上不该出现第三方的图形标识。
+                          换成仓库里的品牌矢量（与界面 logo 同源）。 */}
+                      <Image
+                        src="/brand/yet-to-dawn-mark.svg"
+                        alt="Yet to Dawn"
+                        width={28}
+                        height={22}
+                        className="dark:invert"
+                      />
                     </div>
                     <div>
                       <p className="text-xs font-semibold text-neutral-700 dark:text-neutral-300">Course Copilot</p>
@@ -408,7 +409,7 @@ function BubbleInner({ orgslug, open, onOpenChange, sessionToLoad }: CopilotBubb
                   if (msg.role === 'user') {
                     return (
                       <div key={i} className="flex justify-end">
-                        <div className="max-w-[85%] rounded-2xl rounded-se-sm px-3 py-2 bg-violet-600 text-white">
+                        <div className="max-w-[85%] rounded-2xl rounded-se-sm px-3 py-2 bg-black text-white">
                           <p className="text-xs leading-relaxed whitespace-pre-wrap">{msg.content}</p>
                         </div>
                       </div>
@@ -433,9 +434,9 @@ function BubbleInner({ orgslug, open, onOpenChange, sessionToLoad }: CopilotBubb
                       <button
                         key={i}
                         onClick={() => sendMessage(s)}
-                        className="group flex items-center gap-1.5 w-fit max-w-full text-start px-2.5 py-1.5 text-[11px] rounded-xl text-neutral-600 dark:text-neutral-300 bg-neutral-50 dark:bg-neutral-800/50 hover:bg-violet-50 dark:hover:bg-violet-500/10 hover:text-violet-700 transition-all"
+                        className="group flex items-center gap-1.5 w-fit max-w-full text-start px-2.5 py-1.5 text-[11px] rounded-xl text-neutral-600 dark:text-neutral-300 bg-neutral-50 dark:bg-neutral-800/50 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-neutral-100 transition-all"
                       >
-                        <ArrowRight size={10} weight="bold" className="flex-shrink-0 text-neutral-400 group-hover:text-violet-500" data-dir-flip />
+                        <ArrowRight size={10} weight="bold" className="flex-shrink-0 text-neutral-400 group-hover:text-neutral-700 dark:group-hover:text-neutral-200" data-dir-flip />
                         <span className="truncate">{s}</span>
                       </button>
                     ))}
@@ -456,7 +457,7 @@ function BubbleInner({ orgslug, open, onOpenChange, sessionToLoad }: CopilotBubb
                   onClick={() => setChatMode(chatMode === 'course_only' ? 'general' : 'course_only')}
                   className={`flex items-center gap-1 px-1.5 py-1.5 text-xs rounded-lg transition-all flex-shrink-0 ${
                     chatMode === 'general'
-                      ? 'bg-violet-50 dark:bg-violet-500/10 text-violet-600'
+                      ? 'bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100'
                       : 'text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800'
                   }`}
                   title={chatMode === 'general' ? 'General mode' : 'Course only'}
@@ -471,7 +472,7 @@ function BubbleInner({ orgslug, open, onOpenChange, sessionToLoad }: CopilotBubb
                       onClick={() => setCourseDropdownOpen(!courseDropdownOpen)}
                       className="flex items-center gap-0.5 px-1.5 py-1.5 text-xs rounded-lg text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all"
                     >
-                      {selectedCourse ? <Books size={13} weight="duotone" className="text-violet-500" /> : <Sparkle size={13} weight="duotone" className="text-violet-500" />}
+                      {selectedCourse ? <Books size={13} weight="duotone" className="text-neutral-500" /> : <Sparkle size={13} weight="duotone" className="text-neutral-500" />}
                       <CaretDown aria-hidden="true" size={8} className={`text-neutral-400 transition-transform ${courseDropdownOpen ? 'rotate-180' : ''}`} />
                     </button>
                     {courseDropdownOpen && (
@@ -501,7 +502,7 @@ function BubbleInner({ orgslug, open, onOpenChange, sessionToLoad }: CopilotBubb
                   aria-label="Send message"
                   onClick={() => sendMessage(input)}
                   disabled={isInputDisabled || !input.trim()}
-                  className="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-lg bg-violet-600 hover:bg-violet-700 disabled:bg-neutral-200 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed text-white transition-colors"
+                  className="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-lg bg-black hover:bg-neutral-800 disabled:bg-neutral-200 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed text-white transition-colors"
                 >
                   <PaperPlaneRight size={12} weight="fill" />
                 </button>
@@ -517,7 +518,7 @@ function BubbleInner({ orgslug, open, onOpenChange, sessionToLoad }: CopilotBubb
           if (!open) track(AnalyticsEvent.CopilotBubbleOpened, { current_path: pathname })
           onOpenChange(!open)
         }}
-        className="fixed bottom-4 end-4 z-[9999] flex items-center justify-center rounded-full bg-violet-600 hover:bg-violet-700 text-white transition-all duration-200 hover:scale-105 active:scale-95 nice-shadow"
+        className="fixed bottom-4 end-4 z-[9999] flex items-center justify-center rounded-full bg-black hover:bg-neutral-800 text-white transition-all duration-200 hover:scale-105 active:scale-95 nice-shadow"
         style={{ width: 44, height: 44 }}
         aria-label="Open Copilot"
       >

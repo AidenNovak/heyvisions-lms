@@ -72,7 +72,16 @@ cd "$ROOT"
 #   - 装了生产 systemd 单元 → 重启单元，并重写运行时配置（换域名只改配置不重建）
 #   - 否则 → 开发栈（pid 文件 + 前台进程，只经 SSH 隧道访问）
 # 混着重启会让两套进程抢同一批端口，表现成「服务莫名 502」。
-if systemctl list-unit-files 2>/dev/null | grep -q '^hv-lms-web\.service'; then
+#
+# 注意不要用管道 + `grep -q` 判断：本脚本开了 pipefail，而 grep -q 一命中就退出，
+# 管道左侧（systemctl / printf）会吃到 SIGPIPE，整条管道随之返回非零 —— 结果是
+# 「明明装了单元却走开发栈」。用 case 做纯字符串匹配，没有管道、没有子进程。
+HV_UNIT_FILES="$(systemctl list-unit-files 2>/dev/null || true)"
+HV_IS_PROD=0
+case "$HV_UNIT_FILES" in
+  *hv-lms-web.service*) HV_IS_PROD=1 ;;
+esac
+if [ "$HV_IS_PROD" = "1" ]; then
   echo "（检测到生产 systemd 单元，走生产重启）"
   scripts/heyvisions/server-up.sh stop 2>&1 | tail -2 || true
   bash scripts/heyvisions/server-install-prod.sh 2>&1 | tail -14

@@ -55,8 +55,10 @@ function AIActivityAsk(props: AIActivityAskProps) {
           <div
             onClick={handleOpenAI}
             style={{
-              background:
-                'conic-gradient(from 32deg at 53.75% 50%, rgb(35, 40, 93) 4deg, rgba(20, 0, 52, 0.95) 59deg, rgba(164, 45, 238, 0.88) 281deg)',
+              // Yet to Dawn fork：原来是海军蓝 + 紫的 conic-gradient（上游的 AI 强调色），
+              // 与本站「单一强调色、其余中性」的规则冲突 —— 在克制的黑白灰页面里，
+              // 它像贴上去的第三方组件。改成与平台其他主按钮一致的中性黑。
+              background: '#0a0a0a',
             }}
             className="rounded-full px-5 drop-shadow-md flex  items-center space-x-1.5 p-2.5 text-sm text-white hover:cursor-pointer transition delay-150 duration-300 ease-in-out hover:scale-105"
           >
