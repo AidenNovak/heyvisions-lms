@@ -6,6 +6,7 @@ import { Suspense } from 'react'
 import PageLoading from '@components/Objects/Loaders/PageLoading'
 import OrgNotFound from '@components/Objects/StyledElements/Error/OrgNotFound'
 import { getBrandName } from '@services/config/brand'
+import { getAuthCapabilities } from '@services/auth/authCapabilities'
 
 export async function generateMetadata(): Promise<Metadata> {
   const orgslug = await getAuthOrgSlug()
@@ -51,7 +52,7 @@ const SignUp = async () => {
   return (
     <>
       <Suspense fallback={<PageLoading />}>
-        <SignUpClient org={org} />
+        <SignUpClient org={org} capabilities={getAuthCapabilities()} />
       </Suspense>
     </>
   )

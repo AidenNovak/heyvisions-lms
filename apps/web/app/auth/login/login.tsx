@@ -19,9 +19,15 @@ import AuthLayout from '@components/Auth/AuthLayout'
 import TurnstileWidget, { useTurnstileRequired, verifyTurnstileToken, type TurnstileWidgetHandle } from '@components/Auth/TurnstileWidget'
 import { useLHAnalytics, AnalyticsEvent } from '@services/analytics'
 import { getAllowedAuthMethods } from '@services/auth/authMethods'
+import type { AuthCapabilities } from '@services/auth/authCapabilities'
 
 interface LoginClientProps {
   org: any
+  /**
+   * 这台部署配齐了哪些凭据（服务端算好传下来）。
+   * 缺省按「都没配」处理：宁可少摆一个入口，也不要摆一个点了没反应的。
+   */
+  capabilities?: AuthCapabilities
 }
 
 const LoginClient = (props: LoginClientProps) => {
@@ -45,8 +51,14 @@ const LoginClient = (props: LoginClientProps) => {
     [props.org]
   )
   const passwordAllowed = allowedMethods.has('password')
-  const magicLoginAllowed = allowedMethods.has('magic_login')
-  const googleAllowed = allowedMethods.has('google')
+  // 组织策略允许 ≠ 这台机器做得到。邮件与 Google 还要看环境里配没配凭据，
+  // 两者都满足才摆出入口 —— 否则用户点下去是 500（Google），
+  // 或者更糟：界面说邮件已发、实际无信可发。
+  const capabilities = props.capabilities ?? { email: false, google: false }
+  const magicLoginAllowed = allowedMethods.has('magic_login') && capabilities.email
+  const googleAllowed = allowedMethods.has('google') && capabilities.google
+  // 「忘记密码」同样依赖发信能力，没有它这个链接就是死路。
+  const passwordResetAvailable = capabilities.email
   const ssoAllowed = allowedMethods.has('sso')
   // SSO counts only once it is actually configured for the org (ssoEnabled).
   const hasAlternativeMethods = googleAllowed || magicLoginAllowed || (ssoAllowed && ssoEnabled)
@@ -767,12 +779,16 @@ const LoginClient = (props: LoginClientProps) => {
                         <span>{formik.errors.password}</span>
                       </span>
                     )}
-                    <Link
-                      href="/forgot"
-                      className="text-xs text-black/60 hover:text-black font-semibold transition-colors"
-                    >
-                      {t('auth.forgot_password')}
-                    </Link>
+                    {/* 没配发信能力时不摆「忘记密码」：它指向的重置流程发不出信，
+                        用户会等一封永远不来的邮件。密码登录本身照旧可用。 */}
+                    {passwordResetAvailable && (
+                      <Link
+                        href="/forgot"
+                        className="text-xs text-black/60 hover:text-black font-semibold transition-colors"
+                      >
+                        {t('auth.forgot_password')}
+                      </Link>
+                    )}
                   </div>
                   <Form.Control asChild>
                     <input
@@ -867,7 +883,7 @@ const LoginClient = (props: LoginClientProps) => {
                   <p className="text-sm text-black/60">
                     {t('auth.no_sign_in_method_available', {
                       defaultValue:
-                        'This organization has restricted how members sign in, and none of the allowed methods are available here. Contact an administrator.',
+                        'No sign-in method is available here: either the organization\'s policy excludes them, or this deployment has not finished configuring them. Contact an administrator.',
                     })}
                   </p>
                 </div>

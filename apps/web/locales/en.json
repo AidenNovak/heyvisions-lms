@@ -396,7 +396,7 @@
     "magic_send": "Email me a login link",
     "magic_use_password": "Sign in with a password instead",
     "choose_sign_in_method": "Choose how you’d like to sign in.",
-    "no_sign_in_method_available": "This organization has restricted how members sign in, and none of the allowed methods are available here. Contact an administrator.",
+    "no_sign_in_method_available": "No sign-in method is available here: either the organization's policy excludes them, or this deployment has not finished configuring them. Contact an administrator.",
     "complete_profile": {
       "title": "Complete your profile"
     }

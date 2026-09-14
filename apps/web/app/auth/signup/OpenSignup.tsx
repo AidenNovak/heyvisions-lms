@@ -18,6 +18,7 @@ import { PasswordStrengthIndicator, validatePasswordStrength } from '@components
 import TurnstileWidget, { useTurnstileRequired, type TurnstileWidgetHandle } from '@components/Auth/TurnstileWidget'
 import { useLHAnalytics, AnalyticsEvent } from '@services/analytics'
 import { getAllowedAuthMethods } from '@services/auth/authMethods'
+import type { AuthCapabilities } from '@services/auth/authCapabilities'
 import CustomSignupFields, {
   initialCustomFieldValues,
   validateCustomFields,
@@ -64,9 +65,14 @@ interface OpenSignUpComponentProps {
   // the instance default org server-side and passes it down here. Prefer it over
   // the (possibly null) context so the POST always targets a real org_id.
   org?: any
+  /**
+   * 这台部署配齐了哪些凭据（服务端算好传下来）。缺省按「都没配」处理：
+   * 宁可少摆一个入口，也不要摆一个点了 500 的。
+   */
+  capabilities?: AuthCapabilities
 }
 
-function OpenSignUpComponent({ org: propOrg }: OpenSignUpComponentProps = {}) {
+function OpenSignUpComponent({ org: propOrg, capabilities }: OpenSignUpComponentProps = {}) {
   const { t } = useTranslation()
   const { track } = useLHAnalytics('public')
   const [isSubmitting, setIsSubmitting] = React.useState(false)
@@ -85,7 +91,8 @@ function OpenSignUpComponent({ org: propOrg }: OpenSignUpComponentProps = {}) {
   // both, so offering them here would only surface a 403.
   const allowedMethods = React.useMemo(() => getAllowedAuthMethods(org), [org])
   const passwordAllowed = allowedMethods.has('password')
-  const googleAllowed = allowedMethods.has('google')
+  // 与登录页同一把尺子：策略允许之外，还得这台机器真的配了 Google 凭据。
+  const googleAllowed = allowedMethods.has('google') && Boolean(capabilities?.google)
 
   // Field definitions ship with the org config the page already loaded, so no
   // extra request is needed to render them.

@@ -4,6 +4,7 @@ import LoginClient from './login'
 import { Metadata } from 'next'
 import OrgNotFound from '@components/Objects/StyledElements/Error/OrgNotFound'
 import { getBrandName } from '@services/config/brand'
+import { getAuthCapabilities } from '@services/auth/authCapabilities'
 
 export async function generateMetadata(): Promise<Metadata> {
   const orgslug = await getAuthOrgSlug()
@@ -51,7 +52,9 @@ const Login = async () => {
 
   return (
     <div>
-      <LoginClient org={org}></LoginClient>
+      {/* 环境里配了什么，只有在服务端才读得到 —— 算好传下去，
+          由客户端决定摆不摆 Google / 邮件入口。理由见 authCapabilities.ts。 */}
+      <LoginClient org={org} capabilities={getAuthCapabilities()}></LoginClient>
     </div>
   )
 }

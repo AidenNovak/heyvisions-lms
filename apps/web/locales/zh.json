@@ -397,7 +397,7 @@
     "magic_send": "把登录链接发到我的邮箱",
     "magic_use_password": "改用密码登录",
     "choose_sign_in_method": "选择登录方式。",
-    "no_sign_in_method_available": "该组织限制了成员的登录方式，当前没有可用的方式。请联系管理员。"
+    "no_sign_in_method_available": "当前没有可用的登录方式：要么被组织策略限制，要么本站还没配齐所需凭据。请联系管理员。"
   },
   "verify_email": {
     "title": "邮箱验证",
