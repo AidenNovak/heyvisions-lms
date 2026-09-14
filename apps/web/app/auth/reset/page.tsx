@@ -5,12 +5,13 @@ import { Metadata } from 'next'
 import OrgNotFound from '@components/Objects/StyledElements/Error/OrgNotFound'
 import { Suspense } from 'react'
 import PageLoading from '@components/Objects/Loaders/PageLoading'
+import { getBrandName } from '@services/config/brand'
 
 export async function generateMetadata(): Promise<Metadata> {
   const orgslug = await getAuthOrgSlug()
 
   if (!orgslug) {
-    return { title: 'Reset Password — LearnHouse' }
+    return { title: `Reset Password — ${getBrandName()}` }
   }
 
   let org: any = null
@@ -24,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 
   return {
-    title: 'Reset Password' + ` — ${org?.name || 'LearnHouse'}`,
+    title: 'Reset Password' + ` — ${org?.name || getBrandName()}`,
     robots: { index: false, follow: false },
   }
 }

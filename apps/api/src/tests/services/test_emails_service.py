@@ -8,6 +8,7 @@ import pytest
 from src.db.organizations import OrganizationRead
 from src.db.users import UserRead
 from src.services.users.emails import (
+    brand_name,
     send_account_creation_email,
     send_account_deleted_email,
     send_email_verification_email,
@@ -80,17 +81,34 @@ class TestEmailsService:
         assert "user&lt;script&gt;" in body
         assert "Get Started" in body
 
-    def test_orgless_welcome_uses_cta_url_and_learnhouse_branding(self):
+    def test_orgless_welcome_uses_cta_url_and_platform_branding(self):
         with patch("src.services.users.emails.send_email", return_value=True) as send_email:
             send_account_creation_email(
                 _user(), "user@test.com", cta_url="https://platform.test/organizations"
             )
         call = send_email.call_args.kwargs
         assert "https://platform.test/organizations" in call["body"]
-        # Org-less keeps the LearnHouse-branded subject + Academy footer, no org logo.
-        assert "Welcome to LearnHouse" in call["subject"]
-        assert "LearnHouse Academy" in call["body"]
+        # Org-less keeps the platform-branded subject and mark, no org logo.
+        assert f"Welcome to {brand_name()}" in call["subject"]
+        assert "<svg" in call["body"]
         assert "<img" not in call["body"]
+        # No help site is configured in tests, so the "Need help?" footer
+        # sentence is dropped rather than emitted with a dead or upstream link.
+        assert "Need help?" not in call["body"]
+        assert "LearnHouse" not in call["body"]
+
+    def test_orgless_welcome_links_the_footer_to_a_configured_help_site(self, monkeypatch):
+        monkeypatch.setenv("LEARNHOUSE_ACADEMY_URL", "https://help.example.com/")
+        with patch("src.services.users.emails.send_email", return_value=True) as send_email:
+            send_account_creation_email(_user(), "user@test.com")
+        call = send_email.call_args.kwargs
+        # Configured help site: the footer sentence comes back, pointing at it...
+        assert "Need help?" in call["body"]
+        assert "help centre" in call["body"]
+        # ...and with no cta_url from the caller it is also the CTA target, so
+        # exactly two links point there: the footer sentence and the button.
+        assert call["body"].count('href="https://help.example.com"') == 2
+        assert "LearnHouse" not in call["body"]
 
     def test_welcome_is_whitelabeled_when_org_supplied(self):
         with patch("src.services.users.emails.send_email", return_value=True) as send_email:
@@ -102,14 +120,14 @@ class TestEmailsService:
                 logo_url="https://api.test/content/orgs/org_uuid/logos/logo.png",
             )
         call = send_email.call_args.kwargs
-        # Subject/body name the org (html-escaped), not LearnHouse.
+        # Subject/body name the org (html-escaped), not the platform.
         assert "Acme &amp; Co" in call["subject"]
-        assert "Welcome to LearnHouse" not in call["subject"]
+        assert f"Welcome to {brand_name()}" not in call["subject"]
         assert "Acme &amp; Co" in call["body"]
-        # Org logo replaces the mark; Academy link is gone; powered-by remains.
+        # Org logo replaces the mark; help-centre link is gone; powered-by remains.
         assert '<img src="https://api.test/content/orgs/org_uuid/logos/logo.png"' in call["body"]
-        assert "LearnHouse Academy" not in call["body"]
-        assert "Powered by LearnHouse" in call["body"]
+        assert "help centre" not in call["body"]
+        assert f"Powered by {brand_name()}" in call["body"]
         assert "https://acme.test/home" in call["body"]
 
     def test_whitelabel_without_logo_uses_the_org_name_as_wordmark(self):
@@ -118,12 +136,12 @@ class TestEmailsService:
                 _user(), "user@test.com", org_name="Acme & Co", logo_url=None
             )
         call = send_email.call_args.kwargs
-        # No org logo → the org's own name up top, never the LearnHouse mark.
+        # No org logo → the org's own name up top, never the platform mark.
         assert "<img" not in call["body"]
         assert "<svg" not in call["body"]
         assert _wordmark("Acme &amp; Co") in call["body"]
         assert "Acme &amp; Co" in call["subject"]
-        assert "Powered by LearnHouse" in call["body"]
+        assert f"Powered by {brand_name()}" in call["body"]
 
     def test_role_changed_email_links_back_to_the_org(self):
         """Telling someone their permissions changed is useless without a way
@@ -151,9 +169,26 @@ class TestEmailsService:
         body = send_email.call_args.kwargs["body"]
         assert "Go to Acme" not in body
         assert 'href="/"' not in body
-        # The only link left is the footer attribution, never a CTA.
+        # No CTA, and the footer attribution carries no link either: with no
+        # platform URL configured in tests there is nothing to point it at.
+        assert body.count("<a href") == 0
+        assert f"Powered by {brand_name()}" in body
+
+    def test_footer_attribution_links_to_the_platform_when_configured(self, monkeypatch):
+        monkeypatch.setenv("LEARNHOUSE_PLATFORM_URL", "https://app.example.com/")
+        with patch("src.services.users.emails.send_email", return_value=True) as send_email:
+            send_role_changed_email(
+                email="user@test.com",
+                username="learner",
+                org_name="Acme",
+                new_role_name="Admin",
+            )
+        body = send_email.call_args.kwargs["body"]
+        # The only link left is the footer attribution, and it points at this
+        # deployment's own site rather than at the upstream project's.
         assert body.count("<a href") == 1
-        assert "Powered by LearnHouse" in body
+        assert 'href="https://app.example.com"' in body
+        assert "learnhouse.io" not in body
 
     def test_org_join_email_is_whitelabeled_and_links_to_the_org(self):
         with patch("src.services.users.emails.send_email", return_value=True) as send_email:
@@ -165,7 +200,7 @@ class TestEmailsService:
                 logo_url="https://api.test/content/orgs/org_uuid/logos/logo.png",
             ) is True
         call = send_email.call_args.kwargs
-        # Named after the org, with the org's own logo, not the LearnHouse mark.
+        # Named after the org, with the org's own logo, not the platform mark.
         assert "Acme &amp; Co" in call["subject"]
         assert '<img src="https://api.test/content/orgs/org_uuid/logos/logo.png"' in call["body"]
         # The whole point of the email: a working way back into the org.
@@ -481,11 +516,11 @@ class TestSenderNameRouting:
 
 
 class TestWhiteLabel:
-    """Every org-scoped email is the organization's own, not LearnHouse's.
+    """Every org-scoped email is the organization's own, not the platform's.
 
     With the org's watermark off there must be no trace of the platform in
     the rendered mail — no wordmark, no name in the copy, no attribution
-    line. With it on, exactly one "Powered by LearnHouse" line remains.
+    line. With it on, exactly one "Powered by <site name>" line remains.
     """
 
     LOGO = "https://api.test/content/orgs/org_uuid/logos/logo.png"
@@ -564,8 +599,8 @@ class TestWhiteLabel:
 
     def test_no_platform_branding_leaks_when_watermark_is_off(self):
         for call in self._all_org_scoped_sends(**self.BRANDING):
-            assert "LearnHouse" not in call["body"], call["subject"]
-            assert "LearnHouse" not in call["subject"]
+            assert brand_name() not in call["body"], call["subject"]
+            assert brand_name() not in call["subject"]
             assert "<svg" not in call["body"]
             assert f'<img src="{self.LOGO}" alt="Acme &amp; Co"' in call["body"]
             assert call["sender_name"] == "Acme Academy"
@@ -580,10 +615,10 @@ class TestWhiteLabel:
     def test_watermark_on_adds_exactly_one_powered_by_line(self):
         branding = dict(self.BRANDING, powered_by=True)
         for call in self._all_org_scoped_sends(**branding):
-            assert call["body"].count("Powered by LearnHouse") == 1, call["subject"]
+            assert call["body"].count(f"Powered by {brand_name()}") == 1, call["subject"]
             # ...and that line is the only place the platform appears.
-            assert call["body"].count("LearnHouse") == 1
-            assert "LearnHouse" not in call["subject"]
+            assert call["body"].count(brand_name()) == 1
+            assert brand_name() not in call["subject"]
 
     def test_square_logo_renders_as_a_square_box_and_wide_logo_letterboxed(self):
         square = "https://api.test/content/orgs/org_uuid/square_logos/sq.png"
@@ -639,9 +674,9 @@ class TestWhiteLabel:
         body = sent.call_args.kwargs["body"]
         assert "welcome to Acme &amp; Co!" in body
         assert "create a Acme &amp; Co account" in body or "Acme &amp; Co account" in body
-        assert "LearnHouse" not in body
+        assert brand_name() not in body
 
-    def test_platform_mails_keep_the_learnhouse_mark_and_no_powered_by(self):
+    def test_platform_mails_keep_the_platform_mark_and_no_powered_by(self):
         with patch("src.services.users.emails.send_email", return_value=True) as sent:
             send_password_reset_email_platform(
                 generated_reset_code="code",
@@ -663,10 +698,10 @@ class TestWhiteLabel:
         for call in sent.call_args_list:
             body = call.kwargs["body"]
             assert "<svg" in body, call.kwargs["subject"]
-            assert "Powered by LearnHouse" not in body
+            assert f"Powered by {brand_name()}" not in body
             assert "#ff5500" not in body
         verification_body = sent.call_args_list[1].kwargs["body"]
-        assert "welcome to LearnHouse!" in verification_body
+        assert f"welcome to {brand_name()}!" in verification_body
 
     def test_translated_whitelabel_copy_has_no_unfilled_placeholders(self):
         from src.services.auth.magic_login import send_magic_login_email
@@ -693,5 +728,5 @@ class TestWhiteLabel:
                 assert "{brand}" not in call["subject"], lang
                 assert "{username}" not in call["body"], lang
                 assert "Acme" in call["body"], lang
-            assert "LearnHouse" not in sent_magic.call_args.kwargs["body"], lang
-            assert "LearnHouse" not in sent_magic.call_args.kwargs["subject"], lang
+            assert brand_name() not in sent_magic.call_args.kwargs["body"], lang
+            assert brand_name() not in sent_magic.call_args.kwargs["subject"], lang

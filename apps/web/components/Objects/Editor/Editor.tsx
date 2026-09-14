@@ -76,6 +76,7 @@ const VersionHistoryPanel = dynamic(() => import('./VersionHistory/VersionHistor
 const MergeConflictModal = dynamic(() => import('./VersionHistory/MergeConflictModal'), { ssr: false, loading: () => null })
 const ActivitySwitcher = dynamic(() => import('./ActivitySwitcher'), { ssr: false, loading: () => null })
 import { usePlan } from '@components/Hooks/usePlan'
+import { getBrandName } from '@services/config/brand'
 import {
   createBeforeUnloadHandler,
   getEditorContentSnapshot,
@@ -466,7 +467,7 @@ function Editor(props: EditorProps) {
             <div className="activity-editor-doc-section">
               <div className="activity-editor-info-wrapper">
                 <Link href="/">
-                  <EditorLearnHouseLogo />
+                  <EditorBrandLogo />
                 </Link>
                 <Link target="_blank" href={`/course/${course_uuid}`}>
                   <img
@@ -706,7 +707,7 @@ const logoAnimations = [
   },
 ]
 
-const EditorLearnHouseLogo = () => {
+const EditorBrandLogo = () => {
   const [animation] = React.useState(
     () => logoAnimations[Math.floor(Math.random() * logoAnimations.length)]
   )
@@ -720,7 +721,7 @@ const EditorLearnHouseLogo = () => {
       >
         <Image
           src="/lrn.svg"
-          alt="LearnHouse"
+          alt={getBrandName()}
           width={14}
           height={14}
           className="invert"

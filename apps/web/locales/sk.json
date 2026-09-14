@@ -47,11 +47,11 @@
     "help": "Pomoc",
     "help_menu": {
       "documentation": "Dokumentácia",
-      "website": "Webstránka LearnHouse",
+      "website": "Webstránka {{brand}}",
       "discord": "Discord",
       "report_feedback": "Nahlásiť problém alebo spätnú väzbu",
       "feedback_title": "Odoslať spätnú väzbu",
-      "feedback_description": "Pomôžte nám vylepšiť LearnHouse zdieľaním názorov, nahlásením chýb alebo návrhmi nových funkcií.",
+      "feedback_description": "Pomôžte nám vylepšiť {{brand}} zdieľaním názorov, nahlásením chýb alebo návrhmi nových funkcií.",
       "feedback_placeholder": "Povedzte nám, čo máte na mysli...",
       "feedback_success": "Ďakujeme za vašu spätnú väzbu!",
       "send_feedback": "Odoslať spätnú väzbu",
@@ -5095,7 +5095,6 @@
         "description": "Zdroje, ktoré vám pomôžu využiť LearnHouse naplno.",
         "classroom": "Učebňa",
         "classroom_desc": "Naučte sa, ako rozvíjať a spravovať kurzy",
-        "university": "LearnHouse University",
         "university_desc": "Príručky, tipy a osvedčené postupy"
       },
       "add_content": {
@@ -5632,7 +5631,7 @@
         "title": "Chcete to len vyskúšať?",
         "body": "Prejdite na",
         "link": "stránku pre vývojárov",
-        "suffix": "a vyskúšajte LearnHouse."
+        "suffix": "a vyskúšajte {{brand}}."
       },
       "validation": {
         "required": "Povinné",

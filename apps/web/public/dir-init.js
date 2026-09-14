@@ -10,7 +10,7 @@
 // this file runs before any bundle loads and cannot import it.
 // tests/rtl-guard.test.mjs asserts the two lists stay in sync — update both.
 //
-// **HeyVisions fork**: 未显式选过语言时用平台默认语言（NEXT_PUBLIC_DEFAULT_LANGUAGE，
+// **Yet to Dawn fork**: 未显式选过语言时用平台默认语言（NEXT_PUBLIC_DEFAULT_LANGUAGE，
 // 默认 zh），而不是浏览器语言。理由见 lib/i18n.ts 的 initialLanguage()：
 // 课程面向中文学习者，用浏览器语言会让英文浏览器的学习者先看到约 4 秒英文界面。
 // 两处必须用同一个「用户选过没有」的标记，改一处要改另一处。

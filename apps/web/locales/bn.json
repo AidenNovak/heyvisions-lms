@@ -46,11 +46,11 @@
     "help": "সহায়তা",
     "help_menu": {
       "documentation": "ডকুমেন্টেশন",
-      "website": "LearnHouse ওয়েবসাইট",
+      "website": "{{brand}} ওয়েবসাইট",
       "discord": "Discord",
       "report_feedback": "সমস্যা বা মতামত জানান",
       "feedback_title": "মতামত পাঠান",
-      "feedback_description": "আপনার মতামত শেয়ার করে, বাগ রিপোর্ট করে, অথবা নতুন ফিচার সাজেস্ট করে LearnHouse উন্নত করতে সাহায্য করুন।",
+      "feedback_description": "আপনার মতামত শেয়ার করে, বাগ রিপোর্ট করে, অথবা নতুন ফিচার সাজেস্ট করে {{brand}} উন্নত করতে সাহায্য করুন।",
       "feedback_placeholder": "আপনার মনে কী আছে বলুন...",
       "feedback_success": "আপনার মতামতের জন্য ধন্যবাদ!",
       "send_feedback": "মতামত পাঠান",
@@ -134,8 +134,7 @@
           "description": "Automations is a premium feature available only to organizations on our Pro plan or higher. Upgrade to wire your courses up to webhooks and external integrations."
         },
         "api_access": {
-          "title": "প্রো ফিচার",
-          "description": "API অ্যাক্সেস একটি প্রিমিয়াম ফিচার যা শুধুমাত্র LearnHouse-এর Pro পরিকল্পনা বা তার উপরের সংস্থাগুলির জন্য উপলব্ধ। আপনার সংস্থার ডেটায় প্রোগ্রামেটিক অ্যাক্সেস আনলক করতে আপগ্রেড করুন।"
+          "title": "প্রো ফিচার"
         }
       },
       "current_plan": "বর্তমান প্ল্যান",
@@ -5079,7 +5078,6 @@
         "description": "LearnHouse থেকে সর্বাধিক সুবিধা পেতে সহায়ক রিসোর্স।",
         "classroom": "ক্লাসরুম",
         "classroom_desc": "আপনার কোর্স বৃদ্ধি ও পরিচালনা করতে শিখুন",
-        "university": "LearnHouse বিশ্ববিদ্যালয়",
         "university_desc": "গাইড, টিপস এবং সেরা অনুশীলন"
       },
       "add_content": {
@@ -5658,7 +5656,7 @@
         "title": "পরীক্ষা করে দেখতে চান?",
         "body": "চলে যান",
         "link": "ডেভেলপারস পেজে",
-        "suffix": "এবং বরং LearnHouse পরখ করে দেখুন।"
+        "suffix": "এবং বরং {{brand}} পরখ করে দেখুন।"
       },
       "validation": {
         "required": "আবশ্যক",

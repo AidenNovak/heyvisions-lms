@@ -16,7 +16,7 @@ export default function EERequiredScreen() {
           Enterprise Edition license required
         </h1>
         <p className="text-white/50 text-sm leading-relaxed">
-          The superadmin dashboard is part of LearnHouse Enterprise Edition and
+          The superadmin dashboard requires an Enterprise Edition license and
           is not available on this deployment.
         </p>
       </div>

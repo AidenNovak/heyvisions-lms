@@ -6,7 +6,7 @@
 // CopyrightFooter — the "© {year} <brand>" line for app surfaces
 //                (the apex /home hub, the onboarding page, …).
 //
-// HeyVisions fork: brand name and legal URLs come from the brand config
+// Yet to Dawn fork: brand name and legal URLs come from the brand config
 // (services/config/brand.ts) instead of the upstream platform defaults.
 // Leaving BRAND_TERMS_URL / BRAND_PRIVACY_URL unset hides the link rather
 // than pointing readers at another company's terms.
@@ -23,7 +23,7 @@ export function AuthFooter({ className = '' }: { className?: string }) {
   const privacyUrl = getPrivacyUrl()
   const hasLegalLinks = Boolean(termsUrl || privacyUrl)
   // 没有配置条款/隐私地址时整句不渲染：句子的宾语就是那两个链接，
-  // 只留"继续即表示你同意 HeyVisions 的"是不成句的。
+  // 只留"继续即表示你同意 Yet to Dawn 的"是不成句的。
   if (!hasLegalLinks) return null
   return (
     <div className={`pb-8 pt-6 text-center px-6 ${className}`}>

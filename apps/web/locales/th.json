@@ -44,11 +44,11 @@
     "help": "ความช่วยเหลือ",
     "help_menu": {
       "documentation": "เอกสาร",
-      "website": "เว็บไซต์ LearnHouse",
+      "website": "เว็บไซต์ {{brand}}",
       "discord": "Discord",
       "report_feedback": "รายงานปัญหาหรือความคิดเห็น",
       "feedback_title": "ส่งความคิดเห็น",
-      "feedback_description": "ช่วยเราปรับปรุง LearnHouse โดยแบ่งปันความคิด รายงานข้อบกพร่อง หรือแนะนำฟีเจอร์ใหม่",
+      "feedback_description": "ช่วยเราปรับปรุง {{brand}} โดยแบ่งปันความคิด รายงานข้อบกพร่อง หรือแนะนำฟีเจอร์ใหม่",
       "feedback_placeholder": "บอกเราว่าคุณคิดอย่างไร...",
       "feedback_success": "ขอบคุณสำหรับความคิดเห็นของคุณ!",
       "send_feedback": "ส่งความคิดเห็น",
@@ -4825,7 +4825,6 @@
         "description": "แหล่งข้อมูลเพื่อช่วยให้คุณใช้ LearnHouse ได้อย่างเต็มที่",
         "classroom": "ห้องเรียน",
         "classroom_desc": "เรียนรู้วิธีเติบโตและจัดการคอร์สของคุณ",
-        "university": "มหาวิทยาลัย LearnHouse",
         "university_desc": "คู่มือ เคล็ดลับ และแนวปฏิบัติที่ดี"
       },
       "add_content": {
@@ -5660,7 +5659,7 @@
         "title": "ต้องการทดลองใช้?",
         "body": "ไปที่",
         "link": "หน้านักพัฒนา",
-        "suffix": "เพื่อทดลองใช้ LearnHouse แทน"
+        "suffix": "เพื่อทดลองใช้ {{brand}} แทน"
       },
       "validation": {
         "required": "จำเป็นต้องกรอก",

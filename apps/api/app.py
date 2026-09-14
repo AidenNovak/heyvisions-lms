@@ -166,7 +166,9 @@ app.include_router(v1_router)
 
 @app.get("/")
 async def root():
-    return {"Message": "Welcome to LearnHouse ✨"}
+    # 品牌名从配置取（config.yaml 的 site_name），不要写死 ——
+    # 这个端点是公开的，写死上游名字等于对外宣称自己是别人的服务。
+    return {"Message": f"Welcome to {learnhouse_config.site_name} ✨"}
 
 
 if __name__ == "__main__":

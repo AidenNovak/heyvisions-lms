@@ -1,5 +1,6 @@
 import 'server-only'
 import { LoopsClient } from 'loops'
+import { getBrandHost } from '@services/config/brand'
 
 // Loops.so contact + event sync. Used to grow the marketing/lifecycle audience
 // (e.g. add every new signup to the `signed-users` group, drive onboarding
@@ -38,7 +39,7 @@ export async function addContactWithLoops(
   const c = client()
   if (!c) return null
   try {
-    const props: ContactProps = { userGroup, source: 'learnhouse.io', ...(extra || {}) }
+    const props: ContactProps = { userGroup, source: getBrandHost(), ...(extra || {}) }
     const res = await c.createContact({ email, properties: props })
     // Already exists → update instead so the call is idempotent.
     if ((res as any)?.success === false) {

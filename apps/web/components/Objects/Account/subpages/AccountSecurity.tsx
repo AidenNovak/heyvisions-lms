@@ -19,7 +19,7 @@ import {
   Smartphone,
 } from 'lucide-react'
 import { getErrorMessage } from '@services/utils/ts/errorMessage'
-import { getBrandName } from '@services/config/brand'
+import { getBrandName, getBrandFileStem } from '@services/config/brand'
 import { Input } from "@components/ui/input"
 import { Button } from "@components/ui/button"
 import { Label } from "@components/ui/label"
@@ -236,7 +236,7 @@ function TwoFactorAuthSection() {
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = 'learnhouse-backup-codes.txt'
+    link.download = `${getBrandFileStem()}-backup-codes.txt`
     document.body.appendChild(link)
     link.click()
     link.remove()

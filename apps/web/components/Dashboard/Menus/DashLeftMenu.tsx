@@ -53,6 +53,7 @@ import UserAvatar from '../../Objects/UserAvatar'
 import AdminAuthorization from '@components/Security/AdminAuthorization'
 import { useLHSession } from '@components/Contexts/LHSessionContext'
 import { getUriWithOrg, getAPIUrl, getMainDomainUri, isMultiOrgModeEnabled } from '@services/config/config'
+import { getBrandSiteUrl, getBrandDocsUrl, getBrandCommunityUrl, getBrandName } from '@services/config/brand'
 import { useTranslation } from 'react-i18next'
 import { changeLanguage } from '@/lib/i18n'
 import {
@@ -259,7 +260,7 @@ function DashLeftMenu() {
           ) : (
             <img
               src="/lrn-dash.svg"
-              alt="Learnhouse logo"
+              alt={`${getBrandName()} logo`}
               className="h-8 w-8"
             />
           )}
@@ -1104,39 +1105,43 @@ function DashLeftMenu() {
                   <span>{t('common.help')}</span>
                 </HoverMenuLabel>
                 <HoverMenuSeparator />
+                {getBrandDocsUrl() && (
+                  <HoverMenuItem asChild>
+                    <a
+                      href={getBrandDocsUrl()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-3 py-2 text-sm text-white/70 hover:text-white hover:bg-white/[0.08] cursor-pointer transition-colors"
+                    >
+                      <Book size={16} weight="fill" />
+                      <span>{t('common.help_menu.documentation')}</span>
+                    </a>
+                  </HoverMenuItem>
+                )}
                 <HoverMenuItem asChild>
                   <a
-                    href="https://docs.learnhouse.app"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-3 py-2 text-sm text-white/70 hover:text-white hover:bg-white/[0.08] cursor-pointer transition-colors"
-                  >
-                    <Book size={16} weight="fill" />
-                    <span>{t('common.help_menu.documentation')}</span>
-                  </a>
-                </HoverMenuItem>
-                <HoverMenuItem asChild>
-                  <a
-                    href="https://learnhouse.app"
+                    href={getBrandSiteUrl()}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 px-3 py-2 text-sm text-white/70 hover:text-white hover:bg-white/[0.08] cursor-pointer transition-colors"
                   >
                     <Globe size={16} weight="fill" />
-                    <span>{t('common.help_menu.website')}</span>
+                    <span>{t('common.help_menu.website', { brand: getBrandName() })}</span>
                   </a>
                 </HoverMenuItem>
-                <HoverMenuItem asChild>
-                  <a
-                    href="https://discord.gg/learnhouse"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-3 py-2 text-sm text-white/70 hover:text-white hover:bg-white/[0.08] cursor-pointer transition-colors"
-                  >
-                    <DiscordIcon size={16} />
-                    <span>{t('common.help_menu.discord')}</span>
-                  </a>
-                </HoverMenuItem>
+                {getBrandCommunityUrl() && (
+                  <HoverMenuItem asChild>
+                    <a
+                      href={getBrandCommunityUrl()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-3 py-2 text-sm text-white/70 hover:text-white hover:bg-white/[0.08] cursor-pointer transition-colors"
+                    >
+                      <DiscordIcon size={16} />
+                      <span>{t('common.help_menu.discord')}</span>
+                    </a>
+                  </HoverMenuItem>
+                )}
                 <HoverMenuSeparator />
                 <HoverMenuItem
                   onClick={() => setFeedbackModalOpen(true)}

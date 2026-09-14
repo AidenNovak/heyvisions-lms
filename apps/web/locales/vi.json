@@ -44,11 +44,11 @@
     "help": "Trợ giúp",
     "help_menu": {
       "documentation": "Tài liệu",
-      "website": "Trang web LearnHouse",
+      "website": "Trang web {{brand}}",
       "discord": "Discord",
       "report_feedback": "Báo cáo vấn đề hoặc phản hồi",
       "feedback_title": "Gửi Phản hồi",
-      "feedback_description": "Giúp chúng tôi cải thiện LearnHouse bằng cách chia sẻ suy nghĩ, báo cáo lỗi hoặc đề xuất tính năng mới.",
+      "feedback_description": "Giúp chúng tôi cải thiện {{brand}} bằng cách chia sẻ suy nghĩ, báo cáo lỗi hoặc đề xuất tính năng mới.",
       "feedback_placeholder": "Cho chúng tôi biết bạn đang nghĩ gì...",
       "feedback_success": "Cảm ơn phản hồi của bạn!",
       "send_feedback": "Gửi Phản hồi",
@@ -4825,7 +4825,6 @@
         "description": "Tài nguyên giúp bạn tận dụng tối đa LearnHouse.",
         "classroom": "Lớp học",
         "classroom_desc": "Tìm hiểu cách phát triển và quản lý khóa học",
-        "university": "Đại học LearnHouse",
         "university_desc": "Hướng dẫn, mẹo và thực hành tốt nhất"
       },
       "add_content": {
@@ -5660,7 +5659,7 @@
         "title": "Muốn dùng thử?",
         "body": "Hãy đến",
         "link": "trang Nhà phát triển",
-        "suffix": "để trải nghiệm LearnHouse."
+        "suffix": "để trải nghiệm {{brand}}."
       },
       "validation": {
         "required": "Bắt buộc",

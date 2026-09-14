@@ -1,9 +1,13 @@
-# HeyVisions fork — 本地开发用的数据服务。
+# Yet to Dawn fork — 本地开发用的数据服务。
 #
 # 上游官方推荐 `npx learnhouse dev`；这份 compose 是给本地跑 API + Web 时用的，
 # 端口避开本机已占用的 5432/6379，Postgres 用 pgvector 镜像（课程 embedding 需要）。
 #
 #   docker compose -f scripts/heyvisions/docker-compose.yml up -d
+#
+# 端口只绑 127.0.0.1：API 与 Web 都在同一台机器上，通过 loopback 连接。
+# 绑成 0.0.0.0 时 Docker 会绕开 ufw 直接发布端口，数据库凭据是开发用的固定值，
+# 等于把库放到公网上（构建机同时是生产机）。
 services:
   postgres:
     image: pgvector/pgvector:pg16
@@ -13,7 +17,7 @@ services:
       POSTGRES_PASSWORD: learnhouse
       POSTGRES_DB: learnhouse
     ports:
-      - "15432:5432"
+      - "127.0.0.1:15432:5432"
     volumes:
       - hv-lms-pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -26,7 +30,7 @@ services:
     image: redis:7-alpine
     container_name: hv-lms-redis
     ports:
-      - "16379:6379"
+      - "127.0.0.1:16379:6379"
 
 volumes:
   hv-lms-pgdata:

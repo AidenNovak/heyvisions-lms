@@ -17,7 +17,7 @@ The pieces, and where each one comes from:
                       absolute URL.
 * ``brand_color``   — ``customization.general.color``; tints the CTA button.
 * ``powered_by``    — ``customization.general.watermark``; renders the small
-                      "Powered by LearnHouse" footer line. Always on for the
+                      "Powered by <site name>" footer line. Always on for the
                       open-source edition and for SaaS free-plan orgs; a paid
                       SaaS plan or an Enterprise licence may turn it off.
 """
@@ -32,8 +32,19 @@ from fastapi import Request
 
 _HEX_COLOR_RE = re.compile(r"^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
 
-# Site of the platform, for the "Powered by" footer link.
-POWERED_BY_URL = "https://www.learnhouse.io"
+
+def powered_by_url() -> str:
+    """Site the "Powered by <platform>" footer line links to; "" for none.
+
+    Upstream hardcoded ``https://www.learnhouse.io`` here, which on a
+    white-labeled deployment sends the reader to a third party. Resolve the
+    deployment's own site instead (``LEARNHOUSE_PLATFORM_URL``, else the
+    configured non-localhost frontend domain); when nothing resolves, callers
+    render the line as plain text rather than as a dead or foreign link.
+    """
+    from src.services.email.utils import _configured_frontend_base_url
+
+    return _configured_frontend_base_url() or ""
 
 
 def normalize_brand_color(raw: Any) -> Optional[str]:
@@ -98,7 +109,7 @@ def resolve_org_brand_color(org_config) -> Optional[str]:
 
 
 def resolve_org_powered_by(org_config) -> bool:
-    """Whether this org's mail carries the "Powered by LearnHouse" line.
+    """Whether this org's mail carries the "Powered by <site name>" line.
 
     Always shown on the open-source edition: attribution is part of the OSS
     deal, whatever the stored ``watermark`` flag says. On SaaS it is always

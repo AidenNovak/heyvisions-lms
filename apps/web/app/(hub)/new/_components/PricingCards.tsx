@@ -28,6 +28,7 @@ import {
   type PriceOverrides,
   type PlanLimits,
 } from '../../_billing/plans'
+import { getBrandContactUrl } from '@services/config/brand'
 
 export interface PricingCardsProps {
   /** Controlled plan tab — pair with onPlanTypeChange, or omit for uncontrolled. */
@@ -80,6 +81,8 @@ export default function PricingCards({
 }: PricingCardsProps) {
   const [_planType, _setPlanType] = React.useState<'general' | 'personal'>(defaultPlanType)
   const [_annual, _setAnnual] = React.useState(defaultBilling === 'annual')
+  // 商务入口来自品牌配置；留空则不渲染该按钮（详见 services/config/brand.ts）。
+  const brandContactUrl = getBrandContactUrl()
 
   const planType = planTypeProp ?? _planType
   const annual = annualProp ?? _annual
@@ -341,14 +344,16 @@ export default function PricingCards({
                       {renderEnterpriseCta ? (
                         renderEnterpriseCta()
                       ) : (
-                        <a
-                          href="https://learnhouse.app/contact?subject=business"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-block mt-6 px-5 py-2.5 text-[14px] font-bold bg-white text-black rounded-lg hover:bg-white/90 transition-colors"
-                        >
-                          Talk to us
-                        </a>
+                        brandContactUrl && (
+                          <a
+                            href={brandContactUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-block mt-6 px-5 py-2.5 text-[14px] font-bold bg-white text-black rounded-lg hover:bg-white/90 transition-colors"
+                          >
+                            Talk to us
+                          </a>
+                        )
                       )}
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-5 lg:pt-1">

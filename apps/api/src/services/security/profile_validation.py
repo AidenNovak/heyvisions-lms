@@ -93,8 +93,12 @@ def strip_urls(value: Optional[str]) -> str:
     return re.sub(r"\s+", " ", cleaned).strip()
 
 
-def sanitize_display_name(value: Optional[str], *, fallback: str = "A LearnHouse user") -> str:
+def sanitize_display_name(value: Optional[str], *, fallback: str = "A user") -> str:
     """Return a link-free display name suitable for rendering into emails.
-    Falls back to a neutral label if stripping leaves nothing meaningful."""
+    Falls back to a neutral label if stripping leaves nothing meaningful.
+
+    The default is deliberately brand-free: this value is rendered into
+    organization-scoped mail (``@{inviter}``), which must never name the
+    platform."""
     cleaned = strip_urls(value)
     return cleaned if len(cleaned) >= 2 else fallback

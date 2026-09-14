@@ -13,7 +13,7 @@ from pydantic import EmailStr
 from fastapi import Request
 import resend
 from config.config import get_learnhouse_config
-from src.services.email.sender import DEFAULT_SENDER_NAME, format_sender
+from src.services.email.sender import default_sender_name, format_sender
 
 logger = logging.getLogger(__name__)
 
@@ -270,7 +270,7 @@ def get_org_logo_url(org, request: Optional[Request] = None) -> Optional[str]:
 
     Mirrors the frontend's ``getOrgLogoMediaDirectory`` path shape
     (``content/orgs/{uuid}/logos/{file}``). Returns None so callers fall back
-    to the default LearnHouse mark.
+    to the deployment's own mark.
     """
     logo_image = getattr(org, "logo_image", None)
     org_uuid = getattr(org, "org_uuid", None)
@@ -280,7 +280,7 @@ def get_org_logo_url(org, request: Optional[Request] = None) -> Optional[str]:
     if not base:
         # No absolute media host resolvable (no request, nothing configured).
         # A relative src would render broken in every mail client, so fall
-        # back to the default LearnHouse mark instead.
+        # back to the deployment's own mark instead.
         return None
     return f"{base}/content/orgs/{org_uuid}/logos/{logo_image}"
 
@@ -439,10 +439,15 @@ def send_email(
 
     lh_config = get_learnhouse_config()
     mailing = lh_config.mailing_config
+    # A config object predating ``system_email_sender_name`` (an older config
+    # module, a test double) has no opinion on the name: fall back to the
+    # deployment's own site name rather than to a hardcoded one. An explicit
+    # empty string is still honoured as "no display name".
+    configured_sender_name = getattr(mailing, "system_email_sender_name", None)
     sender = format_sender(
         sender_name,
         mailing.system_email_address,
-        getattr(mailing, "system_email_sender_name", DEFAULT_SENDER_NAME),
+        default_sender_name() if configured_sender_name is None else configured_sender_name,
     )
 
     # Resend (and most providers) require a plain `email@example.com` string.

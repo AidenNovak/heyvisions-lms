@@ -38,6 +38,7 @@ import {
 import { FilePenLine } from 'lucide-react'
 import { useOrg } from '@components/Contexts/OrgContext'
 import { getUriWithOrg } from '@services/config/config'
+import { getBrandDocsUrl, getBrandCommunityUrl, getBrandName } from '@services/config/brand'
 import { usePlan } from '@components/Hooks/usePlan'
 import { PlanLevel, planMeetsRequirement } from '@services/plans/plans'
 import PlanBadge from '@components/Dashboard/Shared/PlanRestricted/PlanBadge'
@@ -662,52 +663,59 @@ export default function OnboardingBar() {
                                       </div>
                                     )}
 
-                                  {/* Teach the world — LearnHouse University link */}
+                                  {/* 学习资源卡：上游这里固定链到 LearnHouse University 与
+                                      The Classroom（都是上游自己的站点）。白标平台默认没有
+                                      对应资源，所以两个链接都走品牌配置，未配置就整块不渲染 ——
+                                      而不是把用户送去第三方站点。 */}
                                   {step.id === 'teach_the_world' &&
                                     !step.completed && (
                                       <div className="relative px-3 pb-3 space-y-2">
-                                        <a
-                                          href="https://university.learnhouse.io"
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className="flex items-center gap-3 px-4 py-3 rounded-lg bg-white nice-shadow hover:bg-gray-50 transition-colors"
-                                        >
-                                          <img
-                                            src="/UNI_LOGO.png"
-                                            alt="LearnHouse University"
-                                            className="h-9 w-auto shrink-0 rounded"
-                                          />
-                                          <div className="min-w-0">
-                                            <p className="text-xs font-semibold text-gray-700">
-                                              {t('onboarding.steps.teach_the_world.university')}
-                                            </p>
-                                            <p className="text-[11px] text-gray-400">
-                                              {t('onboarding.steps.teach_the_world.university_desc')}
-                                            </p>
-                                          </div>
-                                          <span className="text-gray-300 shrink-0 ms-auto">→</span>
-                                        </a>
-                                        <a
-                                          href="https://classroom.learnhouse.io"
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className="flex items-center gap-3 px-4 py-3 rounded-lg bg-white nice-shadow hover:bg-gray-50 transition-colors"
-                                        >
-                                          <img
-                                            src="/theclassroom.png"
-                                            alt="The Classroom"
-                                            className="h-9 w-auto shrink-0 rounded"
-                                          />
-                                          <div className="min-w-0">
-                                            <p className="text-xs font-semibold text-gray-700">
-                                              {t('onboarding.steps.teach_the_world.classroom')}
-                                            </p>
-                                            <p className="text-[11px] text-gray-400">
-                                              {t('onboarding.steps.teach_the_world.classroom_desc')}
-                                            </p>
-                                          </div>
-                                          <span className="text-gray-300 shrink-0 ms-auto">→</span>
-                                        </a>
+                                        {getBrandDocsUrl() && (
+                                          <a
+                                            href={getBrandDocsUrl()}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-center gap-3 px-4 py-3 rounded-lg bg-white nice-shadow hover:bg-gray-50 transition-colors"
+                                          >
+                                            <img
+                                              src="/lrn-dash.svg"
+                                              alt=""
+                                              className="h-9 w-9 shrink-0 rounded object-contain p-1.5"
+                                            />
+                                            <div className="min-w-0">
+                                              <p className="text-xs font-semibold text-gray-700">
+                                                {t('onboarding.steps.teach_the_world.university')}
+                                              </p>
+                                              <p className="text-[11px] text-gray-400">
+                                                {t('onboarding.steps.teach_the_world.university_desc')}
+                                              </p>
+                                            </div>
+                                            <span className="text-gray-300 shrink-0 ms-auto">→</span>
+                                          </a>
+                                        )}
+                                        {getBrandCommunityUrl() && (
+                                          <a
+                                            href={getBrandCommunityUrl()}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-center gap-3 px-4 py-3 rounded-lg bg-white nice-shadow hover:bg-gray-50 transition-colors"
+                                          >
+                                            <img
+                                              src="/lrn-dash.svg"
+                                              alt=""
+                                              className="h-9 w-9 shrink-0 rounded object-contain p-1.5"
+                                            />
+                                            <div className="min-w-0">
+                                              <p className="text-xs font-semibold text-gray-700">
+                                                {t('onboarding.steps.teach_the_world.classroom')}
+                                              </p>
+                                              <p className="text-[11px] text-gray-400">
+                                                {t('onboarding.steps.teach_the_world.classroom_desc')}
+                                              </p>
+                                            </div>
+                                            <span className="text-gray-300 shrink-0 ms-auto">→</span>
+                                          </a>
+                                        )}
                                         <button
                                           onClick={() => {
                                             track(AnalyticsEvent.OnboardingStepCompleted, { step_id: 'teach_the_world' })

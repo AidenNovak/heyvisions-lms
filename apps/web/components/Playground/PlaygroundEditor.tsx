@@ -24,6 +24,7 @@ import { queryKeys } from '@/lib/query/keys'
 import { startPlaygroundSession, iteratePlayground } from '@services/playgrounds/generator'
 import { updatePlayground, Playground } from '@services/playgrounds/playgrounds'
 import { useLHAnalytics, AnalyticsEvent } from '@services/analytics'
+import { getBrandName } from '@services/config/brand'
 
 interface Course {
   course_uuid: string
@@ -57,7 +58,7 @@ const logoAnimations: { initial: TargetAndTransition; animate: TargetAndTransiti
   },
 ]
 
-const EditorLearnHouseLogo = () => {
+const EditorBrandLogo = () => {
   const [animation] = useState(
     () => logoAnimations[Math.floor(Math.random() * logoAnimations.length)]
   )
@@ -68,7 +69,7 @@ const EditorLearnHouseLogo = () => {
         animate={animation.animate}
         transition={animation.transition}
       >
-        <Image src="/lrn.svg" alt="LearnHouse" width={14} height={14} className="invert" />
+        <Image src="/lrn.svg" alt={getBrandName()} width={14} height={14} className="invert" />
       </motion.div>
     </div>
   )
@@ -285,7 +286,7 @@ export default function PlaygroundEditor({
       >
         {/* Logo */}
         <Link href="/">
-          <EditorLearnHouseLogo />
+          <EditorBrandLogo />
         </Link>
 
         <SlashIcon style={{ color: '#d1d5db', flexShrink: 0 }} />

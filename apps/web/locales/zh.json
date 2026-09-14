@@ -44,7 +44,7 @@
     "help": "帮助",
     "help_menu": {
       "documentation": "文档",
-      "website": "HeyVisions 网站",
+      "website": "Yet to Dawn 网站",
       "discord": "Discord",
       "report_feedback": "报告问题或反馈",
       "feedback_title": "发送反馈",
@@ -4881,7 +4881,6 @@
         "description": "帮助您充分利用 LearnHouse 的资源。",
         "classroom": "课堂",
         "classroom_desc": "了解如何扩展和管理您的课程",
-        "university": "LearnHouse 大学",
         "university_desc": "指南、技巧和最佳实践"
       },
       "add_content": {
@@ -5735,7 +5734,7 @@
         "title": "想先试用一下？",
         "body": "前往",
         "link": "开发者页面",
-        "suffix": "来体验 LearnHouse。"
+        "suffix": "来体验 {{brand}}。"
       },
       "validation": {
         "required": "必填",

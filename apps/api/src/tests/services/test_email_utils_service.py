@@ -10,6 +10,7 @@ from starlette.requests import Request
 
 import resend.exceptions as resend_exceptions
 
+from src.services.email.sender import default_sender_name
 from src.services.email.utils import (
     _is_allowed_base_url,
     get_base_url_from_request,
@@ -41,7 +42,7 @@ def _config(**overrides):
         smtp_password=overrides.pop("smtp_password", "pass"),
         smtp_use_tls=overrides.pop("smtp_use_tls", True),
         system_email_sender_name=overrides.pop(
-            "system_email_sender_name", "LearnHouse"
+            "system_email_sender_name", default_sender_name()
         ),
     )
     return SimpleNamespace(
@@ -299,8 +300,10 @@ class TestEmailUtilsService:
 
         assert result == {"id": "msg-1"}
         assert send_email.__module__ == "src.services.email.utils"
+        from src.services.email.sender import default_sender_name
+
         assert mock_resend_send.call_args.args[0] == {
-            "from": "LearnHouse <system@test.com>",
+            "from": f"{default_sender_name()} <system@test.com>",
             "to": ["to@test.com"],
             "subject": "Hello",
             "html": "<p>Body</p>",
@@ -749,10 +752,15 @@ class TestFormatSender:
         assert addr == "system@test.com"
 
     @pytest.mark.parametrize("display_name", [None, "", "   ", "\r\n"])
-    def test_falls_back_to_platform_default(self, display_name):
-        from src.services.email.sender import format_sender
+    def test_falls_back_to_the_deployments_own_name(self, display_name):
+        """With no display name anywhere, the From line names THIS deployment
+        (config ``site_name``), not upstream's project."""
+        from src.services.email.sender import default_sender_name, format_sender
 
         assert format_sender(display_name, "system@test.com") == (
+            f"{default_sender_name()} <system@test.com>"
+        )
+        assert format_sender(display_name, "system@test.com") != (
             "LearnHouse <system@test.com>"
         )
         assert format_sender(display_name, "system@test.com", "Acme Platform") == (
@@ -809,9 +817,11 @@ class TestSendEmailSenderName:
         ) as mock_resend_send:
             send_email("to@test.com", "Hello", "<p>Body</p>")
 
+        from src.services.email.sender import default_sender_name
+
         assert (
             mock_resend_send.call_args.args[0]["from"]
-            == "LearnHouse <system@test.com>"
+            == f"{default_sender_name()} <system@test.com>"
         )
 
     def test_deployment_default_is_configurable(self):
@@ -883,7 +893,7 @@ class TestSendEmailSenderName:
 
     def test_mailing_config_without_the_field_keeps_current_behaviour(self):
         """An older config object (no ``system_email_sender_name``) must not
-        break — it falls back to the built-in platform name."""
+        break — it falls back to the deployment's own site name."""
         config = _config(email_provider="resend")
         del config.mailing_config.system_email_sender_name
 
@@ -895,7 +905,9 @@ class TestSendEmailSenderName:
         ) as mock_resend_send:
             send_email("to@test.com", "Hello", "<p>Body</p>")
 
+        from src.services.email.sender import default_sender_name
+
         assert (
             mock_resend_send.call_args.args[0]["from"]
-            == "LearnHouse <system@test.com>"
+            == f"{default_sender_name()} <system@test.com>"
         )

@@ -46,11 +46,11 @@
     "help": "Ayuda",
     "help_menu": {
       "documentation": "Documentación",
-      "website": "Sitio web de LearnHouse",
+      "website": "Sitio web de {{brand}}",
       "discord": "Discord",
       "report_feedback": "Reportar problema o comentario",
       "feedback_title": "Enviar comentarios",
-      "feedback_description": "Ayúdanos a mejorar LearnHouse compartiendo tus opiniones, reportando errores o sugiriendo nuevas funciones.",
+      "feedback_description": "Ayúdanos a mejorar {{brand}} compartiendo tus opiniones, reportando errores o sugiriendo nuevas funciones.",
       "feedback_placeholder": "Cuéntanos qué piensas...",
       "feedback_success": "¡Gracias por tu comentario!",
       "send_feedback": "Enviar comentarios",
@@ -5063,7 +5063,6 @@
         "description": "Recursos para ayudarte a sacar el máximo provecho de LearnHouse.",
         "classroom": "El aula",
         "classroom_desc": "Aprende a hacer crecer y gestionar tus cursos",
-        "university": "Universidad LearnHouse",
         "university_desc": "Guías, consejos y mejores prácticas"
       },
       "add_content": {
@@ -5636,7 +5635,7 @@
         "title": "¿Quieres probarlo?",
         "body": "Ve a la",
         "link": "página de Desarrolladores",
-        "suffix": "para probar LearnHouse en su lugar."
+        "suffix": "para probar {{brand}} en su lugar."
       },
       "validation": {
         "required": "Obligatorio",

@@ -49,8 +49,11 @@ def main() -> int:
     args = ap.parse_args()
 
     locales_dir = Path(args.locales)
-    # 词边界，避免误伤 LearnHouseXxx 这类键名或衍生词
-    brand_pattern = re.compile(rf"\b{re.escape(args.brand)}\b")
+    # 用「两侧不是拉丁字母」而不是 `\b`：`\b` 在 CJK 语境下会失效
+    # （"LearnHouse大学"、"LearnHouse에" 里品牌名后面紧跟的是非 ASCII 的单词字符，
+    # Python 认为那里没有词边界），ja/ko 的硬编码就是这样被漏掉的。
+    # 这里只要求两侧不是拉丁字母，既避免误伤 LearnHouseXxx，也覆盖 CJK 相连的写法。
+    brand_pattern = re.compile(rf"(?<![A-Za-z]){re.escape(args.brand)}(?![A-Za-z])")
 
     total = 0
     for path in sorted(locales_dir.glob("*.json")):

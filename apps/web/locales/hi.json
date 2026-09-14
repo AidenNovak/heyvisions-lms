@@ -46,11 +46,11 @@
     "help": "सहायता",
     "help_menu": {
       "documentation": "दस्तावेज़ीकरण",
-      "website": "LearnHouse वेबसाइट",
+      "website": "{{brand}} वेबसाइट",
       "discord": "Discord",
       "report_feedback": "समस्या या फीडबैक रिपोर्ट करें",
       "feedback_title": "फीडबैक भेजें",
-      "feedback_description": "अपने विचार साझा करके, बग रिपोर्ट करके, या नई सुविधाओं का सुझाव देकर LearnHouse को बेहतर बनाने में हमारी मदद करें।",
+      "feedback_description": "अपने विचार साझा करके, बग रिपोर्ट करके, या नई सुविधाओं का सुझाव देकर {{brand}} को बेहतर बनाने में हमारी मदद करें।",
       "feedback_placeholder": "हमें बताएं कि आप क्या सोच रहे हैं...",
       "feedback_success": "आपके फीडबैक के लिए धन्यवाद!",
       "send_feedback": "फीडबैक भेजें",
@@ -5079,7 +5079,6 @@
         "description": "LearnHouse से अधिकतम लाभ उठाने में मदद करने के लिए संसाधन।",
         "classroom": "क्लासरूम",
         "classroom_desc": "अपने कोर्स को बढ़ाना और प्रबंधित करना सीखें",
-        "university": "LearnHouse विश्वविद्यालय",
         "university_desc": "गाइड, टिप्स और सर्वोत्तम अभ्यास"
       },
       "add_content": {
@@ -5658,7 +5657,7 @@
         "title": "परीक्षण करना चाहते हैं?",
         "body": "जाएँ",
         "link": "डेवलपर पेज",
-        "suffix": "पर और इसके बजाय LearnHouse आज़माएँ।"
+        "suffix": "पर और इसके बजाय {{brand}} आज़माएँ।"
       },
       "validation": {
         "required": "आवश्यक",

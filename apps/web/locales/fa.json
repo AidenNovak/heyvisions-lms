@@ -48,11 +48,11 @@
     "help": "راهنما",
     "help_menu": {
       "documentation": "مستندات",
-      "website": "وب‌سایت LearnHouse",
+      "website": "وب‌سایت {{brand}}",
       "discord": "دیسکورد",
       "report_feedback": "گزارش مشکل یا بازخورد",
       "feedback_title": "ارسال بازخورد",
-      "feedback_description": "با به اشتراک گذاشتن نظرات، گزارش اشکالات یا پیشنهاد ویژگی‌های جدید به ما در بهبود LearnHouse کمک کنید.",
+      "feedback_description": "با به اشتراک گذاشتن نظرات، گزارش اشکالات یا پیشنهاد ویژگی‌های جدید به ما در بهبود {{brand}} کمک کنید.",
       "feedback_placeholder": "به ما بگویید چه فکری دارید...",
       "feedback_success": "از بازخورد شما متشکریم!",
       "send_feedback": "ارسال بازخورد",
@@ -5134,7 +5134,6 @@
         "description": "منابعی برای کمک به شما در استفاده حداکثری از LearnHouse.",
         "classroom": "کلاس درس",
         "classroom_desc": "نحوه رشد و مدیریت دوره‌های خود را بیاموزید",
-        "university": "دانشگاه LearnHouse",
         "university_desc": "راهنماها، نکات و بهترین روش‌ها"
       },
       "add_content": {
@@ -5507,7 +5506,7 @@
         "title": "می‌خواهید امتحان کنید؟",
         "body": "به",
         "link": "صفحه توسعه‌دهندگان",
-        "suffix": "بروید تا LearnHouse را امتحان کنید."
+        "suffix": "بروید تا {{brand}} را امتحان کنید."
       },
       "validation": {
         "required": "الزامی",

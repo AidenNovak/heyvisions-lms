@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import { queryKeys } from '@/lib/query/keys'
 import { getUriWithOrg } from '@services/config/config'
-import { getBrandName } from '@services/config/brand'
+import { getBrandName, getBrandSiteUrl, getBrandDocsUrl, getBrandCommunityUrl } from '@services/config/brand'
 import { fetchRAGChatSessions, RAGChatSession } from '@services/ai/ai'
 import { HeaderProfileBox } from '@components/Security/HeaderProfileBox'
 import MenuLinks from './OrgMenuLinks'
@@ -160,12 +160,12 @@ export const OrgMenu = (props: any) => {
                   {org?.logo_image ? (
                     <img
                       src={`${getOrgLogoMediaDirectory(org.org_uuid, org?.logo_image)}`}
-                      alt="Learnhouse"
+                      alt={getBrandName()}
                       style={{ width: 'auto', height: '100%' }}
                       className="rounded-md"
                     />
                   ) : (
-                    <LearnHouseLogo logoFilter={colors.logoFilter} />
+                    <BrandLogo logoFilter={colors.logoFilter} />
                   )}
                 </div>
               </Link>
@@ -314,39 +314,43 @@ export const OrgMenu = (props: any) => {
                       <span>{t('common.help')}</span>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
+                    {getBrandDocsUrl() && (
+                      <DropdownMenuItem asChild>
+                        <a
+                          href={getBrandDocsUrl()}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2"
+                        >
+                          <Book size={16} weight="fill" />
+                          <span>{t('common.help_menu.documentation')}</span>
+                        </a>
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem asChild>
                       <a
-                        href="https://docs.learnhouse.app"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2"
-                      >
-                        <Book size={16} weight="fill" />
-                        <span>{t('common.help_menu.documentation')}</span>
-                      </a>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <a
-                        href="https://learnhouse.app"
+                        href={getBrandSiteUrl()}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2"
                       >
                         <Globe size={16} weight="fill" />
-                        <span>{t('common.help_menu.website')}</span>
+                        <span>{t('common.help_menu.website', { brand: getBrandName() })}</span>
                       </a>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <a
-                        href="https://discord.gg/learnhouse"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2"
-                      >
-                        <DiscordIcon size={16} />
-                        <span>{t('common.help_menu.discord')}</span>
-                      </a>
-                    </DropdownMenuItem>
+                    {getBrandCommunityUrl() && (
+                      <DropdownMenuItem asChild>
+                        <a
+                          href={getBrandCommunityUrl()}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2"
+                        >
+                          <DiscordIcon size={16} />
+                          <span>{t('common.help_menu.discord')}</span>
+                        </a>
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={() => setFeedbackModalOpen(true)}
@@ -558,14 +562,17 @@ const CopilotMenuButton = ({
   )
 }
 
-const LearnHouseLogo = ({ logoFilter }: { logoFilter: string }) => {
+const BrandLogo = ({ logoFilter }: { logoFilter: string }) => {
+  // 字标很宽（viewBox 100 × 9.28）。按宽度定尺会让它在导航里显得又小又扁，
+  // 所以按高度定尺 —— 字标的视觉分量由字高决定，宽度随比例自适应。
+  // 外层容器是 h-9 且带 py-1，可用高度 28px，这里取整字号。
   return (
     <Image
       src="/lrn-text.svg"
       alt={`${getBrandName()} logo`}
-      width={133}
-      height={40}
-      style={{ height: 'auto', filter: logoFilter }}
+      width={216}
+      height={20}
+      style={{ height: '20px', width: 'auto', filter: logoFilter }}
     />
   )
 }

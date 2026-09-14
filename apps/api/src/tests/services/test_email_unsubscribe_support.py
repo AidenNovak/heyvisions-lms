@@ -244,11 +244,21 @@ class TestNudgeRendering:
         assert "List-Unsubscribe" not in headers
         assert "List-Unsubscribe-Post" not in headers
 
-    def test_reply_to_is_set(self):
+    def test_reply_to_is_set(self, monkeypatch):
         """Several nudges invite a reply; from a no-reply sender that would be
-        a lie."""
+        a lie. The reply address is the deployment's own contact mailbox
+        (unset by default — a white-labeled fork must not send replies to
+        upstream's address), so it is configured here."""
+        monkeypatch.setenv("LEARNHOUSE_CONTACT_EMAIL", "support@acme.test")
         captured = self._send()
-        assert "@" in captured["headers"]["Reply-To"]
+        assert captured["headers"]["Reply-To"] == "support@acme.test"
+
+    def test_no_contact_address_means_no_reply_to(self):
+        """With no contact mailbox configured the header is omitted rather than
+        pointed at someone else's inbox."""
+        captured = self._send()
+        headers = captured["headers"] or {}
+        assert "Reply-To" not in headers
 
     def test_cta_button_is_rendered(self):
         captured = self._send()

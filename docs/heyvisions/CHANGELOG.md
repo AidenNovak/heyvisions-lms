@@ -15,6 +15,9 @@
 | 4 | 课程内容导入脚本入库 | [#7](https://github.com/AidenNovak/heyvisions-lms/issues/7) | [#10](https://github.com/AidenNovak/heyvisions-lms/pull/10) | 无（纯新增目录） |
 | 5 | 简体中文设为默认语言并核对 zh 文案 | [#6](https://github.com/AidenNovak/heyvisions-lms/issues/6) | [#13](https://github.com/AidenNovak/heyvisions-lms/pull/13) | `organization_config.py`、`locales/*.json`（22 个语言文件） |
 | 6 | 视觉令牌对齐 heyvisions.com | [#4](https://github.com/AidenNovak/heyvisions-lms/issues/4) | [#14](https://github.com/AidenNovak/heyvisions-lms/pull/14) | `app/layout.tsx`、`lib/fonts.ts`、`styles/globals.css` |
+| 7 | 品牌改名：HeyVisions → Yet to Dawn | [#15](https://github.com/AidenNovak/heyvisions-lms/issues/15) | [#16](https://github.com/AidenNovak/heyvisions-lms/pull/16) | `services/config/brand.ts`、`lrn-text.svg`、`locales/zh.json`、`public/hv/`（删除） |
+| 8 | 品牌残留清扫：图片、界面文案、域名与邮件 | [#15](https://github.com/AidenNovak/heyvisions-lms/issues/15) | [#16](https://github.com/AidenNovak/heyvisions-lms/pull/16) | 见下方第 8 条 |
+| 9 | 品牌残留清扫（续）：API 侧与构建产物 | [#15](https://github.com/AidenNovak/heyvisions-lms/issues/15) | [#16](https://github.com/AidenNovak/heyvisions-lms/pull/16) | 见下方第 9 条 |
 
 ## 1. fork 维护流程与改动记录
 
@@ -98,13 +101,129 @@
   这些多用于管理员后台与编辑器，学习者主路径（课程列表、课时阅读）不涉及；
   全量替换工作量大且会大面积冲突，判断为不值得。
 
+## 7. 品牌改名：HeyVisions → Yet to Dawn
+
+- **改什么**：平台品牌名改为 Yet to Dawn，主站地址改为 `yettodawn.com`。
+  `lrn-text.svg` 由 `<text>HeyVisions</text>` 换成从品牌稿拟合的「YET TO DAWN」矢量轮廓；
+  删除已无引用的 `public/hv/`（第 2 条遗留的旧品牌源文件）。
+- **为什么**：静态站已改用新品牌与配套域名，学习平台是同一产品的帐号与进度层，
+  两处品牌名不一致会像两个产品。第 2 条把品牌收进了 `brand.ts`，
+  所以改名只动一处默认值，未散落到组件里 —— 这正是当初抽配置的目的。
+- **影响范围**：`apps/web/services/config/brand.ts`（默认值）、`apps/web/public/lrn-text.svg`
+  （内容）、`apps/web/locales/zh.json`（`common.help_menu.website` 一处）、
+  `components/Objects/Menus/OrgMenu.tsx`（字标改为按高度定尺）、
+  若干 `alt` 与注释、`public/hv/`（删除）、`scripts/heyvisions/*`。
+- **与上游的关系**：`lrn-text.svg` **沿用文件名**，与第 2 条的策略一致；
+  同步时若上游更新了它的内容，固定保留本仓库版本。
+- **字标改成矢量轮廓的原因**：原文件是 `<text>` + 字体栈，靠浏览器字体渲染。
+  服务器端没有这些字体，不同机器渲染出的字宽与字形都不一致，而 logo 不该随环境变形；
+  品牌稿用的是几何无衬线体，系统字体栈里没有对应字形。
+  拟合脚本 `scripts/heyvisions/fit-wordmark.py` 的要点写在它自己的 docstring 里，
+  其中最容易做错的一条是**字母带孔**：O、D、A 中间的空隙要靠
+  `fill-rule="evenodd"` 表达，不能像实心标记那样把孔补上，否则 O 会糊成实心块。
+- **未覆盖**：`docs/heyvisions/CHANGELOG.md` 第 2、3 条与 `docs/heyvisions/design-tokens.md`
+  里仍写着旧品牌名 —— 那是历史记录，改写等于造假，保留原样。
+
+## 8. 品牌残留清扫：图片、界面文案、域名与邮件
+
+第 7 条只改了「名字」，界面里还有一批**旧品牌的载体**没跟着走：位图里的字、硬编码在
+组件与 22 个 locale 里的域名与产品名、以及发给用户的邮件。这一条把它们收干净。
+
+- **改什么**：
+  1. **位图重做**。`public/` 下 13 张图里仍有旧标识：`black_logo.png`（404 页，图里就是
+     "HeyVisions" 字标）、`learnhouse_ai_black_logo.png`（AI 对话头部，图里是 "HV"）、
+     `learnhouse_ai_simple.png`/`lrnai_icon.png`（上游标记的实心块）、
+     `learnhouse_ai_simple_colored.png`/`ai_avatar.png`（上游紫色标 + 星芒）、
+     `empty_thumbnail.png`（缩略图兜底图里的上游字形）、`dashLogo.png`。
+     新增 `scripts/heyvisions/build-brand-pngs.py` 与它依赖的 `svgkit.py` 重新生成。
+  2. **界面文案**。页标题与 metadata（登录/注册/找回/重置/验证、管理员、后台、课程页）
+     改从 `getBrandName()` 取；`org?.name || 'LearnHouse'` 这类兜底（登录面板、移动端
+     头部、结业证书、品牌预览）同上；帮助菜单、引导卡片、API 访问页的**上游链接**
+     （docs/discord/university/classroom）改为品牌配置驱动，未配置就不渲染；
+     品牌设置页样张里模拟地址栏的 `learnhouse.io` 改用 `getBrandHost()`；
+     会话共享开关的文案、错误页支持链接、EE 横幅、版本失配提示、下载文件名同理。
+  3. **locale 收尾**。`localize-remaining.py` 把 7 个自指键在 22 个语言里变量化为
+     `{{brand}}`；上游专有资源名（LearnHouse University / The Classroom）英文改写、
+     其余语言删键回落。
+  4. **邮件**。Web 端模板的头图不再从上游站点拉取，发件人默认值、欢迎/联系邮件、
+     Loops 来源标识改用品牌配置。
+- **为什么**：第 7 条把品牌名收进了 `brand.ts`，但**图片里的字不读配置**，域名与
+  产品名也仍散在组件里。用户在这几处仍会看到旧品牌或上游域名 —— 对外交付的平台上
+  出现第三方品牌与第三方域名是 bug。
+- **影响范围**：`apps/web/public/`（10 个位图，文件名沿用上游）、
+  `apps/web/services/config/brand.ts`（新增 5 个取值函数）、约 25 个组件与页面、
+  `apps/web/locales/*.json`（22 个文件）、`scripts/heyvisions/`（新增 3 个脚本）。
+- **与上游的关系**：位图**沿用上游文件名**（`learnhouse_*`），只换内容 —— 与第 2、7 条
+  同一策略，把同步冲突压到最小。组件改动集中在「文案取值」这一层，不重构结构。
+  locale 的 `{{brand}}` 变量化会与上游的翻译更新冲突，冲突是机械的。
+- **脚本修复**：`localize-brand-strings.py`（第 5 条引入）与 `fit-wordmark.py` 的正则用
+  `\b` 匹配品牌名，在 CJK 语境下失效（`LearnHouse大学`、`LearnHouseアカデミー` 里
+  品牌名后紧跟的是非 ASCII 单词字符，Python 认为没有词边界），ja/ko 的硬编码因此被
+  静默漏掉。改用「两侧不是拉丁字母」判据后两个脚本收敛到同一结果。
+- **判断为「不改」的**（理由各自不同，都不是遗漏）：
+  - `courses.import.learnhouse_*` 与 `dashboard.courses.import_learnhouse*`：这里的
+    LearnHouse 指**外部导入格式**（「导入 LearnHouse 导出的 zip」），改名会让功能说不通。
+  - 水印相关文案与 `public/upstream/`：开 `NEXT_PUBLIC_BRAND_WATERMARK` 时应显示
+    **真的上游标识**，署名第三方却用自家 logo 是错的。
+  - 代码标识符（`learnhouseIcon`、`LearnHousePlayer`、`LearnHousePlanType` 等）与注释：
+    不渲染给用户，改名只会扩大同步冲突面。
+  - 无调用点的死键（`showcase_explore`、`teach_the_world.description`、
+    `dashboard.home.learnhouse_university`）：已核对全仓无引用，不渲染，改它只制造 diff。
+
+## 9. 品牌残留清扫（续）：API 侧与构建产物
+
+第 8 条按「界面渲染出来的东西」扫，覆盖面是 `apps/web`。这一条补上两处它够不到的地方：
+**API 自己发出的字符串**，以及**只有打包进构建产物才看得见的常量**。
+
+- **改什么**：
+  1. **API 对外字符串**。`GET /` 返回 `Welcome to LearnHouse ✨`（公开端点）；
+     MFA 的 `TOTP_ISSUER` 写死上游名，会出现在每位用户的验证器 App 里；
+     webhook 外发请求的 `User-Agent` 与测试事件正文、课程导入的报错文案、
+     AI 供应商面板的 `app_title` 兜底同理。全部改为从 `config.yaml` 的
+     `site_name` 取值（复用邮件侧已有的 `brand_name()`）。
+  2. **站内联系入口**。`_support_url()` 返回上游客服邮箱 `hello@learnhouse.app`，
+     且 `contact_email` 的默认值也是它 —— 白标部署上等于把用户引导给上游。
+     `contact_email` 默认改为空，魔法链接错误页在没有配置联系地址时**不渲染**按钮。
+  3. **SaaS 专属入口**。定价页的 "Talk to us" 硬链 `learnhouse.app/contact`；
+     新增 `getBrandContactUrl()`（默认空），未配置则不渲染该按钮。
+  4. **孤儿素材**。`public/UNI_LOGO.png`（紫色大学标）与 `public/theclassroom.png`
+     （第三方课程平台标）已无任何引用却仍可公开访问 —— 那是别人的商标挂在自家域名下，
+     删除。二者都不在品牌位图生成脚本的清单里，删掉不会影响重生成。
+- **为什么**：第 8 条查的是「页面上看得见的文字」，而 API 返回体、验证器里的发行方、
+  外发 webhook 的 UA 都不经过页面。构建产物层面也只在打包后才暴露 —— 源码里搜不到，
+  因为字符串来自组件被静态展开后的结果。
+- **影响范围**：`apps/api/{app.py, config/config.yaml}` 与 5 个 service/router，
+  `apps/web/services/config/brand.ts` 与 2 个定价组件，4 个 API 测试（断言改为取自配置，
+  而非写死品牌名），新增 `scripts/heyvisions/server-rebuild-web.sh`（可反复执行的重建：
+  备份 → 清理 → 构建 → 补齐 standalone 产物 → 重启，含内存预检）与
+  `scripts/heyvisions/verify-brand-clean.sh`（交付前只读核对：页面层 / 产物层 / 接口层）。
+- **判断为「不改」的**：
+  - 水印组件（`Watermark.tsx`、org 页脚）：受 `NEXT_PUBLIC_BRAND_WATERMARK` 控制，
+    默认关闭、已确认页面 DOM 里不存在。开启时应显示**真的**上游标识 —— 这是署名，
+    不是推广，见第 8 条同一判断。
+  - `public/upstream/` 与 `learnhouse_ai_*` 等沿用上游命名的位图：前者同上，
+    后者内容已换成自有品牌，改名只会扩大与上游同步的冲突面。
+  - 导入格式文案（`courses.import.learnhouse_*`）：指外部导入格式，见第 8 条。
+  - 产物里残余的 `learnhouse.io` 字样：全在注释与 JSDoc 示例里，不渲染。
+  - **未改，但需要决策**：`services/orgs/custom_domains.py` 有两处同源问题。
+    (a) 自定义域名的保留表只挡 `*.learnhouse.io` / `*.learnhouse.app`，**不含本站域名**，
+    租户管理员可以把 `yettodawn.com` 或 `*.yettodawn.com` 注册成自己的自定义域名，
+    通过 TXT 校验后平台就会把该域名路由到他的组织；(b) `LEARNHOUSE_DOMAIN` 的默认值
+    是 `learnhouse.io`，且它同时充当管理端看到的 CNAME 目标与「自有子域自动放行」
+    判据 —— 未设该环境变量时等于告诉管理员把域名 CNAME 到上游主机。
+    修法很小（保留表与默认值都改为从配置解析出的本站域名），但会改变已有数据的
+    校验结果，需要先确认没有组织已经持有同类域名，所以留作决策项而非本次一并改。
+    用于 TXT 校验的 `_learnhouse-verification` / `learnhouse-verify=` 是**内部协议常量**，
+    改它会让管理员已添加的解析记录失效，不应动。
+
 ## 待办
 
 | Issue | 内容 |
 | --- | --- |
-| [#12](https://github.com/AidenNovak/heyvisions-lms/issues/12) | 事务性邮件文案白标（84 处 `LearnHouse`） |
-| — | 上游导入/水印相关文案的取舍（见第 5 条的「未覆盖」） |
+| — | 上游导入/水印相关文案的取舍（见第 5、8 条的「未覆盖」与「不改」） |
 | — | 管理员后台的 340+ 个 zh 未翻译键（学习者路径已覆盖） |
+| — | `custom_domains.py` 的保留域名表只挡 `*.learnhouse.io`，未含本站域名；CNAME 目标的默认值也仍是上游域名（详见下） |
+| — | 部署若需回复邮件与商务联系，需设 `LEARNHOUSE_CONTACT_EMAIL` 与 `NEXT_PUBLIC_BRAND_CONTACT_URL` |
 | — | CF 上 faka/kb/usdt/status/sapi 等死子域记录待清理（与 LMS 无关，工作区遗留项） |
 
 ## 上游同步

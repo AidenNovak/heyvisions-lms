@@ -224,7 +224,7 @@ class GeneralCustomization(BaseModel):
     square_logo_image: str = ""
     watermark: bool = True
     font: str = ""
-    # HeyVisions fork：课程面向中文学习者，新组织的界面语言默认简体中文。
+    # Yet to Dawn fork：课程面向中文学习者，新组织的界面语言默认简体中文。
     # 这是组织级默认值，只在组织还没有存过该字段时生效；已存在的组织保持
     # 各自存下的值，管理员可在后台改。用户如果自己切过语言，仍以用户选择为准
     # （见 components/Contexts/OrgLanguageSync.tsx）。

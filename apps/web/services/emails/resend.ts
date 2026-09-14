@@ -2,6 +2,7 @@ import 'server-only'
 import { Resend } from 'resend'
 import * as React from 'react'
 import { isSaaSMode } from '@lib/saas'
+import { getBrandName, getBrandHost } from '@services/config/brand'
 import { LearnHouseEmail, type LearnHouseEmailProps } from '@components/Emails/LearnHouseEmail'
 
 // Resend transactional email. Lazy singleton so a keyless build/deploy never
@@ -27,8 +28,16 @@ export function isEmailEnabled(): boolean {
   return Boolean(process.env.RESEND_API_KEY)
 }
 
+/**
+ * 默认发件人。
+ *
+ * 上游默认写成 `LearnHouse <hello@emails.learnhouse.app>` —— 那是**上游自己的**
+ * 域名。本站用它既发不出去（Resend 要求发件域名已在本账号验证），真发出去也会
+ * 让收件人看到第三方品牌。所以默认改用品牌名与品牌主域，并在注释里说清：
+ * 正式部署必须把 `RESEND_FROM_EMAIL` 设成自己已验证的地址。
+ */
 const DEFAULT_FROM =
-  process.env.RESEND_FROM_EMAIL || 'LearnHouse <hello@emails.learnhouse.app>'
+  process.env.RESEND_FROM_EMAIL || `${getBrandName()} <hello@${getBrandHost()}>`
 
 export interface SendResult {
   ok: boolean

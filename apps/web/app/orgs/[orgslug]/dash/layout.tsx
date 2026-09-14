@@ -1,9 +1,10 @@
 import { Metadata } from 'next'
 import React from 'react'
 import ClientAdminLayout from './ClientAdminLayout'
+import { getBrandName } from '@services/config/brand'
 
 export const metadata: Metadata = {
-  title: 'LearnHouse Dashboard',
+  title: `${getBrandName()} Dashboard`,
 }
 
 async function DashboardLayout(

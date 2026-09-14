@@ -121,6 +121,19 @@ class TestWhiteLabelTranslations:
                 actual = set(re.findall(r"\{(\w+)\}", value))
                 assert actual == expected, f"{lang}:{key} has {actual}, en has {expected}"
 
-    def test_powered_by_line_exists_everywhere(self):
+    def test_powered_by_line_is_variable_in_every_locale(self):
         for lang in SUPPORTED_LANGUAGES:
-            assert "LearnHouse" in EMAIL_TRANSLATIONS[lang]["common.powered_by"]
+            # The line names the platform ITSELF, so it must carry the {brand}
+            # placeholder (filled from site_name) rather than a literal.
+            assert "{brand}" in EMAIL_TRANSLATIONS[lang]["common.powered_by"]
+
+    def test_no_locale_hardcodes_the_upstream_brand(self):
+        """The bundles are the platform talking about itself — upstream's name
+        must not survive anywhere in them, in any script or position (the CJK
+        cases are what a ``\\b``-based check silently missed)."""
+        import re
+
+        pattern = re.compile(r"(?<![A-Za-z])LearnHouse(?![A-Za-z])")
+        for lang, bundle in EMAIL_TRANSLATIONS.items():
+            for key, value in bundle.items():
+                assert not pattern.search(value), f"{lang}:{key}"
