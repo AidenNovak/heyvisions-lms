@@ -47,9 +47,48 @@ tail -f /srv/heyvisions-run/logs/web.log
   安装到 `/etc/nginx/sites-available/learn.yettodawn.com`。
 - 运行时配置：`/srv/heyvisions-secrets/lms-prod.env`（600，不入 Git）。
   键名见 `scripts/heyvisions/server-install-prod.sh` 的注释；改完 `systemctl restart hv-lms-api`。
+- Web 侧的密钥：`/srv/heyvisions-secrets/lms-web.env`（600，不入 Git）。
+  由 `hv-lms-web.service` 以 `EnvironmentFile=-` 引入（缺文件不报错），装安装脚本时
+  若不存在会自动建一个空骨架。放的是 Web 服务端才需要的凭据：
+  `LEARNHOUSE_GOOGLE_CLIENT_ID`、`LEARNHOUSE_GOOGLE_CLIENT_SECRET`、`RESEND_API_KEY` 等。
+  与 `lms-prod.env` 分开是为了不给 Web 进程塞数据库连接串与 JWT 密钥。改完
+  `systemctl restart hv-lms-web`。
+
+  Google 登录需要**两处**同一个 client id：Web（授权与换 token）与 API
+  （校验 token 的 `aud`，见 `apps/api/src/services/auth/utils.py`），所以
+  `LEARNHOUSE_GOOGLE_CLIENT_ID` 在 `lms-web.env` 与 `lms-prod.env` 里各写一份，
+  client secret 只给 Web。授权重定向 URI 由运行时域名决定，即
+  `https://learn.yettodawn.com/auth/callback/google`。
+  未配置时登录页不渲染这些入口（`services/auth/authCapabilities.ts`），无需手动关。
 - Web 的客户端配置**不在构建里**，而是安装时写进
   `apps/web/.next/standalone/{runtime-config.json,public/runtime-config.js}`。
   因此换域名不需要重新构建，重跑安装脚本即可。
+
+### 部署端源码与仓库的一致性
+
+`server-rebuild-web.sh` 只重建 Web；**API 的 Python 源码是安装时拷一份**，
+之后没有人保证它跟仓库一致。曾经因此出过一次线上故障：
+
+- 现象：Google 登录后界面显示 “Authentication Failed”，只给一个「重试」按钮。
+- 实际：用户**已经写入数据库**（`signup_method=google`），失败发生在之后发欢迎邮件那一步 ——
+  `services/email/branding.py` 比同目录的 `emails.py` 旧一天，
+  `from ... import powered_by_url` 抛 `ImportError`。
+- 为什么难自查：错误只在服务端日志（`/srv/heyvisions-run/logs/api.log`）；
+  且只在 **OAuth 建号**分支触发（密码注册不走这段），常用自测路径发现不了。
+
+所以改动 API 源码后要同步，并跑一次一致性检查：
+
+```bash
+# 只读：列出与仓库不一致的已部署文件，不修改任何东西
+ssh vultr-sg '/srv/heyvisions-lms/scripts/heyvisions/check-deploy-drift.sh'
+
+# 同步（先确认部署端没有手工热修）
+rsync -c -r --exclude='__pycache__' apps/api/src/ vultr-sg:/srv/heyvisions-lms/apps/api/src/
+ssh vultr-sg 'find /srv/heyvisions-lms/apps/api/src -name __pycache__ -type d -exec rm -rf {} + ; systemctl restart hv-lms-api'
+```
+
+改动 API 源码时**必须清 `__pycache__`**：Python 只按源文件 mtime 判断是否重编，
+而 rsync/install 可能保留旧 mtime，导致字节码不刷新、改了像没改。
 
 ### 两个容易踩的坑（都在单元文件里写明了原因）
 
