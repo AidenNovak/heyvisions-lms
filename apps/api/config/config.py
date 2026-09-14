@@ -110,8 +110,10 @@ class MailingConfig(BaseModel):
     # it is the domain carrying the verified SPF/DKIM records, so making it
     # configurable would break DKIM alignment and burn a shared sending
     # reputation. Organizations may override this name per-org; see
-    # ``src/services/email/sender.py``.
-    system_email_sender_name: Optional[str] = "LearnHouse"
+    # ``src/services/email/sender.py``. Defaults to the deployment's own
+    # ``site_name`` (resolved just before this config is built) instead of
+    # upstream's name — ``None`` points the reader at the resolution below.
+    system_email_sender_name: Optional[str] = None
     resend_api_key: Optional[str] = None
     smtp_host: Optional[str] = None
     smtp_port: Optional[int] = 587
@@ -506,11 +508,19 @@ def get_learnhouse_config() -> LearnHouseConfig:
     system_email_address = env_system_email_address or yaml_config.get(
         "mailing_config", {}
     ).get("system_email_address")
-    # Defaults to "LearnHouse" so an unset deployment keeps the historical
-    # From name exactly as it was.
-    system_email_sender_name = env_system_email_sender_name or yaml_config.get(
-        "mailing_config", {}
-    ).get("system_email_sender_name", "LearnHouse")
+    # Defaults to the deployment's own site_name: the From display name is
+    # user-facing copy naming the platform, so an unset deployment must not
+    # send under upstream's name. An explicit empty string still means
+    # "no display name" (bare address), which is why the env/yaml value is
+    # checked for None rather than coerced.
+    _sender_name_setting = env_system_email_sender_name
+    if _sender_name_setting is None:
+        _sender_name_setting = yaml_config.get("mailing_config", {}).get(
+            "system_email_sender_name"
+        )
+    system_email_sender_name = (
+        _sender_name_setting if _sender_name_setting is not None else site_name
+    )
     smtp_host = env_smtp_host or yaml_config.get("mailing_config", {}).get("smtp_host")
     smtp_port = int(env_smtp_port) if env_smtp_port else yaml_config.get("mailing_config", {}).get("smtp_port", 587)
     smtp_username = env_smtp_username or yaml_config.get("mailing_config", {}).get("smtp_username")

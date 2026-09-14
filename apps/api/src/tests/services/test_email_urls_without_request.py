@@ -189,7 +189,7 @@ class TestOrgLogoUrlWithoutRequest:
         self, monkeypatch, clean_env
     ):
         """A relative src renders broken in every mail client, so returning
-        None (and letting the caller use the LearnHouse wordmark) is the only
+        None (and letting the caller use the platform wordmark) is the only
         acceptable outcome."""
         monkeypatch.setattr(
             email_utils, "get_learnhouse_config", lambda: _config(domain="localhost")

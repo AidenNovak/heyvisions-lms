@@ -3,7 +3,7 @@ import React from 'react'
 import Providers from '@components/Providers'
 import { Geist, Tajawal } from 'next/font/google'
 
-// HeyVisions fork：平台默认字体与静态站 heyvisions.com 一致（Geist）。
+// Yet to Dawn fork：平台默认字体与静态站 yettodawn.com 一致（Geist）。
 // 静态站自托管 Geist，这里用 next/font 取同一个字族：字体是「同一个产品」
 // 最直接的信号，换掉上游的 Wix Madefor Text 后两处观感才连续。
 // 中文由 globals.css 里的 PingFang SC / 微软雅黑 兜底（Geist 不含汉字）。

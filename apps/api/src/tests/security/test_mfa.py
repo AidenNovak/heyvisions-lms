@@ -6,6 +6,7 @@ secret encryption round-tripping, the drift window, and replay rejection.
 
 import time
 from datetime import datetime
+from urllib.parse import quote
 
 import pyotp
 import pytest
@@ -24,6 +25,7 @@ from src.services.auth.mfa import (
     generate_totp_secret,
     hash_backup_code,
     replace_backup_codes,
+    totp_issuer,
     verify_and_consume_totp,
     verify_totp_code,
 )
@@ -60,8 +62,12 @@ class TestProvisioningURI:
     def test_contains_issuer_and_account(self):
         uri = build_provisioning_uri(generate_totp_secret(), "learner@example.com")
         assert uri.startswith("otpauth://totp/")
-        assert "issuer=LearnHouse" in uri
+        # 发行方取自配置；authenticator App 里显示的就是它。
+        issuer = totp_issuer()
+        assert f"issuer={quote(issuer)}" in uri
+        assert quote(issuer) in uri.split("totp/", 1)[1].split("?", 1)[0]
         assert "learner%40example.com" in uri
+        assert "LearnHouse" not in uri
 
 
 class TestTOTPVerification:

@@ -23,6 +23,7 @@ import { cn } from '@/lib/utils'
 import { useLHAnalytics, AnalyticsEvent } from '@services/analytics'
 import { useTranslation } from 'react-i18next'
 import { getAPIUrl } from '@services/config/config'
+import { getBrandName } from '@services/config/brand'
 
 interface FeedbackModalProps {
   open: boolean
@@ -159,7 +160,7 @@ export function FeedbackModal({
             {t('common.help_menu.feedback_title')}
           </DialogTitle>
           <DialogDescription className={isDark ? 'text-white/60' : 'text-gray-500'}>
-            {t('common.help_menu.feedback_description')}
+            {t('common.help_menu.feedback_description', { brand: getBrandName() })}
           </DialogDescription>
         </DialogHeader>
 

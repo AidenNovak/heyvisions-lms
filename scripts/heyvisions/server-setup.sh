@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# HeyVisions LMS — 在服务器上一次性准备开发环境（幂等，可重复执行）。
+# Yet to Dawn LMS — 在服务器上一次性准备开发环境（幂等，可重复执行）。
 #
 #   scripts/heyvisions/server-setup.sh
 #

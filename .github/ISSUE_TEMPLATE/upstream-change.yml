@@ -14,14 +14,14 @@ body:
     attributes:
       label: 要改什么
       description: 一句话说明这处改动达到的效果。
-      placeholder: 例：把平台品牌从 LearnHouse 换成 HeyVisions。
+      placeholder: 例：把平台品牌从 LearnHouse 换成 Yet to Dawn。
     validations:
       required: true
   - type: textarea
     id: why
     attributes:
       label: 为什么改
-      description: 业务或合规理由。若是为了贴合 HeyVisions 现网，请给出对应页面或文档。
+      description: 业务或合规理由。若是为了贴合 Yet to Dawn 现网，请给出对应页面或文档。
     validations:
       required: true
   - type: textarea

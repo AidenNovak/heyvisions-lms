@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Award, CheckCircle, QrCode, Building, User, Calendar, Hash } from 'lucide-react';
 import { useOrg } from '@components/Contexts/OrgContext';
 import OrgSquareLogo, { hasOrgLogo } from '@components/Objects/Org/OrgSquareLogo'
+import { getBrandName } from '@services/config/brand'
 
 interface CertificatePreviewProps {
   certificationName: string;
@@ -569,7 +570,7 @@ const CertificatePreview: React.FC<CertificatePreviewProps> = ({
                 )}
               </div>
               <div className={`text-xs ${theme.secondary} font-medium`} dir="auto">
-                {org?.name || 'LearnHouse'}
+                {org?.name || getBrandName()}
               </div>
             </div>
 

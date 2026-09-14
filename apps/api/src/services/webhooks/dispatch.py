@@ -8,6 +8,7 @@ Mirrors the analytics ``track()`` pattern: wraps work in
 import asyncio
 import json
 import logging
+import re
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import List, Optional
@@ -39,6 +40,23 @@ MAX_ATTEMPTS = 3
 # Exponential backoff delays in seconds: 1, 4, 16
 BACKOFF_DELAYS = [1, 4, 16]
 LOG_RETENTION_PER_ENDPOINT = 200
+
+
+def webhook_ua_stem() -> str:
+    """Product token for the outgoing User-Agent, derived from the brand name.
+
+    Receiving servers log this, so it must not carry the upstream project name.
+    Non-ASCII brand names are stripped to an ASCII slug; an empty result falls
+    back to a neutral token rather than producing a malformed UA.
+    """
+    try:
+        from config.config import get_learnhouse_config
+
+        name = (get_learnhouse_config().site_name or "").strip()
+    except Exception:  # pragma: no cover - config is always present in practice
+        name = ""
+    slug = "-".join(part for part in re.split(r"[^A-Za-z0-9]+", name) if part)
+    return slug or "Webhooks"
 # Only the first 500 bytes of a response are ever persisted, so there is no
 # reason to read more. The endpoint URL is user-supplied and delivery runs
 # fire-and-forget in the shared worker, so an endless (or gzip-bombed) response
@@ -52,7 +70,8 @@ def _get_webhook_client() -> httpx.AsyncClient:
         _webhook_client = httpx.AsyncClient(
             timeout=10.0,
             follow_redirects=False,
-            headers={"User-Agent": "LearnHouse-Webhooks/1.0"},
+            # 接收方会在自己的日志里看到这个 UA，不该暴露上游名字。
+            headers={"User-Agent": f"{webhook_ua_stem()}-Webhooks/1.0"},
         )
     return _webhook_client
 

@@ -44,11 +44,11 @@
     "help": "Yardım",
     "help_menu": {
       "documentation": "Dokümantasyon",
-      "website": "LearnHouse Web Sitesi",
+      "website": "{{brand}} Web Sitesi",
       "discord": "Discord",
       "report_feedback": "Sorun veya Geri Bildirim Bildir",
       "feedback_title": "Geri Bildirim Gönder",
-      "feedback_description": "Düşüncelerinizi paylaşarak, hata bildirerek veya yeni özellikler önererek LearnHouse'u geliştirmemize yardımcı olun.",
+      "feedback_description": "Düşüncelerinizi paylaşarak, hata bildirerek veya yeni özellikler önererek {{brand}}'u geliştirmemize yardımcı olun.",
       "feedback_placeholder": "Aklınızdakileri bize söyleyin...",
       "feedback_success": "Geri bildiriminiz için teşekkürler!",
       "send_feedback": "Geri Bildirim Gönder",
@@ -4825,7 +4825,6 @@
         "description": "LearnHouse'dan en iyi şekilde yararlanmanıza yardımcı olacak kaynaklar.",
         "classroom": "Sınıf",
         "classroom_desc": "Kurslarınızı nasıl büyüteceğinizi ve yöneteceğinizi öğrenin",
-        "university": "LearnHouse Üniversitesi",
         "university_desc": "Kılavuzlar, ipuçları ve en iyi uygulamalar"
       },
       "add_content": {
@@ -5668,7 +5667,7 @@
         "title": "Denemek mi istiyorsunuz?",
         "body": "Şuraya gidin:",
         "link": "Geliştiriciler sayfası",
-        "suffix": "ve LearnHouse'u deneyin."
+        "suffix": "ve {{brand}}'u deneyin."
       },
       "validation": {
         "required": "Zorunlu",

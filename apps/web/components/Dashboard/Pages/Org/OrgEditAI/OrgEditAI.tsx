@@ -6,6 +6,7 @@ import { toast } from 'react-hot-toast'
 import { useQueryClient } from '@tanstack/react-query'
 import { queryKeys } from '@/lib/query/keys'
 import { getAPIUrl } from '@services/config/config'
+import { getBrandName } from '@services/config/brand'
 import { revalidateTags } from '@services/utils/ts/requests'
 import { useTranslation } from 'react-i18next'
 import FeatureGate from '@components/Dashboard/Shared/FeatureGate/FeatureGate'
@@ -93,7 +94,7 @@ const OrgEditAI: React.FC = () => {
         <div className="flex items-center gap-3">
           <Image
             src="/learnhouse_ai_simple_colored.png"
-            alt="LearnHouse AI"
+            alt={`${getBrandName()} AI`}
             width={28}
             height={28}
           />

@@ -26,6 +26,7 @@ from src.db.webhooks import (
 )
 from src.db.users import PublicUser, AnonymousUser, APITokenUser
 from src.security.auth import resolve_acting_user_id
+from src.services.users.emails import brand_name
 from src.security.rbac.rbac import authorization_verify_if_user_is_anon
 from src.security.org_auth import require_org_admin
 from src.services.webhooks.crypto import encrypt_secret
@@ -336,7 +337,7 @@ async def send_test_event(
     await dispatch_webhooks(
         event_name="ping",
         org_id=org_id,
-        data={"message": "This is a test webhook event from LearnHouse."},
+        data={"message": f"This is a test webhook event from {brand_name()}."},
         webhook_ids=[endpoint.id],  # type: ignore
     )
 

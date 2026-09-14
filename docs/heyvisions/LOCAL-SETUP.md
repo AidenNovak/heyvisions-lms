@@ -119,11 +119,11 @@ ssh vultr-sg 'cd /srv/heyvisions-lms && \
 
 ## 品牌配置
 
-平台品牌走运行时配置，默认值即 HeyVisions（见 `apps/web/services/config/brand.ts`）：
+平台品牌走运行时配置，默认值即 Yet to Dawn（见 `apps/web/services/config/brand.ts`）：
 
 | 键 | 默认值 | 用途 |
 | --- | --- | --- |
-| `NEXT_PUBLIC_BRAND_NAME` | `HeyVisions` | 页脚版权、登录页措辞 |
+| `NEXT_PUBLIC_BRAND_NAME` | `Yet to Dawn` | 页脚版权、登录页措辞 |
 | `NEXT_PUBLIC_BRAND_SITE_URL` | `https://heyvisions.com` | 首页 "Powered by" 的指向 |
 | `NEXT_PUBLIC_BRAND_TERMS_URL` | 空 | 留空则不渲染条款链接与整句措辞 |
 | `NEXT_PUBLIC_BRAND_PRIVACY_URL` | 空 | 留空则不渲染隐私链接 |

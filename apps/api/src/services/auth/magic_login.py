@@ -3,7 +3,7 @@
 Distinct from the admin/integration magic link (``purpose: "magic_link"`` in
 :mod:`src.services.admin.admin`), which an API-token integration mints for a
 specific user and is delivered out-of-band. This one is requested by the end user
-from the login page ("email me a login link"), is emailed by LearnHouse, and
+from the login page ("email me a login link"), is emailed by the platform, and
 carries ``purpose: "magic_login"``.
 
 Security posture mirrors the admin link:
@@ -121,13 +121,16 @@ def send_magic_login_email(
         _brand_logo_html,
         _button_style,
         _email_layout,
+        brand_name,
     )
 
     safe_token = quote(token, safe="")
     login_url = f"{base_url.rstrip('/')}/auth/magic?token={safe_token}"
     safe_name = html.escape(user.username or user.email)
     white_label = bool(org_name)
-    brand = html.escape(org_name) if org_name else "LearnHouse"
+    # The platform's own display name comes from config (never a literal).
+    platform_brand = brand_name()
+    brand = html.escape(org_name) if org_name else html.escape(platform_brand)
 
     heading = t(lang, "magic_login.heading", brand=brand)
     body_text = t(lang, "magic_login.body", username=safe_name)
@@ -147,7 +150,7 @@ def send_magic_login_email(
     return send_email(
         to=email,
         # Plain-text subject: the org name must not arrive HTML-escaped.
-        subject=t(lang, "magic_login.subject", brand=org_name or "LearnHouse"),
+        subject=t(lang, "magic_login.subject", brand=org_name or platform_brand),
         body=_email_layout(
             title=heading,
             body_content=body_content,

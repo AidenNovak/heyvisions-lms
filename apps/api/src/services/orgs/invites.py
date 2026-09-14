@@ -422,7 +422,10 @@ async def send_invite_email(
 
         result = send_invitation_email(
             email=email,
-            org_name=sanitize_display_name(org.name, fallback="A LearnHouse organization"),
+            org_name=sanitize_display_name(org.name, fallback="An organization"),
+            # `sanitize_display_name`'s own default is brand-neutral too (see
+            # services/security/profile_validation.py) — the inviter's name is
+            # rendered into the org's mail, which must not name the platform.
             inviter_username=sanitize_display_name(user.username),
             invite_code=invite_code,
             signup_url=signup_url,

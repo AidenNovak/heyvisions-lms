@@ -6,6 +6,7 @@ import { toast } from 'react-hot-toast'
 import { Button } from '@components/ui/button'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
+import { getBrandSiteUrl } from '@services/config/brand'
 import {
   Table,
   TableBody,
@@ -230,11 +231,11 @@ const OrgEditAPIAccess: React.FC = () => {
             </TabsTrigger>
           </TabsList>
           <a
-            href="mailto:hello@learnhouse.app"
+            href={`${getBrandSiteUrl()}/contact`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors border border-gray-200"
-            title="Contact LearnHouse support"
+            title="Contact support"
           >
             <LifeBuoy size={14} />
             {t('dashboard.organization.api_access.something_not_working')}

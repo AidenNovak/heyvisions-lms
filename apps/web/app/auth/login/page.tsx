@@ -3,13 +3,14 @@ import { getAuthOrgSlug } from '@services/org/orgResolution'
 import LoginClient from './login'
 import { Metadata } from 'next'
 import OrgNotFound from '@components/Objects/StyledElements/Error/OrgNotFound'
+import { getBrandName } from '@services/config/brand'
 
 export async function generateMetadata(): Promise<Metadata> {
   const orgslug = await getAuthOrgSlug()
 
   if (!orgslug) {
     // Apex (org-less) login.
-    return { title: 'Login — LearnHouse', robots: { index: false, follow: false } }
+    return { title: `Login — ${getBrandName()}`, robots: { index: false, follow: false } }
   }
 
   let org: any = null
@@ -23,7 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 
   return {
-    title: 'Login' + ` — ${org?.name || 'LearnHouse'}`,
+    title: 'Login' + ` — ${org?.name || getBrandName()}`,
     robots: { index: false, follow: false },
   }
 }

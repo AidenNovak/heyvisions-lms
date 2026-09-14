@@ -48,11 +48,11 @@
     "help": "Help",
     "help_menu": {
       "documentation": "Documentation",
-      "website": "LearnHouse Website",
+      "website": "{{brand}} Website",
       "discord": "Discord",
       "report_feedback": "Report Issue or Feedback",
       "feedback_title": "Send Feedback",
-      "feedback_description": "Help us improve LearnHouse by sharing your thoughts, reporting bugs, or suggesting new features.",
+      "feedback_description": "Help us improve {{brand}} by sharing your thoughts, reporting bugs, or suggesting new features.",
       "feedback_placeholder": "Tell us what's on your mind...",
       "feedback_success": "Thank you for your feedback!",
       "send_feedback": "Send Feedback",
@@ -3088,7 +3088,7 @@
         },
         "previews": {
           "thumbnail_title": "Thumbnail",
-          "thumbnail_desc": "The cover image for your organization when it is listed or shared: on the LearnHouse explore page and in link previews.",
+          "thumbnail_desc": "The cover image for your organization when it is listed or shared: on the {{brand}} explore page and in link previews.",
           "thumbnail_add": "Add thumbnail",
           "thumbnail_replace": "Replace thumbnail",
           "gallery_title": "Preview gallery",
@@ -3659,8 +3659,8 @@
         "methods_description": "Choose how members are allowed to sign in to this organization. Leave every method checked to keep sign-in unrestricted.",
         "methods_empty_warning": "With no method selected, no one could sign in to this organization. Pick at least one.",
         "methods_effect": "Unchecked methods disappear from this organization’s login page, and members already signed in with one are asked to sign in again with an allowed method.",
-        "session_sharing_label": "Allow sharing sessions with learnhouse.io",
-        "session_sharing_hint": "When off, signing in at learnhouse.io won’t let members into this org — they must sign in again from this org’s login page using an allowed method.",
+        "session_sharing_label": "Allow sharing sessions with {{brand}}",
+        "session_sharing_hint": "When off, signing in at {{brand}} won’t let members into this org — they must sign in again from this org’s login page using an allowed method.",
         "saving_short": "Saving…",
         "save": "Save changes",
         "cancel": "Cancel",
@@ -5860,7 +5860,7 @@
         "description": "Resources to help you get the most out of LearnHouse.",
         "classroom": "The Classroom",
         "classroom_desc": "Learn how to grow and manage your courses",
-        "university": "LearnHouse University",
+        "university": "Guides & tutorials",
         "university_desc": "Guides, tips and best practices"
       },
       "add_content": {
@@ -6259,7 +6259,7 @@
         "title": "Looking to test?",
         "body": "Head to the",
         "link": "Developers page",
-        "suffix": "to try LearnHouse instead."
+        "suffix": "to try {{brand}} instead."
       },
       "validation": {
         "required": "Required",

@@ -1,7 +1,7 @@
-# HeyVisions fork 维护流程
+# Yet to Dawn fork 维护流程
 
 上游：[`learnhouse/learnhouse`](https://github.com/learnhouse/learnhouse)（AGPL-3.0）。
-本仓库是它的 fork，在上面做 HeyVisions 的深度改造。
+本仓库是它的 fork，在上面做 Yet to Dawn 的深度改造。
 
 ## 铁律：先 issue，再 PR
 

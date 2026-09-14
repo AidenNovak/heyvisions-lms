@@ -44,11 +44,11 @@
     "help": "도움말",
     "help_menu": {
       "documentation": "문서",
-      "website": "LearnHouse 웹사이트",
+      "website": "{{brand}} 웹사이트",
       "discord": "Discord",
       "report_feedback": "문제 신고 또는 피드백",
       "feedback_title": "피드백 보내기",
-      "feedback_description": "의견 공유, 버그 신고, 새 기능 제안을 통해 LearnHouse 개선에 도움을 주세요.",
+      "feedback_description": "의견 공유, 버그 신고, 새 기능 제안을 통해 {{brand}} 개선에 도움을 주세요.",
       "feedback_placeholder": "생각을 알려주세요...",
       "feedback_success": "피드백 감사합니다!",
       "send_feedback": "피드백 보내기",
@@ -352,17 +352,17 @@
     "try_again_in": "{{minutes}}분 후에 다시 시도해 주세요",
     "error_generic": "문제가 발생했습니다. 다시 시도해 주세요.",
     "sign_in": "로그인",
-    "terms_text": "계속 진행하면 LearnHouse의",
+    "terms_text": "계속 진행하면 {{brand}}의",
     "terms_of_service": "서비스 약관",
     "and": "및",
     "privacy_policy": "개인정보 처리방침",
     "image_title_forgot": "비밀번호를 재설정하세요.",
     "image_subtitle_forgot": "금방 계정에 다시 접근할 수 있도록 도와드릴게요.",
-    "image_title_login": "LearnHouse에 다시 오신 것을 환영합니다.",
+    "image_title_login": "{{brand}}에 다시 오신 것을 환영합니다.",
     "image_subtitle_login": "멈췄던 곳에서 이어가세요 — 코스, 학습자, 도구가 기다리고 있습니다.",
     "image_title_reset": "거의 다 왔어요.",
     "image_subtitle_reset": "강력한 비밀번호를 만들어 계정을 안전하게 보호하세요.",
-    "image_title_signup": "LearnHouse로 가르치기를 시작하세요.",
+    "image_title_signup": "{{brand}}로 가르치기를 시작하세요.",
     "image_subtitle_signup": "계정을 만들고 몇 분 만에 첫 코스를 시작하세요.",
     "image_title_verify": "이메일을 인증하세요.",
     "image_subtitle_verify": "계정을 보호하고 시작하기 위한 빠른 한 단계입니다.",
@@ -4813,7 +4813,6 @@
         "description": "LearnHouse를 최대한 활용하기 위한 리소스.",
         "classroom": "클래스룸",
         "classroom_desc": "코스를 성장시키고 관리하는 방법을 배우세요",
-        "university": "LearnHouse 대학교",
         "university_desc": "가이드, 팁 및 모범 사례"
       },
       "add_content": {
@@ -4843,7 +4842,7 @@
       }
     },
     "welcome": {
-      "title": "LearnHouse에 오신 것을 환영합니다",
+      "title": "{{brand}}에 오신 것을 환영합니다",
       "subtitle": "코스를 만들고, 학습자를 초대하고, 세계와 지식을 공유하세요.",
       "get_started": "시작하기",
       "features_title": "필요한 모든 것",
@@ -5656,7 +5655,7 @@
         "title": "테스트해 보고 싶으신가요?",
         "body": "다음으로 이동하세요:",
         "link": "개발자 페이지",
-        "suffix": "에서 LearnHouse를 대신 사용해 보세요."
+        "suffix": "에서 {{brand}}를 대신 사용해 보세요."
       },
       "validation": {
         "required": "필수 항목",

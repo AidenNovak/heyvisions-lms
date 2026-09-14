@@ -12,6 +12,7 @@ import { useLHSession } from '@components/Contexts/LHSessionContext'
 import { constructAcceptValue } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { getOrgPreviewMediaDirectory, getOrgThumbnailMediaDirectory } from '@services/media/media'
+import { getBrandHost, getBrandName } from '@services/config/brand'
 import { updateOrganization, uploadOrganizationPreview, uploadOrganizationThumbnail } from '@services/settings/org'
 import { queryKeys } from '@/lib/query/keys'
 import { Input } from '@components/ui/input'
@@ -250,7 +251,7 @@ export default function PreviewsTab() {
       <BrandingSection
         icon={ImageSquare}
         title={t('dashboard.organization.branding.previews.thumbnail_title')}
-        description={t('dashboard.organization.branding.previews.thumbnail_desc')}
+        description={t('dashboard.organization.branding.previews.thumbnail_desc', { brand: getBrandName() })}
         aside={
           <>
             <ExploreCardVignette
@@ -262,7 +263,7 @@ export default function PreviewsTab() {
             <LinkPreviewVignette
               thumbnailUrl={thumbnailUrl}
               name={org?.name}
-              host={org?.slug ? `${org.slug}.learnhouse.io` : undefined}
+              host={org?.slug ? `${org.slug}.${getBrandHost()}` : undefined}
               label={t('dashboard.organization.branding.vignettes.link_preview')}
             />
           </>

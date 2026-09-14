@@ -16,7 +16,8 @@ plan name, limit or price into a string — those arrive as placeholders filled
 from ``plans.py`` at render time.
 
 Placeholders available to every nudge: ``{org_name}``, ``{course_name}``,
-``{plan_name}``, ``{next_plan}``.
+``{plan_name}``, ``{next_plan}``, ``{brand}`` (the platform's own display name,
+filled from ``site_name`` — any copy naming the platform itself uses it).
 """
 
 from typing import Final

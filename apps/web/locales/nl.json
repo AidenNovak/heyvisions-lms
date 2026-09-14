@@ -44,11 +44,11 @@
     "help": "Hulp",
     "help_menu": {
       "documentation": "Documentatie",
-      "website": "LearnHouse Website",
+      "website": "{{brand}} Website",
       "discord": "Discord",
       "report_feedback": "Probleem of feedback melden",
       "feedback_title": "Feedback Verzenden",
-      "feedback_description": "Help ons LearnHouse te verbeteren door je gedachten te delen, bugs te melden of nieuwe functies voor te stellen.",
+      "feedback_description": "Help ons {{brand}} te verbeteren door je gedachten te delen, bugs te melden of nieuwe functies voor te stellen.",
       "feedback_placeholder": "Vertel ons wat je denkt...",
       "feedback_success": "Bedankt voor je feedback!",
       "send_feedback": "Feedback Verzenden",
@@ -4803,7 +4803,6 @@
         "description": "Bronnen om je te helpen het meeste uit LearnHouse te halen.",
         "classroom": "Het klaslokaal",
         "classroom_desc": "Leer hoe je je cursussen kunt laten groeien en beheren",
-        "university": "LearnHouse Universiteit",
         "university_desc": "Handleidingen, tips en best practices"
       },
       "add_content": {
@@ -5638,7 +5637,7 @@
         "title": "Wil je testen?",
         "body": "Ga naar de",
         "link": "Ontwikkelaarspagina",
-        "suffix": "om LearnHouse in plaats daarvan uit te proberen."
+        "suffix": "om {{brand}} in plaats daarvan uit te proberen."
       },
       "validation": {
         "required": "Verplicht",

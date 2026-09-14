@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""把 HeyVisions 课程「AI 协作基础」导入 LearnHouse。
+"""把 Yet to Dawn 课程「AI 协作基础」导入 LearnHouse。
 
 事实源是 website 仓库的课程合同（不是本仓库的副本）：
   <website>/example/src/course/curriculum.js      阶段 / 单元结构与发布状态
@@ -249,7 +249,7 @@ def main() -> int:
     r.raise_for_status()
     print("课程已发布")
 
-    r = requests.put(f"{args.api}/orgs/{org_id}", headers=headers, json={"name": "HeyVisions"}, timeout=30)
+    r = requests.put(f"{args.api}/orgs/{org_id}", headers=headers, json={"name": "Yet to Dawn"}, timeout=30)
     print("组织改名：", r.status_code, (r.json().get("name") if r.ok else r.text[:120]))
 
     print(f"\n完成。课程页：/course/{course_uuid}")

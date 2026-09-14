@@ -46,11 +46,11 @@
     "help": "ヘルプ",
     "help_menu": {
       "documentation": "ドキュメント",
-      "website": "LearnHouse ウェブサイト",
+      "website": "{{brand}} ウェブサイト",
       "discord": "Discord",
       "report_feedback": "問題の報告またはフィードバック",
       "feedback_title": "フィードバックを送信",
-      "feedback_description": "ご意見の共有、バグの報告、新機能のご提案で LearnHouse の改善にご協力ください。",
+      "feedback_description": "ご意見の共有、バグの報告、新機能のご提案で {{brand}} の改善にご協力ください。",
       "feedback_placeholder": "お気づきの点をお聞かせください...",
       "feedback_success": "フィードバックありがとうございます！",
       "send_feedback": "フィードバックを送信",
@@ -5067,7 +5067,6 @@
         "description": "LearnHouseを最大限に活用するためのリソース。",
         "classroom": "クラスルーム",
         "classroom_desc": "コースの成長と管理の方法を学ぶ",
-        "university": "LearnHouse大学",
         "university_desc": "ガイド、ヒント、ベストプラクティス"
       },
       "add_content": {
@@ -5097,7 +5096,7 @@
       }
     },
     "welcome": {
-      "title": "LearnHouseへようこそ",
+      "title": "{{brand}}へようこそ",
       "subtitle": "コースを作成し、学習者を招待し、世界と知識を共有しましょう。",
       "get_started": "始める",
       "features_title": "必要なものがすべて揃っています",
@@ -5646,7 +5645,7 @@
         "title": "お試しをご希望ですか？",
         "body": "代わりに",
         "link": "開発者ページ",
-        "suffix": "で LearnHouse をお試しください。"
+        "suffix": "で {{brand}} をお試しください。"
       },
       "validation": {
         "required": "必須",

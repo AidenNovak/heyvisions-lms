@@ -13,9 +13,12 @@ import { constructAcceptValue } from '@/lib/constants';
 import Modal from '@components/Objects/StyledElements/Modal/Modal'
 import { useTranslation } from 'react-i18next'
 import AIImageButton from '@components/Objects/AI/AIImageButton'
+import { getBrandHost } from '@services/config/brand'
 
 const SUPPORTED_FILES = constructAcceptValue(['jpg', 'png', 'webp', 'gif'])
-const UNSPLASH_UTM = '?utm_source=LearnHouse&utm_medium=referral'
+// Unsplash 的 API 规范要求带 utm_source 署名；用平台上自己的标识，
+// 不要把上游品牌名告诉第三方。
+const UNSPLASH_UTM = `?utm_source=${encodeURIComponent(getBrandHost())}&utm_medium=referral`
 const withUtm = (url?: string | null) => (url ? `${url}${UNSPLASH_UTM}` : '')
 
 function ImageBlockComponent(props: any) {

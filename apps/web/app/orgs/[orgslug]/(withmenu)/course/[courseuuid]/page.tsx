@@ -7,6 +7,7 @@ import { getCourseThumbnailMediaDirectory, getOrgOgImageMediaDirectory } from '@
 import { getServerSession } from '@/lib/auth/server'
 import { getOrgSeoConfig, buildPageTitle } from '@/lib/seo/utils'
 import { getServerCanonicalUrl } from '@/lib/seo/utils.server'
+import { getBrandName } from '@services/config/brand'
 
 
 type MetadataProps = {
@@ -36,8 +37,8 @@ export async function generateMetadata(props: MetadataProps): Promise<Metadata> 
 
   if (!courseResult) {
     return {
-      title: `Course — ${org?.name || 'LearnHouse'}`,
-      description: 'View this course on LearnHouse',
+      title: `Course — ${org?.name || getBrandName()}`,
+      description: `View this course on ${getBrandName()}`,
     }
   }
   const course_meta = courseResult

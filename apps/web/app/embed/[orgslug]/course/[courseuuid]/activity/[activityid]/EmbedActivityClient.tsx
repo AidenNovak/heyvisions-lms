@@ -8,6 +8,7 @@ import Image from 'next/image'
 import { CourseContext, CourseDispatchContext } from '@components/Contexts/CourseContext'
 import { useActivity } from '@/hooks/queries/useActivity'
 import { useCourseMeta } from '@/hooks/queries/useCourses'
+import { getBrandName } from '@services/config/brand'
 
 const Canva = lazy(() => import('@components/Objects/Activities/DynamicCanva/DynamicCanva'))
 const VideoActivity = lazy(() => import('@components/Objects/Activities/Video/Video'))
@@ -169,7 +170,7 @@ function EmbedActivityClient({ activityId, courseuuid, orgslug, bgcolor }: Embed
           <div className="mb-6">
             <Image
               src="/learnhouse_bigicon.png"
-              alt="LearnHouse"
+              alt={getBrandName()}
               width={64}
               height={64}
               className="mx-auto"
@@ -278,7 +279,7 @@ function PoweredByBadge({ activityUrl }: { activityUrl: string }) {
       >
         <Image
           src="/lrn.svg"
-          alt="LearnHouse"
+          alt={getBrandName()}
           width={20}
           height={20}
         />

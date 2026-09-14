@@ -15,6 +15,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import React, { useState, useMemo } from 'react'
 import useAdminStatus from '@components/Hooks/useAdminStatus'
 import { getAPIUrl, getUriWithOrg } from '@services/config/config'
+import { getBrandFileStem } from '@services/config/brand'
 import { useOrg } from '@components/Contexts/OrgContext'
 import { Download, Copy } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -395,7 +396,7 @@ function CoursesHome(params: CourseProps) {
         }
       )
       const timestamp = new Date().toISOString().split('T')[0]
-      downloadBlob(blob, `learnhouse-courses-export-${timestamp}.zip`)
+      downloadBlob(blob, `${getBrandFileStem()}-courses-export-${timestamp}.zip`)
       exportToast.complete(toastId, undefined, count, 'batch')
     } catch (error: any) {
       exportToast.error(toastId, error.message || t('courses.courses_exported_error'), undefined, count, 'batch')

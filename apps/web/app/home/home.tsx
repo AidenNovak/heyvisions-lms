@@ -99,7 +99,7 @@ function HomeClient() {
               { }
               <img
                 src="/lrn.svg"
-                alt="LearnHouse"
+                alt={getBrandName()}
                 width={44}
                 height={44}
                 className="opacity-90"
@@ -235,7 +235,7 @@ function HomeClient() {
               {isAuthenticated && <DemoEntryCard className="mt-1" />}
             </div>
 
-            {/* Footer — HeyVisions fork: 指向自有品牌站点，不指向上游 */}
+            {/* Footer — Yet to Dawn fork: 指向自有品牌站点，不指向上游 */}
             {brandSiteUrl ? (
               <a
                 href={brandSiteUrl}

@@ -46,11 +46,11 @@
     "help": "Bantuan",
     "help_menu": {
       "documentation": "Dokumentasi",
-      "website": "Situs Web LearnHouse",
+      "website": "Situs Web {{brand}}",
       "discord": "Discord",
       "report_feedback": "Laporkan Masalah atau Umpan Balik",
       "feedback_title": "Kirim Umpan Balik",
-      "feedback_description": "Bantu kami meningkatkan LearnHouse dengan berbagi pemikiran Anda, melaporkan bug, atau menyarankan fitur baru.",
+      "feedback_description": "Bantu kami meningkatkan {{brand}} dengan berbagi pemikiran Anda, melaporkan bug, atau menyarankan fitur baru.",
       "feedback_placeholder": "Beritahu kami apa yang Anda pikirkan...",
       "feedback_success": "Terima kasih atas umpan balik Anda!",
       "send_feedback": "Kirim Umpan Balik",
@@ -5079,7 +5079,6 @@
         "description": "Sumber daya untuk membantu Anda memaksimalkan LearnHouse.",
         "classroom": "Kelas",
         "classroom_desc": "Pelajari cara mengembangkan dan mengelola kursus Anda",
-        "university": "Universitas LearnHouse",
         "university_desc": "Panduan, tips, dan praktik terbaik"
       },
       "add_content": {
@@ -5658,7 +5657,7 @@
         "title": "Ingin mencoba?",
         "body": "Kunjungi",
         "link": "halaman Pengembang",
-        "suffix": "untuk mencoba LearnHouse."
+        "suffix": "untuk mencoba {{brand}}."
       },
       "validation": {
         "required": "Wajib diisi",

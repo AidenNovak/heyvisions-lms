@@ -10,6 +10,7 @@ from src.db.webhooks import (
     WebhookEndpointUpdate,
 )
 from src.services.webhooks import webhooks
+from src.services.users.emails import brand_name
 
 
 async def _make_webhook_endpoint(
@@ -482,7 +483,7 @@ class TestWebhookCrud:
         mock_dispatch.assert_awaited_once_with(
             event_name="ping",
             org_id=org.id,
-            data={"message": "This is a test webhook event from LearnHouse."},
+            data={"message": f"This is a test webhook event from {brand_name()}."},
             webhook_ids=[endpoint.id],
         )
         assert response == {"detail": "Test event dispatched"}

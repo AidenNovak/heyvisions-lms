@@ -11,6 +11,8 @@ import {
   Text,
 } from '@react-email/components'
 import * as React from 'react'
+import { getBrandName, getBrandSiteUrl } from '@services/config/brand'
+import { getConfig } from '@services/config/config'
 
 // Shared transactional email layout (React Email). One flexible template drives
 // every message — welcome, purchase, plan change, payment failed, etc. — via an
@@ -46,7 +48,14 @@ export interface LearnHouseEmailProps {
   cta?: { label: string; href: string }
 }
 
-const LOGO_URL = 'https://www.learnhouse.io/learnhouse-dark.svg'
+/**
+ * 邮件头图。
+ *
+ * 上游这里硬链到 `https://www.learnhouse.io/learnhouse-dark.svg` —— 每次发信都从
+ * 第三方站点拉图，既是第三方推广，也意味着对方的资源变动会让我们的邮件破版。
+ * 改成品牌站上的自有标识（该文件已部署，实测 200 image/svg+xml），可用环境变量覆盖。
+ */
+const LOGO_URL = getConfig('NEXT_PUBLIC_BRAND_EMAIL_LOGO_URL', `${getBrandSiteUrl()}/brand/yet-to-dawn-mark.svg`)
 
 export function LearnHouseEmail({
   accentColor,
@@ -68,7 +77,7 @@ export function LearnHouseEmail({
           <div style={{ height: 6, backgroundColor: accentColor }} />
 
           <Section style={{ padding: '32px 40px 8px' }}>
-            <Img src={LOGO_URL} alt="LearnHouse" height={28} style={{ marginBottom: 24 }} />
+            <Img src={LOGO_URL} alt={getBrandName()} height={28} style={{ marginBottom: 24 }} />
             <Heading style={{ fontSize: 24, fontWeight: 800, color: '#171717', margin: '0 0 8px', lineHeight: 1.25 }}>
               {heading}
             </Heading>
@@ -133,7 +142,7 @@ export function LearnHouseEmail({
           <Hr style={{ borderColor: '#eee', margin: '24px 40px 0' }} />
           <Section style={{ padding: '16px 40px 32px' }}>
             <Text style={{ fontSize: 12, color: '#a3a3a3', margin: 0 }}>
-              LearnHouse — the open-source learning platform.
+              {getBrandName()}
             </Text>
           </Section>
         </Container>

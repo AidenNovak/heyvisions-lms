@@ -42,7 +42,6 @@ from src.security.security import SECRET_KEY
 
 logger = logging.getLogger(__name__)
 
-TOTP_ISSUER = "LearnHouse"
 TOTP_PERIOD_SECONDS = 30
 # Accept the immediately preceding and following timestep. Phone clock drift is
 # the single most common cause of "my code doesn't work" support tickets; one
@@ -102,10 +101,29 @@ def generate_totp_secret() -> str:
     return pyotp.random_base32()
 
 
+def totp_issuer() -> str:
+    """The label authenticator apps file this entry under.
+
+    Read from config so a rename is a config change, not a code change. Existing
+    enrollments keep producing valid codes either way — the issuer is display
+    text inside the otpauth URI, not part of the secret.
+
+    The fallback is this fork's own name, never the upstream project's: a
+    deployment that somehow lost its config must not start filing users' 2FA
+    entries under someone else's brand (same convention as brand.ts).
+    """
+    try:
+        from config.config import get_learnhouse_config
+
+        return (get_learnhouse_config().site_name or "").strip() or "Yet to Dawn"
+    except Exception:  # pragma: no cover - config is always present in practice
+        return "Yet to Dawn"
+
+
 def build_provisioning_uri(secret: str, account_label: str) -> str:
     """Build the ``otpauth://`` URI that the enrollment QR code encodes."""
     return pyotp.TOTP(secret, interval=TOTP_PERIOD_SECONDS).provisioning_uri(
-        name=account_label, issuer_name=TOTP_ISSUER
+        name=account_label, issuer_name=totp_issuer()
     )
 
 

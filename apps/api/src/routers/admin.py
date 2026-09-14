@@ -16,6 +16,7 @@ from src.db.trails import TrailRead
 from src.db.users import UserRead
 from src.routers.auth import set_auth_cookies
 from src.security.auth import get_current_user
+from src.services.users.emails import brand_name
 from src.services.admin.admin import (
     _require_api_token,
     _resolve_org_slug,
@@ -935,13 +936,22 @@ async def api_admin_issue_magic_link(
     return MagicLinkResponse(**result)
 
 
-def _support_url() -> str:
-    """Return a support contact URL for the magic-link error page.
+def _support_url() -> str | None:
+    """Return a support contact URL for the magic-link error page, or None.
 
     The old `{platform}/dashboard/support` path 404s (the platform dashboard is
-    gone on .io), so use a support mailto that can never break.
+    gone on .io), so use a support mailto. The address comes from the configured
+    contact_email — upstream's own support address must not be shown on a
+    deployment that isn't upstream's. When no address is configured there is
+    nothing honest to link to, so the caller omits the button entirely.
     """
-    return "mailto:hello@learnhouse.app"
+    try:
+        from config.config import get_learnhouse_config
+
+        contact = (get_learnhouse_config().contact_email or "").strip()
+    except Exception:  # pragma: no cover - config is always present in practice
+        contact = ""
+    return f"mailto:{contact}" if contact else None
 
 
 def _render_magic_link_error(title: str, message: str) -> HTMLResponse:
@@ -951,12 +961,18 @@ def _render_magic_link_error(title: str, message: str) -> HTMLResponse:
     # title/message come from our own HTTPExceptions, not user input.
     safe_title = title.replace("<", "&lt;").replace(">", "&gt;")
     safe_message = message.replace("<", "&lt;").replace(">", "&gt;")
+    support_block = (
+        f'<a class="support" href="{support}">Something not working as expected?</a>\n'
+        '    <p class="hint">Our team can re-issue your sign-in link or help you access your account.</p>'
+        if support
+        else ""
+    )
     html = f"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sign-in link — LearnHouse</title>
+<title>Sign-in link — {brand_name()}</title>
 <style>
   body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
          background: #f6f7f9; color: #111827; margin: 0;
@@ -976,8 +992,7 @@ def _render_magic_link_error(title: str, message: str) -> HTMLResponse:
   <div class="card">
     <h1>{safe_title}</h1>
     <p>{safe_message}</p>
-    <a class="support" href="{support}">Something not working as expected?</a>
-    <p class="hint">Our team can re-issue your sign-in link or help you access your account.</p>
+    {support_block}
   </div>
 </body>
 </html>"""

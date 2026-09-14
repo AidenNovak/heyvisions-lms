@@ -71,7 +71,7 @@ class TestPlaceholders:
             )
 
     def test_only_known_placeholders_are_used(self):
-        allowed = {"org_name", "course_name", "plan_name", "next_plan"}
+        allowed = {"org_name", "course_name", "plan_name", "next_plan", "brand"}
         for key, template in ENGLISH.items():
             assert _placeholders(template) <= allowed, key
 
@@ -82,6 +82,7 @@ class TestPlaceholders:
             course_name="Intro to Welding",
             plan_name="free",
             next_plan="personal",
+            brand="Acme Platform",
         )
         for key in ENGLISH:
             rendered = t(locale, key, **values)

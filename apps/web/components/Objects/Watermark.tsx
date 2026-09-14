@@ -16,7 +16,7 @@ function Watermark() {
     const plan = usePlan()
     const watermarkConfig = org?.config?.config?.customization?.general?.watermark ?? org?.config?.config?.general?.watermark
 
-    // HeyVisions fork: 平台以自有品牌对外交付，默认不展示上游推广位。
+    // Yet to Dawn fork: 平台以自有品牌对外交付，默认不展示上游推广位。
     // 保留组件与开关，需要反向标注上游时用 NEXT_PUBLIC_BRAND_WATERMARK=true 打开。
     if (!isBrandWatermarkEnabled()) return null
 

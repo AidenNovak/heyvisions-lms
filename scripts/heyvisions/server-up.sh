@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# HeyVisions LMS — 在服务器上启动开发栈。
+# Yet to Dawn LMS — 在服务器上启动开发栈。
 #
 # 为什么在服务器上跑：本机（Mac）资源紧张，编译与长驻进程都放这台机器，
 # 本机只留编辑。数据服务是 Docker（见 docker-compose.yml），应用进程跑在

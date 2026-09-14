@@ -7,6 +7,7 @@ import { useLHSession } from '@components/Contexts/LHSessionContext'
 import { toast } from 'react-hot-toast'
 import { Button } from '@components/ui/button'
 import { getAPIUrl } from '@services/config/config'
+import { getBrandName } from '@services/config/brand'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { queryKeys } from '@/lib/query/keys'
 import { apiFetch } from '@services/utils/ts/requests'
@@ -368,7 +369,7 @@ const OrgEditAutomations: React.FC = () => {
                 )}
               </div>
               <p className="text-gray-500 text-xs mt-0.5">
-                Connect LearnHouse to thousands of apps without writing code.
+                {getBrandName()} connects to thousands of apps without writing code.
               </p>
             </div>
             <div className="flex items-center gap-3 flex-shrink-0">

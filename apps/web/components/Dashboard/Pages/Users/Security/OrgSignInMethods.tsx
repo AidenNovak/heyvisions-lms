@@ -7,6 +7,7 @@ import { Switch } from '@components/ui/switch'
 import { Checkbox } from '@components/ui/checkbox'
 import { Button } from '@components/ui/button'
 import { Label } from '@components/ui/label'
+import { getBrandHost, getBrandName } from '@services/config/brand'
 import {
   ALL_AUTH_METHODS,
   AUTH_METHOD_OPTIONS,
@@ -144,13 +145,15 @@ const OrgSignInMethods: React.FC = () => {
           <div className="min-w-0 pt-4">
             <Label htmlFor="central-session-sharing" className="cursor-pointer">
               {t('dashboard.organization.security.session_sharing_label', {
-                defaultValue: 'Allow sharing sessions with learnhouse.io',
+                brand: getBrandName(),
+                  defaultValue: `Allow sharing sessions with ${getBrandHost()}`,
               })}
             </Label>
             <p className="text-xs text-gray-500 mt-0.5 leading-relaxed max-w-xl">
               {t('dashboard.organization.security.session_sharing_hint', {
+                brand: getBrandName(),
                 defaultValue:
-                  'When off, signing in at learnhouse.io won’t let members into this org — they must sign in again from this org’s login page using an allowed method.',
+                  `When off, signing in at ${getBrandHost()} won’t let members into this org — they must sign in again from this org’s login page using an allowed method.`,
               })}
             </p>
           </div>
@@ -165,7 +168,8 @@ const OrgSignInMethods: React.FC = () => {
             disabled={controlsDisabled}
             className="shrink-0 mt-5"
             aria-label={t('dashboard.organization.security.session_sharing_label', {
-              defaultValue: 'Allow sharing sessions with learnhouse.io',
+              brand: getBrandName(),
+                  defaultValue: `Allow sharing sessions with ${getBrandHost()}`,
             })}
           />
         </div>
