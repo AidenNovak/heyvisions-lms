@@ -105,6 +105,22 @@ scripts/heyvisions/sync-content.sh
 每个课时页都会显示 `Failed to fetch markdown`。导入脚本会在 URL 与当前基址不一致时
 就地校正，所以重跑是安全的。
 
+### 单元正文为什么要先「生成」再上传
+
+单元正文的「模板或反例」一节写着“使用本页下方的模板”，但模板文字**不在 `.md` 里**：
+它存于 `example/src/course/templates.js`，由站点页面在渲染到该节时注入
+（`example/src/course-page.jsx`）。学习平台只渲染裸 Markdown，没有这层注入，
+所以直接同步原始 `.md` 会让每个单元都指向一个不存在的模板（6/6 个公开单元）。
+
+`sync-content.sh` 因此先调用 `build-lms-units.py`，把 `templates.js` 里的模板作为围栏
+代码块追加到该节末尾，生成平台专用的自包含副本，再上传。两边同源（都来自
+`templates.js`），不存在两处维护的模板文字；站点读的是原始 `.md`，不受影响。
+
+```bash
+# 生成结果可以先本地看一眼（只写 --out 目录，不动源仓库）
+python3 scripts/heyvisions/build-lms-units.py --website ~/projects/website --out /tmp/lms-units
+```
+
 ## 验证
 
 ```bash
@@ -127,6 +143,7 @@ ssh vultr-sg 'cd /srv/heyvisions-lms && bash scripts/heyvisions/verify-brand-cle
 
 | 项 | 状态与影响 |
 | --- | --- |
+| 站点侧登录 | 静态站的 `/login` 与其 `apps/heyvisions-api` 是**另一套帐号**（不同后端、不同 cookie），与平台不互通。站点现在把学习者入口指向平台（页脚「学习平台」、`/login`、课时页的进度区），但它自己那套登录仍可访问 |
 | 发信 | 未配置邮件服务（`config.yaml` 的 `system_email_address` / `resend_api_key` 为空）。**魔法链接登录、邮箱验证、找回密码都发不出信**；密码登录正常。要开需要 Resend（或 SMTP）凭据，并同时设 `LEARNHOUSE_SITE_NAME` 之外的发件人地址 |
 | Google 登录 | 未注册 OAuth 应用，登录页不会显示该入口 |
 | 注册策略 | 维持平台默认 `open`：任何人可注册。要改成仅邀请，在组织设置的成员策略里切 `inviteOnly`；`/signup` 页会相应变成邀请码表单 |
