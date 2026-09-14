@@ -17,6 +17,7 @@ import FeatureGate from '@components/Dashboard/Shared/FeatureGate/FeatureGate'
 import { useOrg } from '@components/Contexts/OrgContext'
 import { useLHSession } from '@components/Contexts/LHSessionContext'
 import { searchMatchesAny } from '@/lib/search/normalize'
+import { catalogGridClass } from '@/lib/catalog-grid'
 import { getUserGroups, getUserGroupResources } from '@services/usergroups/usergroups'
 import { useCourses } from '@/hooks/queries/useCourses'
 import { useLHAnalytics, AnalyticsEvent } from '@services/analytics'
@@ -279,7 +280,9 @@ function Courses(props: CourseProps) {
             </div>
           )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {/* 列数随数量收窄：只有 1 门课时收成一列（上限 560px），
+              避免 4 列网格里只放一张卡片、右侧空出 76%。规则见 lib/catalog-grid.ts。 */}
+          <div className={catalogGridClass(paginatedCourses.length)}>
             {paginatedCourses.map((course: any, index: number) => (
               <div key={course.course_uuid} className="">
                 <CourseThumbnail course={course} orgslug={orgslug} isPriority={currentPage === 1 && index < 3} />
