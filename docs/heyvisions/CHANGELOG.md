@@ -15,9 +15,9 @@
 | 4 | 课程内容导入脚本入库 | [#7](https://github.com/AidenNovak/heyvisions-lms/issues/7) | [#10](https://github.com/AidenNovak/heyvisions-lms/pull/10) | 无（纯新增目录） |
 | 5 | 简体中文设为默认语言并核对 zh 文案 | [#6](https://github.com/AidenNovak/heyvisions-lms/issues/6) | [#13](https://github.com/AidenNovak/heyvisions-lms/pull/13) | `organization_config.py`、`locales/*.json`（22 个语言文件） |
 | 6 | 视觉令牌对齐 heyvisions.com | [#4](https://github.com/AidenNovak/heyvisions-lms/issues/4) | [#14](https://github.com/AidenNovak/heyvisions-lms/pull/14) | `app/layout.tsx`、`lib/fonts.ts`、`styles/globals.css` |
-| 7 | 品牌改名：HeyVisions → Yet to Dawn | — | — | `services/config/brand.ts`、`lrn-text.svg`、`locales/zh.json`、`public/hv/`（删除） |
-| 8 | 品牌残留清扫：图片、界面文案、域名与邮件 | — | — | 见下方第 8 条 |
-| 9 | 品牌残留清扫（续）：API 侧与构建产物 | — | — | 见下方第 9 条 |
+| 7 | 品牌改名：HeyVisions → Yet to Dawn | [#15](https://github.com/AidenNovak/heyvisions-lms/issues/15) | [#16](https://github.com/AidenNovak/heyvisions-lms/pull/16) | `services/config/brand.ts`、`lrn-text.svg`、`locales/zh.json`、`public/hv/`（删除） |
+| 8 | 品牌残留清扫：图片、界面文案、域名与邮件 | [#15](https://github.com/AidenNovak/heyvisions-lms/issues/15) | [#16](https://github.com/AidenNovak/heyvisions-lms/pull/16) | 见下方第 8 条 |
+| 9 | 品牌残留清扫（续）：API 侧与构建产物 | [#15](https://github.com/AidenNovak/heyvisions-lms/issues/15) | [#16](https://github.com/AidenNovak/heyvisions-lms/pull/16) | 见下方第 9 条 |
 
 ## 1. fork 维护流程与改动记录
 
