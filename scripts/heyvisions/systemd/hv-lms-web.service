@@ -16,6 +16,12 @@ Environment=PORT=3011
 Environment=HOSTNAME=0.0.0.0
 Environment=NODE_ENV=production
 Environment=PATH=/opt/hv-node/bin:/usr/local/bin:/usr/bin:/bin
+# Web 侧的服务端密钥：Google OAuth 客户端凭据、事务性发信 key 等。
+# 单独一份而不是复用 lms-prod.env —— Web 进程不需要数据库连接串与 JWT 密钥，
+# 塞给它等于把无关凭据暴露在另一个进程里。文件权限 600，见 PRODUCTION.md。
+# 前缀 `-` 表示文件不存在也不报错：没配 Google / 发信时，登录页本就不该摆出
+# 这些入口（前端按 env 的能力探测来渲染，见 services/auth/authCapabilities.ts）。
+EnvironmentFile=-/srv/heyvisions-secrets/lms-web.env
 # 客户端配置的唯一来源是 public/runtime-config.js（由 server-install-prod.sh 生成），
 # 服务端另有同目录的 runtime-config.json。两者都由安装脚本写，进程不需要写权限。
 ExecStart=/opt/hv-node/bin/node server.js

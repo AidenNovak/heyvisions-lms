@@ -110,6 +110,25 @@ print("已写入 runtime-config.json（含服务端专用键）与 public/runtim
 PY
 
 log "3/5 安装 systemd 服务"
+
+# Web 侧的服务端密钥文件（Google OAuth 凭据、发信 key）。单元用
+# `EnvironmentFile=-` 引用它，缺失时按「未配置」处理 —— 登录页据此不摆出
+# 对应入口。这里只在不存在时建一个空的骨架；已存在则原样保留，绝不覆盖密钥。
+WEB_ENV_FILE="${HV_WEB_ENV_FILE:-/srv/heyvisions-secrets/lms-web.env}"
+if [ ! -f "$WEB_ENV_FILE" ]; then
+  install -m 600 /dev/null "$WEB_ENV_FILE"
+  cat >> "$WEB_ENV_FILE" <<'EOF'
+# Yet to Dawn LMS —— Web 侧服务端密钥。权限 600；不要入库、不要出现在输出里。
+#
+# 按需追加；改完执行 systemctl restart hv-lms-web
+#   LEARNHOUSE_GOOGLE_CLIENT_ID=...      # 与 API 侧的 aud 校验用同一个值
+#   LEARNHOUSE_GOOGLE_CLIENT_SECRET=...
+#   RESEND_API_KEY=...                   # 事务性发信（魔法链接/找回密码/邮箱验证）
+#   RESEND_FROM_EMAIL=...
+EOF
+  log "已创建 $WEB_ENV_FILE（暂为空；未配置时登录页不显示对应入口）"
+fi
+
 install -m 644 "$ROOT/scripts/heyvisions/systemd/hv-lms-units.service" /etc/systemd/system/
 install -m 644 "$ROOT/scripts/heyvisions/systemd/hv-lms-api.service" /etc/systemd/system/
 install -m 644 "$ROOT/scripts/heyvisions/systemd/hv-lms-web.service" /etc/systemd/system/
