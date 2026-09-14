@@ -228,17 +228,39 @@
 
   /* 课程正文的阅读宽度（Yet to Dawn fork）。
      上游让 .markdown-body 铺满容器：在 1440px 屏幕上单行超过 70 个汉字，
-     远超中文舒适区间。静态站的课时正文是 558px / 15.5px ≈ 36 字/行，这里取
-     40rem（640px，16px 字号下约 40 字/行）—— 与站点同一区间，不因平台版心更宽
+     远超中文舒适区间。静态站课时页的正文列实测 `max-width: 608px`、16px 字号
+     （≈38 字/行）；这里取 38rem = 608px，与站点**同宽**，不因平台版心更宽
      就把行拉长。用户是两个面之间来回走的，正文节奏不该在这条界限上变化。
-     只限正文（.markdown-body），不动卡片与外层容器 —— 卡片仍占满宽度，
-     留白由正文两侧承担，观感不变。 */
-  .markdown-body > * {
-    max-width: 40rem;
-    margin-inline: auto;
+     （#24 的注释把站点值记成 558px / 15.5px，那是一次估读；实测站点是 608px / 16px。）
+
+     宽度与居中必须落在**容器**上，不能逐个子元素设 margin。
+     第一版写成 `.markdown-body > * { max-width: 40rem; margin-inline: auto }`，
+     结果标题与正文左边界差了 309px：上游有 `.markdown-body h1 { margin: .67em 0 }`
+     这种元素级规则，特异性 (0,1,1) 高于 `> *` 的 (0,1,0)，把标题的左右 margin
+     重置成 0，于是标题贴左、段落居中，一屏之内出现两条左边界。
+     （验证记录：标题 x=84、段落 x=393；容器 x=84 w=1257，(1257−640)/2 = 308.5。）
+     放在容器上就不必与上游的元素级规则比特异性，也不受以后新增规则影响。
+     容器限宽同样与静态站一致 —— 站点是把正文列收窄，而不是逐段缩进。
+
+     为什么带 !important：正文的排版基线来自 `github-markdown-css`（上游组件
+     `MarkdownActivity.tsx` 直接 import 的第三方样式表），它是**无层（unlayered）**
+     样式，而本文件整段在 `@layer utilities` 里 —— 无层样式优先级高于所有层，
+     即使我们写在后面也会被它盖掉（实测：max-width 生效、margin-inline 不生效，
+     列宽受限但仍左贴 x=84 而非居中）。
+     改用「与其同为无层、靠源顺序取胜」也不行：Next.js 的 CSS 分块顺序不由本文件决定，
+     globals.css 与组件样式谁在后无法保证，这次能过、下次构建就可能翻车。
+     上游在同名选择器下也用 !important（`.markdown-body > :first-child { margin-top: 0 !important }`），
+     这里沿用同一手段，并在注释里交代清楚原因，避免后来者误删。 */
+  .markdown-body {
+    max-width: 38rem !important;  /* 608px —— 与静态站课时正文列同宽 */
+    margin-inline: auto !important;
   }
 
-  /* 表格与代码块可以更宽：它们按列/按行对齐，压窄会破坏可读性。 */
+  /* 表格与代码块跟随容器宽度（= 阅读列宽）。
+     上游对 pre/table 设了 overflow 兜底，内容更宽时在块内横向滚动，
+     不会被压变形。这里显式声明 max-width，是为了说明「它们不再单独放宽」
+     这一取舍：改版前它们铺满 1257px 的容器，比正文列宽出近一倍，
+     与「正文一条列」的观感冲突；实测模板在 608px 下按 pre-wrap 折行，可读。 */
   .markdown-body > table,
   .markdown-body > pre {
     max-width: 100%;
