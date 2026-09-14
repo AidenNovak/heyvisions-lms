@@ -18,7 +18,8 @@
 | 7 | 品牌改名：HeyVisions → Yet to Dawn | [#15](https://github.com/AidenNovak/heyvisions-lms/issues/15) | [#16](https://github.com/AidenNovak/heyvisions-lms/pull/16) | `services/config/brand.ts`、`lrn-text.svg`、`locales/zh.json`、`public/hv/`（删除） |
 | 8 | 品牌残留清扫：图片、界面文案、域名与邮件 | [#15](https://github.com/AidenNovak/heyvisions-lms/issues/15) | [#16](https://github.com/AidenNovak/heyvisions-lms/pull/16) | 见下方第 8 条 |
 | 9 | 品牌残留清扫（续）：API 侧与构建产物 | [#15](https://github.com/AidenNovak/heyvisions-lms/issues/15) | [#16](https://github.com/AidenNovak/heyvisions-lms/pull/16) | 见下方第 9 条 |
-| 10 | 生产上线：单主机名 HTTPS 部署与联调修出的四处缺陷 | [#17](https://github.com/AidenNovak/heyvisions-lms/issues/17) | — | 见下方第 10 条 |
+| 10 | 生产上线：单主机名 HTTPS 部署与联调修出的四处缺陷 | [#17](https://github.com/AidenNovak/heyvisions-lms/issues/17) | [#18](https://github.com/AidenNovak/heyvisions-lms/pull/18) | 见下方第 10 条 |
+| 11 | 单元正文的模板缺口：同步时生成平台专用副本 | [#19](https://github.com/AidenNovak/heyvisions-lms/issues/19) | [#20](https://github.com/AidenNovak/heyvisions-lms/pull/20) | 见下方第 11 条 |
 
 ## 1. fork 维护流程与改动记录
 
@@ -263,6 +264,21 @@ Let's Encrypt），并在真实链路（浏览器 → Cloudflare → nginx → N
 - **与上游的关系**：四处都是上游文件的小改，各自带注释说明「为什么这样改」，
   集中在「部署形态适配」这一层，不重构结构。同步上游时按注释逐条核对。
   数据服务的端口绑定与部署脚本是本仓库独有，冲突面为零。
+
+## 11. 单元正文的模板缺口：同步时生成平台专用副本
+
+- **改什么**：新增 `scripts/heyvisions/build-lms-units.py`，`sync-content.sh` 先调它生成
+  自包含正文再上传。
+- **为什么**：单元正文的「模板或反例」一节写着「使用本页下方的…模板」，但模板文字
+  **不在 `.md` 里** —— 它存于 `example/src/course/templates.js`，由站点页面在渲染到该节时
+  注入（`example/src/course-page.jsx`）。学习平台只渲染裸 Markdown，没有这层注入，
+  于是 6/6 个公开单元都会指向一个不存在的模板：学习者读到「见下方模板」却看不到模板。
+- **做法**：不把模板抄进 `.md`（那会变成两处维护），而是在同步时把 `templates.js` 的内容
+  作为围栏代码块追加到该节末尾，生成平台专用副本。两边同源，站点读原始 `.md` 不受影响。
+  脚本只在 `--out` 目录里写，不动 website 仓库的任何文件。
+- **影响范围**：新增 `scripts/heyvisions/build-lms-units.py`；`scripts/heyvisions/sync-content.sh`
+  增加生成步骤；`docs/heyvisions/PRODUCTION.md` 记录原因与用法。不触及上游文件。
+- **与上游的关系**：纯本仓库新增，冲突面为零。
 
 ## 待办
 

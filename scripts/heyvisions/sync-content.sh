@@ -11,6 +11,7 @@
 # 在**本机**（有 website 仓库的那台）执行，不是服务器上。
 set -euo pipefail
 
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SERVER="${HV_SERVER:-vultr-sg}"
 WEBSITE="${HV_WEBSITE:-$HOME/projects/website}"
 REMOTE_ROOT="${HV_CONTENT_DIR:-/srv/heyvisions-content}"
@@ -29,8 +30,16 @@ SRC="$WEBSITE/example/src/course-content"
 [ -d "$SRC/units" ] || { echo "找不到单元目录：$SRC/units" >&2; exit 1; }
 [ -f "$WEBSITE/example/src/course/curriculum.js" ] || { echo "找不到课程合同" >&2; exit 1; }
 
+# 平台只渲染裸 Markdown，没有站点那层模板注入；先在本机生成自包含副本再上传，
+# 否则每个单元的「使用本页下方的模板」都会指向一个不存在的模板。
+STAGE="$(mktemp -d)"
+trap 'rm -rf "$STAGE"' EXIT
+echo "══ 生成平台用的自包含单元正文"
+python3 "$ROOT/build-lms-units.py" --website "$WEBSITE" --out "$STAGE" | tail -9
+
+echo
 echo "══ 同步内容 → $SERVER:$REMOTE_ROOT"
-rsync -az --delete "$SRC/units/" "$SERVER:$REMOTE_ROOT/units/"
+rsync -az --delete "$STAGE/" "$SERVER:$REMOTE_ROOT/units/"
 rsync -az "$WEBSITE/example/src/course/curriculum.js" "$SERVER:$REMOTE_ROOT/curriculum.js"
 
 # import-course.py 用 node 以 ESM 方式 import 课程合同；该目录若被当成 CommonJS
