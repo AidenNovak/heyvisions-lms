@@ -12,6 +12,7 @@ import { joinOrg } from '@services/organizations/orgs'
 import { getUriWithOrg } from '@services/config/config'
 import { getBrandName } from '@services/config/brand'
 import { getErrorMessage } from '@services/utils/ts/errorMessage'
+import type { AuthCapabilities } from '@services/auth/authCapabilities'
 import { useTranslation } from 'react-i18next'
 import AuthLayout from '@components/Auth/AuthLayout'
 import FormLayout, {
@@ -21,6 +22,8 @@ import * as Form from '@radix-ui/react-form'
 
 interface SignUpClientProps {
   org: any
+  /** 这台部署配齐了哪些凭据。由服务端页面算好传下来，理由见 authCapabilities.ts。 */
+  capabilities?: AuthCapabilities
 }
 
 function SignUpClient(props: SignUpClientProps) {
@@ -92,7 +95,7 @@ function SignUpClient(props: SignUpClientProps) {
           )
         ) : (
           <div className="flex-1 flex items-center justify-center px-6 md:px-12 lg:px-20">
-            <OpenSignUpComponent org={props.org} />
+            <OpenSignUpComponent org={props.org} capabilities={props.capabilities} />
           </div>
         ))}
       {session.status !== 'loading' && joinMethod == 'inviteOnly' &&

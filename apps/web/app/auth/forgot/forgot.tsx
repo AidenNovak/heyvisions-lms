@@ -63,7 +63,11 @@ function ForgotPasswordClient({ org }: ForgotPasswordClientProps) {
                 let res = await sendResetLink(values.email)
                 if (res.status == 200) {
                     track(AnalyticsEvent.PasswordResetLinkRequested, { success: true })
-                    setMessage(res.data + ', ' + t('auth.check_email_message'))
+                    // 只显示本地化文案。此前拼了 res.data —— 那是后端返回的英文原句
+                    // 「If an account with that email exists, a reset code has been sent」，
+                    // 于是中文界面里露出一截英文。这句话本身也不该由界面照抄：
+                    // 后端措辞随版本变，界面文案要有自己的说法。
+                    setMessage(t('auth.check_email_message'))
                     setShowMessage(true)
                 } else {
                     track(AnalyticsEvent.PasswordResetLinkRequested, { success: false })
